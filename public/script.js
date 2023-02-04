@@ -14,6 +14,7 @@ const EVM_PROXY_URL = 'http://localhost:3000/api/evm-api-proxy';
 const elBtnEvmWeights = document.getElementById('evm-endpoint-weights');
 const elBtnEvmVersion = document.getElementById('evm-version');
 const elBtnEvmNativeBalance = document.getElementById('evm-native-balance');
+const elBtnEvmNFTsOfOwner = document.getElementById('evm-nfts-of-owner');
 
 // Stream
 
@@ -94,6 +95,10 @@ const getEvmNativeBalance = (address, chain) => {
   handleEvmProxyCall(`${address}/balance?chain=${chain}`);
 };
 
+const getEvmNFTsOfOwner = (address, chain, limit, cursor) => {
+  handleEvmProxyCall(`${address}/nft?chain=${chain}&limit=${limit}&cursor=${cursor}`);
+};
+
 const renderResult = async (result) => {
   elResult.innerHTML = result ? JSON.stringify(result, null, 2) : '';
 };
@@ -130,8 +135,15 @@ function init() {
 
   elBtnEvmNativeBalance.addEventListener('click', async () => {
     const address = document.getElementById('address').value;
-    const chain = document.getElementById('chain').value;
+    const chain = document.getElementById('chain').value || '0x1';
     getEvmNativeBalance(address, chain).catch((error) => renderError(error));
+  });
+  elBtnEvmNFTsOfOwner.addEventListener('click', async () => {
+    const address = document.getElementById('address').value;
+    const chain = document.getElementById('chain').value || '0x1';
+    const limit = document.getElementById('limit').value || 10;
+    const cursor = document.getElementById('cursor').value;
+    getEvmNFTsOfOwner(address, chain, limit, cursor).catch((error) => renderError(error));
   });
 }
 
