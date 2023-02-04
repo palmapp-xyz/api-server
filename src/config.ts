@@ -7,4 +7,6 @@ export default cleanEnv(process.env, {
   PORT: num(),
 
   MORALIS_API_KEY: str(),
+
+  NGROK_AUTH_TOKEN: str(),
 });

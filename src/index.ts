@@ -28,7 +28,7 @@ app.use(errorHandler);
 app.use(express.static('public'));
 
 app.listen(config.PORT, async () => {
-  const url = await ngrok.connect(config.PORT);
+  const url = await ngrok.connect({ authtoken: config.NGROK_AUTH_TOKEN, addr: config.PORT });
   // eslint-disable-next-line no-console
   console.log(`'Oedi Moralis server' is running on port ${config.PORT} and ngrok url ${url}`);
 });
