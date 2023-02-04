@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { addStream, deleteStream, getStreams, updateStream } from './streamService';
+import { addStream, deleteStream, getStreams, updateStream, addAddress, removeAddress, getAllAddress } from './streamService';
 
 export async function create(req: Request, res: Response, next: NextFunction) {
   try {
@@ -51,6 +51,44 @@ export async function del(req: Request, res: Response, next: NextFunction) {
     const message = await deleteStream(id);
 
     res.status(200).json({ message });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function addAddr(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { id } = req.params;
+    const { address } = req.body;
+
+    const result = await addAddress(id, address);
+
+    res.status(200).json({ result });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function removeAddr(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { id } = req.params;
+    const { address } = req.body;
+
+    const result = await removeAddress(id, address);
+
+    res.status(200).json({ result });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getAllAddr(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { id } = req.params;
+
+    const result = await getAllAddress(id);
+
+    res.status(200).json({ result });
   } catch (err) {
     next(err);
   }

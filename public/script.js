@@ -4,10 +4,15 @@ const HOOK_API_URL = 'http://localhost:3000/hooks';
 
 const elError = document.getElementById('error');
 const elResult = document.getElementById('result');
+
 const elBtnAdd = document.getElementById('add-stream');
 const elBtnUpdate = document.getElementById('update-stream');
 const elBtnGet = document.getElementById('get-stream');
 const elBtnDelete = document.getElementById('delete-stream');
+
+const elBtnAddAddress = document.getElementById('add-address-to-stream');
+const elBtnRemoveAddress = document.getElementById('remove-address-from-stream');
+const elBtnListAddresses = document.getElementById('list-addresses-of-stream');
 
 const EVM_PROXY_URL = 'http://localhost:3000/api/evm-api-proxy';
 
@@ -64,6 +69,19 @@ const getStreams = async () => {
 };
 const deleteStreams = async (id) => {
   const result = await handleApiRequest('delete', `delete/${id}`);
+  renderResult(result);
+};
+
+const addAddressToStream = async (id, address) => {
+  const result = await handleApiRequest('post', `${id}/add`, { address });
+  renderResult(result);
+};
+const removeAddressFromStream = async (id, address) => {
+  const result = await handleApiRequest('post', `${id}/remove`, { address });
+  renderResult(result);
+};
+const listAddressesOfStream = async (id) => {
+  const result = await handleApiRequest('get', `${id}/list`);
   renderResult(result);
 };
 
@@ -144,6 +162,21 @@ function init() {
   elBtnDelete.addEventListener('click', async () => {
     const id = document.getElementById('id').value;
     deleteStreams(id).catch((error) => renderError(error));
+  });
+
+  elBtnAddAddress.addEventListener('click', async () => {
+    const id = document.getElementById('id').value;
+    const address = document.getElementById('account-address').value;
+    addAddressToStream(id, address).catch((error) => renderError(error));
+  });
+  elBtnRemoveAddress.addEventListener('click', async () => {
+    const id = document.getElementById('id').value;
+    const address = document.getElementById('account-address').value;
+    removeAddressFromStream(id, address).catch((error) => renderError(error));
+  });
+  elBtnListAddresses.addEventListener('click', async () => {
+    const id = document.getElementById('id').value;
+    listAddressesOfStream(id).catch((error) => renderError(error));
   });
 
   elBtnEvmWeights.addEventListener('click', async () => {
