@@ -15,6 +15,7 @@ const elBtnEvmWeights = document.getElementById('evm-endpoint-weights');
 const elBtnEvmVersion = document.getElementById('evm-version');
 const elBtnEvmNativeBalance = document.getElementById('evm-native-balance');
 const elBtnEvmNFTsOfOwner = document.getElementById('evm-nfts-of-owner');
+const elBtnEvmERC20sOfOwner = document.getElementById('evm-erc20s-of-owner');
 
 // Stream
 
@@ -99,6 +100,10 @@ const getEvmNFTsOfOwner = (address, chain, limit, cursor) => {
   handleEvmProxyCall(`${address}/nft?chain=${chain}&limit=${limit}&cursor=${cursor}`);
 };
 
+const getEvmERC20sOfOwner = (address, chain, limit, cursor) => {
+  handleEvmProxyCall(`${address}/erc20?chain=${chain}&limit=${limit}&cursor=${cursor}`);
+};
+
 const renderResult = async (result) => {
   elResult.innerHTML = result ? JSON.stringify(result, null, 2) : '';
 };
@@ -137,6 +142,13 @@ function init() {
     const address = document.getElementById('address').value;
     const chain = document.getElementById('chain').value || '0x1';
     getEvmNativeBalance(address, chain).catch((error) => renderError(error));
+  });
+  elBtnEvmERC20sOfOwner.addEventListener('click', async () => {
+    const address = document.getElementById('address').value;
+    const chain = document.getElementById('chain').value || '0x1';
+    const limit = document.getElementById('limit').value || 10;
+    const cursor = document.getElementById('cursor').value;
+    getEvmERC20sOfOwner(address, chain, limit, cursor).catch((error) => renderError(error));
   });
   elBtnEvmNFTsOfOwner.addEventListener('click', async () => {
     const address = document.getElementById('address').value;
