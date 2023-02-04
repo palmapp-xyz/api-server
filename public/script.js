@@ -16,6 +16,9 @@ const elBtnEvmVersion = document.getElementById('evm-version');
 const elBtnEvmNativeBalance = document.getElementById('evm-native-balance');
 const elBtnEvmNFTsOfOwner = document.getElementById('evm-nfts-of-owner');
 const elBtnEvmERC20sOfOwner = document.getElementById('evm-erc20s-of-owner');
+const elBtnEvmNftTransfersOfWallet = document.getElementById('evm-nft-transfers-of-wallet');
+const elBtnEvmNftOwner = document.getElementById('evm-nft-owner');
+const elBtnEvmNftMetadata = document.getElementById('evm-nft-metadata');
 
 // Stream
 
@@ -104,6 +107,18 @@ const getEvmERC20sOfOwner = (address, chain, limit, cursor) => {
   handleEvmProxyCall(`${address}/erc20?chain=${chain}&limit=${limit}&cursor=${cursor}`);
 };
 
+const getEvmNftTransfersOfWallet = (address, chain, limit, cursor) => {
+  handleEvmProxyCall(`${address}/nft/transfers?chain=${chain}&limit=${limit}&cursor=${cursor}`);
+};
+
+const getEvmNftOwner = (tokenAddress, tokenId, chain) => {
+  handleEvmProxyCall(`nft/${tokenAddress}/${tokenId}/owners?chain=${chain}`);
+};
+
+const getEvmNftMetadata = (tokenAddress, tokenId, chain) => {
+  handleEvmProxyCall(`nft/${tokenAddress}/${tokenId}/?chain=${chain}`);
+};
+
 const renderResult = async (result) => {
   elResult.innerHTML = result ? JSON.stringify(result, null, 2) : '';
 };
@@ -156,6 +171,25 @@ function init() {
     const limit = document.getElementById('limit').value || 10;
     const cursor = document.getElementById('cursor').value;
     getEvmNFTsOfOwner(address, chain, limit, cursor).catch((error) => renderError(error));
+  });
+  elBtnEvmNftTransfersOfWallet.addEventListener('click', async () => {
+    const address = document.getElementById('address').value;
+    const chain = document.getElementById('chain').value || '0x1';
+    const limit = document.getElementById('limit').value || 10;
+    const cursor = document.getElementById('cursor').value;
+    getEvmNftTransfersOfWallet(address, chain, limit, cursor).catch((error) => renderError(error));
+  });
+  elBtnEvmNftOwner.addEventListener('click', async () => {
+    const tokenAddress = document.getElementById('token-address').value;
+    const chain = document.getElementById('chain').value || '0x1';
+    const tokenId = document.getElementById('token-id').value;
+    getEvmNftOwner(tokenAddress, tokenId, chain).catch((error) => renderError(error));
+  });
+  elBtnEvmNftMetadata.addEventListener('click', async () => {
+    const tokenAddress = document.getElementById('token-address').value;
+    const chain = document.getElementById('chain').value || '0x1';
+    const tokenId = document.getElementById('token-id').value;
+    getEvmNftMetadata(tokenAddress, tokenId, chain).catch((error) => renderError(error));
   });
 }
 
