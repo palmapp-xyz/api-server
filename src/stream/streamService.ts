@@ -45,6 +45,7 @@ export async function addStream(options: StreamOptions) {
     description: DESCRIPTION,
     abi: NFT_transfer_ABI,
     includeContractLogs: true,
+    includeInternalTxs: true,
     allAddresses: true,
     topic0: ["transfer(address,address,uint256)"],
     advancedOptions: [
@@ -88,14 +89,7 @@ export async function updateStream(id: string, options: StreamOptions) {
     "0x2d368d6A84B791D634E6f9f81908D884849fd43d",
   ];
 
-  const filters = [];
-  for (const user in users) {
-    if (!user) {
-      continue;
-    }
-    filters.push(["from", user]);
-    filters.push(["to", user]);
-  }
+  const filters = { "or": [ { "in": ["from", users]}, { "in": ["to", users]} ]};
 
   const result = await Moralis.Streams.update({
     id,
@@ -106,12 +100,12 @@ export async function updateStream(id: string, options: StreamOptions) {
     description: DESCRIPTION,
     abi: NFT_transfer_ABI,
     includeContractLogs: true,
+    includeInternalTxs: true,
     allAddresses: true,
     topic0: ["transfer(address,address,uint256)"],
     advancedOptions: [
       {
         topic0: "transfer(address,address,uint256)",
-        filter: { "or": [ { "in": ["from", users]}, { "in": ["to", users]} ]},
       },
     ],
     triggers,
