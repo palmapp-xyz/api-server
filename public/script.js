@@ -87,36 +87,36 @@ const handleEvmProxyCall = async (endpoint, params) => {
 };
 
 // evm api proxy calls
-const web3apiVersion = () => {
-  handleEvmProxyCall('web3/version');
+const web3apiVersion = async () => {
+  await handleEvmProxyCall('web3/version');
 };
 
-const endpointWeights = () => {
-  handleEvmProxyCall('info/endpointWeights');
+const endpointWeights = async () => {
+  await handleEvmProxyCall('info/endpointWeights');
 };
 
-const getEvmNativeBalance = (address, chain) => {
-  handleEvmProxyCall(`${address}/balance?chain=${chain}`);
+const getEvmNativeBalance = async (address, chain) => {
+  await handleEvmProxyCall(`${address}/balance?chain=${chain}`);
 };
 
-const getEvmNFTsOfOwner = (address, chain, limit, cursor) => {
-  handleEvmProxyCall(`${address}/nft?chain=${chain}&limit=${limit}&cursor=${cursor}`);
+const getEvmNFTsOfOwner = async (address, chain, limit, cursor) => {
+  await handleEvmProxyCall(`${address}/nft?chain=${chain}&limit=${limit}&cursor=${cursor}`);
 };
 
-const getEvmERC20sOfOwner = (address, chain, limit, cursor) => {
-  handleEvmProxyCall(`${address}/erc20?chain=${chain}&limit=${limit}&cursor=${cursor}`);
+const getEvmERC20sOfOwner = async (address, chain, limit, cursor) => {
+  await handleEvmProxyCall(`${address}/erc20?chain=${chain}&limit=${limit}&cursor=${cursor}`);
 };
 
-const getEvmNftTransfersOfWallet = (address, chain, limit, cursor) => {
-  handleEvmProxyCall(`${address}/nft/transfers?chain=${chain}&limit=${limit}&cursor=${cursor}`);
+const getEvmNftTransfersOfWallet = async (address, chain, limit, cursor) => {
+  await handleEvmProxyCall(`${address}/nft/transfers?chain=${chain}&limit=${limit}&cursor=${cursor}`);
 };
 
-const getEvmNftOwner = (tokenAddress, tokenId, chain) => {
-  handleEvmProxyCall(`nft/${tokenAddress}/${tokenId}/owners?chain=${chain}`);
+const getEvmNftOwner = async (tokenAddress, tokenId, chain) => {
+  await handleEvmProxyCall(`nft/${tokenAddress}/${tokenId}/owners?chain=${chain}`);
 };
 
-const getEvmNftMetadata = (tokenAddress, tokenId, chain) => {
-  handleEvmProxyCall(`nft/${tokenAddress}/${tokenId}/?chain=${chain}`);
+const getEvmNftMetadata = async (tokenAddress, tokenId, chain) => {
+  await handleEvmProxyCall(`nft/${tokenAddress}/${tokenId}/?chain=${chain}`);
 };
 
 const renderResult = async (result) => {
@@ -124,7 +124,8 @@ const renderResult = async (result) => {
 };
 
 const renderError = async (error) => {
-  elError.innerHTML = error ? JSON.stringify(error.message, null, 2) : '';
+  elError.innerHTML = error.config?.url ? (`${error.config.url}: `) : '';
+  elError.innerHTML += error ? JSON.stringify(error.message, null, 2) : '';
 };
 
 function init() {
