@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "oedi-a1953"
+  },
+  "targets": {},
+  "etags": {
+    "oedi-a1953": {
+      "extensionInstances": {
+        "moralis-streams": "e0332f431f9ad1b53957cfdb82bf4fa797d10261d1cace175c9e242ef84b8f5c",
+        "moralis-auth": "0aad2588085bbd2fa117ee1679261b6285b720791837d31ac854dfaf4696eb18"
+      }
+    }
+  }
+}
