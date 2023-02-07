@@ -173,7 +173,7 @@
         "parameters": [
           {
             "name": "id",
-            "in": "query",
+            "in": "params",
             "description": "Stream ID to be updated",
             "required": true,
             "deprecated": false,
@@ -241,7 +241,7 @@
         "parameters": [
           {
             "name": "id",
-            "in": "query",
+            "in": "params",
             "description": "Stream ID to be deleted",
             "required": true,
             "deprecated": false,
@@ -279,7 +279,7 @@
         "parameters": [
           {
             "name": "id",
-            "in": "query",
+            "in": "params",
             "description": "Stream ID where address is to be added",
             "required": true,
             "deprecated": false,
@@ -328,7 +328,7 @@
         "parameters": [
           {
             "name": "id",
-            "in": "query",
+            "in": "params",
             "description": "Stream ID where address is to be removed",
             "required": true,
             "deprecated": false,
@@ -373,7 +373,7 @@
         "parameters": [
           {
             "name": "id",
-            "in": "query",
+            "in": "params",
             "description": "Stream ID where addresses are to be fetched",
             "required": true,
             "deprecated": false,
@@ -505,7 +505,7 @@
         "parameters": [
           {
             "name": "id",
-            "in": "query",
+            "in": "params",
             "description": "User ID to get profile",
             "required": true,
             "deprecated": false,
@@ -557,7 +557,7 @@
     "/ext-moralis-auth-requestMessage": {
       "post": {
         "deprecated": false,
-        "summary": "Request a message to be signed by the user",
+        "summary": "Request a message to be signed by the user. BaseURL: https://asia-northeast3-oedi-a1953.cloudfunctions.net",
         "security": [],
         "responses": {
           "200": {
@@ -609,7 +609,7 @@
     "/ext-moralis-auth-issueToken": {
       "post": {
         "deprecated": false,
-        "summary": "Issue a token for the user after verifying the signature",
+        "summary": "Issue a token for the user after verifying the signature, BaseURL: https://asia-northeast3-oedi-a1953.cloudfunctions.net",
         "security": [],
         "responses": {
           "200": {
