@@ -13,12 +13,14 @@ const apiLimiter = rateLimit({
   store: new MemoryStore(),
 });
 
-// eslint-disable-next-line new-cap
 export const apiRouter = express.Router();
 
 const evmProxyRouter = new ProxyGenerator("evm", {
   apiKey: config.MORALIS_API_KEY,
 });
 
-// eslint-disable-next-line max-len
+
+/**
+ *
+ */
 apiRouter.use("/evm-api-proxy", apiLimiter, evmProxyRouter.getRouter());

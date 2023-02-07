@@ -18,5 +18,26 @@
   "extensions": {
     "moralis-streams": "moralis/moralis-streams@0.1.11",
     "moralis-auth": "moralis/moralis-auth@0.1.4"
-  }
+  },
+  "emulators": {
+    "auth": {
+      "port": 9099
+    },
+    "functions": {
+      "port": 5001
+    },
+    "firestore": {
+      "port": 8090
+    },
+    "database": {
+      "port": 9000
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true
+  },
+    "firestore": {
+        "rules": "firestore.rules"
+    }
 }

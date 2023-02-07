@@ -28,5 +28,10 @@ module.exports = {
   rules: {
     "quotes": ["error", "double"],
     "import/no-unresolved": 0,
+    "camelcase": 0,
+    "max-len": 0,
+    "etc/no-commented-out-code": 0,
+    "new-cap": 0,
+    "require-jsdoc": 0,
   },
 };

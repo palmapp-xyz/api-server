@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from "express";
 // eslint-disable-next-line max-len
 import {addStream, deleteStream, getStreams, updateStream, addAddress, removeAddress, getAllAddress} from "./streamService";
 
-// eslint-disable-next-line require-jsdoc
+
 export async function create(req: Request, res: Response, next: NextFunction) {
   try {
     const {webhookUrl, triggers} = req.body;
@@ -19,7 +19,7 @@ export async function create(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-// eslint-disable-next-line require-jsdoc
+
 export async function getAll(req: Request, res: Response, next: NextFunction) {
   try {
     const message = await getStreams();
@@ -30,7 +30,7 @@ export async function getAll(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-// eslint-disable-next-line require-jsdoc
+
 export async function update(req: Request, res: Response, next: NextFunction) {
   try {
     const {webhookUrl, triggers} = req.body;
@@ -48,7 +48,7 @@ export async function update(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-// eslint-disable-next-line require-jsdoc
+
 export async function del(req: Request, res: Response, next: NextFunction) {
   try {
     const {id} = req.params;
@@ -61,7 +61,6 @@ export async function del(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-// eslint-disable-next-line require-jsdoc
 export async function addAddr(req: Request, res: Response, next: NextFunction) {
   try {
     const {id} = req.params;
@@ -75,7 +74,7 @@ export async function addAddr(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-// eslint-disable-next-line require-jsdoc,max-len
+
 export async function removeAddr(req: Request, res: Response, next: NextFunction) {
   try {
     const {id} = req.params;
@@ -89,7 +88,6 @@ export async function removeAddr(req: Request, res: Response, next: NextFunction
   }
 }
 
-// eslint-disable-next-line require-jsdoc, max-len
 export async function getAllAddr(req: Request, res: Response, next: NextFunction) {
   try {
     const {id} = req.params;

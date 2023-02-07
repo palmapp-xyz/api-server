@@ -1,10 +1,10 @@
-import {Request, Response} from "express";
+import {NextFunction, Request, Response} from "express";
 import * as admin from "firebase-admin";
 
 // eslint-disable-next-line require-jsdoc
 export async function isAuthenticated(
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    req: Request, res: Response, next: Function
+    // eslint-disable-next-line
+    req: Request, res: Response, next: NextFunction
 ) {
   const {authorization} = req.headers;
 
@@ -31,7 +31,8 @@ export async function isAuthenticated(
       // eslint-disable-next-line no-console
     console.log("decodedToken", JSON.stringify(decodedToken));
     res.locals = {
-      ...res.locals, uid: decodedToken.uid, role: decodedToken.role,
+      // eslint-disable-next-line max-len
+      ...res.locals, uid: decodedToken.uid, role: decodedToken.role, displayName: decodedToken.displayName,
     };
     return next();
   } catch (err) {

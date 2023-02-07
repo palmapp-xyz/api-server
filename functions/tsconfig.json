@@ -24,6 +24,10 @@
   },
   "compileOnSave": true,
   "include": [
-    "src"
-  ]
+    "src/*.ts", "src/**/*.ts",
+  ],
+  "typedocOptions": {
+    "entryPoints": ["src/*.ts", "src/**/*.ts"],
+    "out": "docs/typedoc"
+  }
 }
