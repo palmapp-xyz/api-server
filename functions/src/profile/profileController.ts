@@ -12,6 +12,10 @@ import {firestore} from "../index";
 * */
 export async function create(req: Request, res: Response, next: NextFunction) {
   try {
+    // console displayName from res.locals
+    // eslint-disable-next-line no-console
+    console.log(res.locals.displayName);
+
     await firestore.collection("profile").doc(res.locals.displayName).set(
         {
           ...req.body,
@@ -47,10 +51,38 @@ export async function get(req: Request, res: Response, next: NextFunction) {
     if (!result.exists) {
       throw new Error("profile not found");
     }
+    // remove sendbird_token from result
     // @ts-ignore
-    delete result.data().sendbird_token;
+    const {sendbird_token, ...rest} = result.data();
 
-    res.status(200).json({result: result.data()});
+    res.status(200).json({result: rest});
+  } catch (err) {
+    next(err);
+  }
+}
+/**
+ * @param {Request} req - Express request object
+ * @param {Response} res - Express response object
+ * @param {Function} next - Express next middleware function
+ * @return {void}
+ * @description - get user's sendbird token
+ * @example - get(req, res, next)
+ * @throws - profile not found
+ *
+* */
+export async function getSendbirdToken(req: Request, res: Response, next: NextFunction) {
+  try {
+    // fetch doc from firestore using id
+    const result = await firestore.collection("profile").doc(res.locals.displayName).get();
+    // check if doc exists
+    if (!result.exists) {
+      throw new Error("profile not found");
+    }
+
+    // @ts-ignore
+    const {sendbird_token} = result.data();
+
+    res.status(200).json({result: {sendbird_token}});
   } catch (err) {
     next(err);
   }

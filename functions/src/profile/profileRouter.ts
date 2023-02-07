@@ -1,6 +1,6 @@
 import express from "express";
 import {
-  create, update, get, del,
+  create, update, get, del, getSendbirdToken,
 } from "./profileController";
 import {isAuthenticated} from "../middlewares/authHandler";
 import {isValidProfile} from "./utils";
@@ -59,13 +59,26 @@ profileRouter.route("/update").patch(isAuthenticated, update);
  *  "nft_contract_addr": '0x1234567890abcdef1234567890abcdef12345678',
  *  "nft_tokenId": '123',
  *  "bio": 'This is user's bio',
- *  "user_name": 'nickname',
- *  "sendbird_token": '1234567890abcdef1234567890abcdef12345678'
+ *  "user_name": 'nickname'
  *  ...
  *
  *  }
  */
 profileRouter.route("/get/:id").get(get);
+
+/**
+ * GET /profile/sendbird_token
+ * @summary Gets a user's profile on Firestore
+ * @tags Profile
+ * @return {string} 200 - sendbird token
+ * @example response - 200 - sendbird token
+ * {
+ *  "sendbird_token": 'abcdef123451234567890abcdef1234567890abcdef12345678'
+ *
+ *  }
+ *  @security JWT
+ */
+profileRouter.route("/sendbird_token").get(isAuthenticated, getSendbirdToken);
 /**
  * DELETE /profile/delete
  * @summary Deletes a user's profile on Firestore
