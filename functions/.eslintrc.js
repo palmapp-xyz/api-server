@@ -19,7 +19,7 @@ module.exports = {
     sourceType: "module",
   },
   ignorePatterns: [
-    "/lib/**/*",
+    "/lib/**/*", ".eslintrc.js", "jest.config.js", "test/*"
   ],
   plugins: [
     "@typescript-eslint",

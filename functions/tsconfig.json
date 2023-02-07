@@ -6,7 +6,6 @@
     "strict": true,
     "target": "es2020",
     "allowSyntheticDefaultImports": true,
-
     "allowJs": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -24,8 +23,11 @@
   },
   "compileOnSave": true,
   "include": [
-    "src/*.ts", "src/**/*.ts",
+    "src/*.ts", "src/**/*.ts", "test/**.ts", "test/**/*.ts"
   ],
+    "exclude": [
+        "node_modules", "lib", "docs", ".eslintrc.js", "jest.config.js"
+    ],
   "typedocOptions": {
     "entryPoints": ["src/*.ts", "src/**/*.ts"],
     "out": "docs/typedoc"
