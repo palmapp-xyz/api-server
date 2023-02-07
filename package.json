@@ -33,6 +33,7 @@
     "start": "ts-node src/index.ts",
     "dev": "tsnd --respawn src/index.ts",
     "build": "tsc",
-    "lint": "eslint --ext .js,.ts src"
+    "lint": "eslint --ext .js,.ts src",
+    "deploy": "firebase deploy"
   }
 }

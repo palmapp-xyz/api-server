@@ -1,6 +1,6 @@
 /* global document, window, axios*/
-const STREAM_API_URL = 'http://localhost:4000/stream';
-const HOOK_API_URL = 'http://localhost:4000/hooks';
+const STREAM_API_URL = 'https://us-central1-oedi-a1953.cloudfunctions.net/v1/stream';
+const HOOK_API_URL = 'https://us-central1-oedi-a1953.cloudfunctions.net/v1/hooks';
 
 const elError = document.getElementById('error');
 const elResult = document.getElementById('result');
@@ -14,7 +14,7 @@ const elBtnAddAddress = document.getElementById('add-address-to-stream');
 const elBtnRemoveAddress = document.getElementById('remove-address-from-stream');
 const elBtnListAddresses = document.getElementById('list-addresses-of-stream');
 
-const EVM_PROXY_URL = 'http://localhost:4000/api/evm-api-proxy';
+const EVM_PROXY_URL = 'https://us-central1-oedi-a1953.cloudfunctions.net/v1/api/evm-api-proxy';
 
 const elBtnEvmWeights = document.getElementById('evm-endpoint-weights');
 const elBtnEvmVersion = document.getElementById('evm-version');
