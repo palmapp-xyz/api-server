@@ -1,6 +1,6 @@
 /* global document, window, axios*/
-const STREAM_API_URL = 'http://localhost:3000/stream';
-const HOOK_API_URL = 'http://localhost:3000/hooks';
+const STREAM_API_URL = 'http://localhost:4000/stream';
+const HOOK_API_URL = 'http://localhost:4000/hooks';
 
 const elError = document.getElementById('error');
 const elResult = document.getElementById('result');
@@ -14,7 +14,7 @@ const elBtnAddAddress = document.getElementById('add-address-to-stream');
 const elBtnRemoveAddress = document.getElementById('remove-address-from-stream');
 const elBtnListAddresses = document.getElementById('list-addresses-of-stream');
 
-const EVM_PROXY_URL = 'http://localhost:3000/api/evm-api-proxy';
+const EVM_PROXY_URL = 'http://localhost:4000/api/evm-api-proxy';
 
 const elBtnEvmWeights = document.getElementById('evm-endpoint-weights');
 const elBtnEvmVersion = document.getElementById('evm-version');
@@ -143,7 +143,7 @@ const renderResult = async (result) => {
 
 const renderError = async (error) => {
   elError.innerHTML = error.config?.url ? (`${error.config.url}: `) : '';
-  elError.innerHTML += error ? JSON.stringify(error.message, null, 2) : '';
+  elError.innerHTML += error ? JSON.stringify(error.response.data.data.message, null, 2) : '';
 };
 
 function init() {
