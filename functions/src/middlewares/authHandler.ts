@@ -32,7 +32,7 @@ export async function isAuthenticated(
     console.log("decodedToken", JSON.stringify(decodedToken));
     res.locals = {
       // eslint-disable-next-line max-len
-      ...res.locals, uid: decodedToken.uid, role: decodedToken.role, displayName: decodedToken.displayName,
+      ...res.locals, uid: decodedToken.uid, role: decodedToken.role, displayName: decodedToken.name,
     };
     return next();
   } catch (err) {
