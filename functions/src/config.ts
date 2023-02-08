@@ -1,17 +1,18 @@
 import * as dotenv from 'dotenv';
-import {cleanEnv, num, str} from 'envalid';
 
 dotenv.config({path: `.env.${process.env.NODE_ENV}`});
 
-export default cleanEnv(process.env, {
-  HOST: str(),
+const config = {
+  HOST: readEnv('HOST'),
 
-  PORT: num(),
+  PORT: Number(readEnv('PORT')),
 
-  MORALIS_API_KEY: str(),
+  MORALIS_API_KEY: readEnv('MORALIS_API_KEY'),
 
-  NGROK_AUTH_TOKEN: str(),
-});
+  NGROK_AUTH_TOKEN: readEnv('NGROK_AUTH_TOKEN')
+};
+
+export default config;
 
 function readEnv(name: string): string {
   const value = process.env[name];
