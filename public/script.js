@@ -1,6 +1,6 @@
 /* global document, window, axios*/
-const STREAM_API_URL = 'http://localhost:3000/stream';
-const HOOK_API_URL = 'http://localhost:3000/hooks';
+const STREAM_API_URL = 'https://us-central1-oedi-a1953.cloudfunctions.net/v1/stream';
+const HOOK_API_URL = 'https://us-central1-oedi-a1953.cloudfunctions.net/v1/hooks';
 
 const elError = document.getElementById('error');
 const elResult = document.getElementById('result');
@@ -14,12 +14,13 @@ const elBtnAddAddress = document.getElementById('add-address-to-stream');
 const elBtnRemoveAddress = document.getElementById('remove-address-from-stream');
 const elBtnListAddresses = document.getElementById('list-addresses-of-stream');
 
-const EVM_PROXY_URL = 'http://localhost:3000/api/evm-api-proxy';
+const EVM_PROXY_URL = 'https://us-central1-oedi-a1953.cloudfunctions.net/v1/api/evm-api-proxy';
 
 const elBtnEvmWeights = document.getElementById('evm-endpoint-weights');
 const elBtnEvmVersion = document.getElementById('evm-version');
 const elBtnEvmNativeBalance = document.getElementById('evm-native-balance');
 const elBtnEvmNFTsOfOwner = document.getElementById('evm-nfts-of-owner');
+const elBtnEvmNFTCollectionsOfOwner = document.getElementById('evm-nft-collections-of-owner');
 const elBtnEvmERC20sOfOwner = document.getElementById('evm-erc20s-of-owner');
 const elBtnEvmNftTransfersOfWallet = document.getElementById('evm-nft-transfers-of-wallet');
 const elBtnEvmNftOwner = document.getElementById('evm-nft-owner');
@@ -121,6 +122,10 @@ const getEvmNFTsOfOwner = async (address, chain, limit, cursor) => {
   await handleEvmProxyCall(`${address}/nft?chain=${chain}&limit=${limit}&cursor=${cursor}`);
 };
 
+const getEvmNFTCollectionsOfOwner = async (address, chain, limit, cursor) => {
+  await handleEvmProxyCall(`${address}/nft/collections?chain=${chain}&limit=${limit}&cursor=${cursor}`);
+};
+
 const getEvmERC20sOfOwner = async (address, chain, limit, cursor) => {
   await handleEvmProxyCall(`${address}/erc20?chain=${chain}&limit=${limit}&cursor=${cursor}`);
 };
@@ -143,7 +148,7 @@ const renderResult = async (result) => {
 
 const renderError = async (error) => {
   elError.innerHTML = error.config?.url ? (`${error.config.url}: `) : '';
-  elError.innerHTML += error ? JSON.stringify(error.message, null, 2) : '';
+  elError.innerHTML += error ? JSON.stringify(error.response.data.data.message, null, 2) : '';
 };
 
 function init() {
@@ -205,6 +210,13 @@ function init() {
     const limit = document.getElementById('limit').value || 10;
     const cursor = document.getElementById('cursor').value;
     getEvmNFTsOfOwner(address, chain, limit, cursor).catch((error) => renderError(error));
+  });
+  elBtnEvmNFTCollectionsOfOwner.addEventListener('click', async () => {
+    const address = document.getElementById('address').value;
+    const chain = document.getElementById('chain').value || '0x1';
+    const limit = document.getElementById('limit').value || 10;
+    const cursor = document.getElementById('cursor').value;
+    getEvmNFTCollectionsOfOwner(address, chain, limit, cursor).catch((error) => renderError(error));
   });
   elBtnEvmNftTransfersOfWallet.addEventListener('click', async () => {
     const address = document.getElementById('address').value;
