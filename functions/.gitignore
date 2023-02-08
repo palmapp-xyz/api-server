@@ -10,3 +10,8 @@ typings/
 node_modules/
 
 ui-debug.log
+
+.env.development
+.env.production
+
+firebase-debug.log
