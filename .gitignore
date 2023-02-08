@@ -1,5 +1,4 @@
-node_modules/
-lib/
-.env
-data.json
+node_modules
 
+.env.development
+.env.production

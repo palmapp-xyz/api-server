@@ -1,12 +1,12 @@
 /*
 // write profile test here using firebase-functions-test
-import { describe, it, beforeAll } from "mocha";
+import { describe, it, beforeAll } from 'mocha';
 // @ts-ignore
-const test = require("firebase-functions-test")();
+const test = require('firebase-functions-test')();
 
-const myFunctions = require("../index");
+const myFunctions = require('../index');
 
-describe("Profile", () => {
+describe('Profile', () => {
     let wrapped;
 
     beforeAll(() => {
@@ -17,12 +17,12 @@ describe("Profile", () => {
         test.cleanup();
     });
 
-    it("should return a 200 response", async () => {
+    it('should return a 200 response', async () => {
         const req = {
-        method: "GET",
-        path: "/profile/get/:id",
+        method: 'GET',
+        path: '/profile/get/:id',
             param: {
-                id: "123"
+                id: '123'
             }
         };
 
@@ -31,10 +31,10 @@ describe("Profile", () => {
         expect(res.status).toBe(200);
     });
 
-    it("should return a 404 response", async () => {
+    it('should return a 404 response', async () => {
         const req = {
-        method: "GET",
-        path: "/foo",
+        method: 'GET',
+        path: '/foo',
         };
 
         const res = await wrapped(req);

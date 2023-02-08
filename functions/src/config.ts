@@ -1,11 +1,19 @@
-import * as dotenv from "dotenv";
-import {cleanEnv, str} from "envalid";
+import * as dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({path: `.env.${process.env.NODE_ENV}`});
 
-export default cleanEnv(process.env, {
-  MORALIS_API_KEY: str(),
-});
+const config = {
+  HOST: readEnv('HOST'),
+
+  PORT: Number(readEnv('PORT')),
+
+  MORALIS_API_KEY: readEnv('MORALIS_API_KEY'),
+
+  NGROK_AUTH_TOKEN: readEnv('NGROK_AUTH_TOKEN')
+};
+
+export default config;
+
 function readEnv(name: string): string {
   const value = process.env[name];
   if (!value) {
@@ -20,7 +28,7 @@ function readEnvPrivateKey(name: string): string {
 }
 
 export const appConfig = {
-  serviceAccountProjectId: readEnv("SERVICE_ACCOUNT_PROJECT_ID"),
-  serviceAccountEmail: readEnv("SERVICE_ACCOUNT_EMAIL"),
-  serviceAccountPrivateKey: readEnvPrivateKey("SERVICE_ACCOUNT_PRIVATE_KEY"),
+  serviceAccountPrivateKeyId: readEnv('SERVICE_ACCOUNT_PRIVATE_KEY_ID'),
+  serviceAccountEmail: readEnv('SERVICE_ACCOUNT_EMAIL'),
+  serviceAccountPrivateKey: readEnvPrivateKey('SERVICE_ACCOUNT_PRIVATE_KEY'),
 };

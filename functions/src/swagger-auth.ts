@@ -16,18 +16,18 @@
  * @returns {object} 200 - The response object containing the message needs to be signed by the user
  * @example request - The request object
  * {
- *    "data": {
- *    "networkType": "evm",
- *    "address": "0x1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0",
- *    "chain": "0x1"
+ *    'data': {
+ *    'networkType': 'evm',
+ *    'address': '0x1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0',
+ *    'chain': '0x1'
  *    }
  *    }
  * @example response - 200 - The response object containing the message needs to be signed by the user
  * {
- *     "result": {
- *         "id": "ZJN2CfqMldUWgezVH",
- *         "message": "oedi-a1953.web.app wants you to sign in with your Ethereum account:\n0x1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0\n\nTo authenticate please sign this message.\n\nURI: https://oedi-a1953.web.app/\nVersion: 1\nChain ID: 1\nNonce: Cwt6fznrxgHvIXdvv\nIssued At: 2023-02-05T12:53:06.907Z\nExpiration Time: 2023-02-05T13:08:06.641Z\nNot Before: 2023-02-05T12:53:06.641Z",
- *         "profileId": "0xad339ed840cb8c4e8f33a6fd07672c53f1c35ed197ba49f1536b43e27cb8b4a8"
+ *     'result': {
+ *         'id': 'ZJN2CfqMldUWgezVH',
+ *         'message': 'oedi-a1953.web.app wants you to sign in with your Ethereum account:\n0x1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0\n\nTo authenticate please sign this message.\n\nURI: https://oedi-a1953.web.app/\nVersion: 1\nChain ID: 1\nNonce: Cwt6fznrxgHvIXdvv\nIssued At: 2023-02-05T12:53:06.907Z\nExpiration Time: 2023-02-05T13:08:06.641Z\nNot Before: 2023-02-05T12:53:06.641Z',
+ *         'profileId': '0xad339ed840cb8c4e8f33a6fd07672c53f1c35ed197ba49f1536b43e27cb8b4a8'
  *     }
  * }
 * */
@@ -48,16 +48,16 @@
  * @return {object} 200 - The response object containing the auth token(custom token)
  * @example response - 200 - The response object containing the auth token(custom token)
  * {
- *    "result": {
- *           "token": "bXl0b2tlbg==23e4r23SDFasfdg"
+ *    'result': {
+ *           'token': 'bXl0b2tlbg==23e4r23SDFasfdg'
  *    }
  * }
  * @example request - The request body object
  * {
- *   "data": {
- *    "networkType": "evm",
- *    "message": "oedi-a1953.web.app wants you to sign in with your Ethereum account:\n0x1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0\n\nTo authenticate please sign this message.\n\nURI: https://oedi-a1953.web.app/\nVersion: 1\nChain ID: 1\nNonce: Cwt6fznrxgHvIXdvv\nIssued At: 2023-02-05T12:53:06.907Z\nExpiration Time: 2023-02-05T13:08:06.641Z\nNot Before: 2023-02-05T12:53:06.641Z",
- *    "signature": "0xEfd3eFEfd3eFEfd3eF1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0eFEfd3eF1Efd3eFd7c78d9d3eFEfd3eF1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0eFEfd3eF1Efd3eFd7c78d9"
+ *   'data': {
+ *    'networkType': 'evm',
+ *    'message': 'oedi-a1953.web.app wants you to sign in with your Ethereum account:\n0x1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0\n\nTo authenticate please sign this message.\n\nURI: https://oedi-a1953.web.app/\nVersion: 1\nChain ID: 1\nNonce: Cwt6fznrxgHvIXdvv\nIssued At: 2023-02-05T12:53:06.907Z\nExpiration Time: 2023-02-05T13:08:06.641Z\nNot Before: 2023-02-05T12:53:06.641Z',
+ *    'signature': '0xEfd3eFEfd3eFEfd3eF1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0eFEfd3eF1Efd3eFd7c78d9d3eFEfd3eF1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0eFEfd3eF1Efd3eFd7c78d9'
  *    }
  *    }
  */

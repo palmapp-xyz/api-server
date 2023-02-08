@@ -1,6 +1,6 @@
-import {NextFunction, Request, Response} from "express";
+import {NextFunction, Request, Response} from 'express';
 // eslint-disable-next-line max-len
-import {addStream, deleteStream, getStreams, updateStream, addAddress, removeAddress, getAllAddress} from "./streamService";
+import {addStream, deleteStream, getStreams, updateStream, addAddress, removeAddress, getAllAddress} from './streamService';
 
 
 export async function create(req: Request, res: Response, next: NextFunction) {
@@ -8,7 +8,7 @@ export async function create(req: Request, res: Response, next: NextFunction) {
     const {webhookUrl, triggers} = req.body;
 
     const result = await addStream({
-      networkType: "evm",
+      networkType: 'evm',
       webhookUrl,
       triggers,
     });
@@ -37,7 +37,7 @@ export async function update(req: Request, res: Response, next: NextFunction) {
     const {id} = req.params;
 
     const message = await updateStream(id, {
-      networkType: "evm",
+      networkType: 'evm',
       webhookUrl,
       triggers,
     });
