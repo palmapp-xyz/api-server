@@ -1,11 +1,12 @@
 import * as dotenv from "dotenv";
 import {cleanEnv, str} from "envalid";
 
-dotenv.config();
+dotenv.config({path: `.env.${process.env.NODE_ENV}`});
 
 export default cleanEnv(process.env, {
   MORALIS_API_KEY: str(),
 });
+
 function readEnv(name: string): string {
   const value = process.env[name];
   if (!value) {
@@ -20,7 +21,7 @@ function readEnvPrivateKey(name: string): string {
 }
 
 export const appConfig = {
-  serviceAccountProjectId: readEnv("SERVICE_ACCOUNT_PROJECT_ID"),
+  serviceAccountPrivateKeyId: readEnv("SERVICE_ACCOUNT_PRIVATE_KEY_ID"),
   serviceAccountEmail: readEnv("SERVICE_ACCOUNT_EMAIL"),
   serviceAccountPrivateKey: readEnvPrivateKey("SERVICE_ACCOUNT_PRIVATE_KEY"),
 };
