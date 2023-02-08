@@ -1,4 +1,4 @@
-import {NextFunction, Request, Response} from "express";
+import {NextFunction, Request, Response} from 'express';
 
 /**
     * @param {Request} req - Express request object
@@ -26,27 +26,27 @@ export async function isValidProfile(req: Request, res: Response, next: NextFunc
 
     // check: body should be defined & minimum 6 keys are required
     if (!req.body || Object.keys(req.body).length < 6) {
-      throw new Error("invalid body, minimum 6 keys are required");
+      throw new Error('invalid body, minimum 6 keys are required');
     }
     // eslint-disable-next-line max-len
     // check: individually check that each key defined above should be present in body
     if (!nft_image_url) {
-      throw new Error("nft_image_url is required");
+      throw new Error('nft_image_url is required');
     }
     if (!nft_contract_addr) {
-      throw new Error("nft_contract_addr is required");
+      throw new Error('nft_contract_addr is required');
     }
     if (!nft_tokenId) {
-      throw new Error("nft_tokenId is required");
+      throw new Error('nft_tokenId is required');
     }
     if (!bio) {
-      throw new Error("bio is required");
+      throw new Error('bio is required');
     }
     if (!user_name) {
-      throw new Error("user_name is required");
+      throw new Error('user_name is required');
     }
     if (!sendbird_token) {
-      throw new Error("sendbird_token is required");
+      throw new Error('sendbird_token is required');
     }
 
     next();

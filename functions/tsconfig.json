@@ -25,9 +25,9 @@
   "include": [
     "src/*.ts", "src/**/*.ts", "test/**.ts", "test/**/*.ts"
   ],
-    "exclude": [
-        "node_modules", "lib", "docs", ".eslintrc.js", "jest.config.js"
-    ],
+  "exclude": [
+    "node_modules", "lib", "docs", ".eslintrc.js", "jest.config.js"
+  ],
   "typedocOptions": {
     "entryPoints": ["src/*.ts", "src/**/*.ts"],
     "out": "docs/typedoc"
