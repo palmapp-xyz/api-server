@@ -1,5 +1,5 @@
-import {NextFunction, Request, Response} from "express";
-import * as admin from "firebase-admin";
+import {NextFunction, Request, Response} from 'express';
+import * as admin from 'firebase-admin';
 
 // eslint-disable-next-line require-jsdoc
 export async function isAuthenticated(
@@ -10,17 +10,17 @@ export async function isAuthenticated(
 
   if (!authorization) {
     return res.status(401).send(
-        {message: "Unauthorized: No authorization header"});
+        {message: 'Unauthorized: No authorization header'});
   }
 
-  if (!authorization.startsWith("Bearer")) {
-    return res.status(401).send({message: "Unauthorized: No Bearer"});
+  if (!authorization.startsWith('Bearer')) {
+    return res.status(401).send({message: 'Unauthorized: No Bearer'});
   }
 
-  const split = authorization.split("Bearer ");
+  const split = authorization.split('Bearer ');
   if (split.length !== 2) {
     return res.status(401).send(
-        {message: "Unauthorized: invalid token format"});
+        {message: 'Unauthorized: invalid token format'});
   }
 
   const token = split[1];
@@ -29,7 +29,7 @@ export async function isAuthenticated(
     const decodedToken: admin.auth.DecodedIdToken =
         await admin.auth().verifyIdToken(token);
       // eslint-disable-next-line no-console
-    console.log("decodedToken", JSON.stringify(decodedToken));
+    console.log('decodedToken', JSON.stringify(decodedToken));
     res.locals = {
       // eslint-disable-next-line max-len
       ...res.locals, uid: decodedToken.uid, role: decodedToken.role, displayName: decodedToken.name,
@@ -38,6 +38,6 @@ export async function isAuthenticated(
   } catch (err) {
     // eslint-disable-next-line etc/no-commented-out-code
     // console.error(`${err.code} -  ${err.message}`)
-    return res.status(401).send({message: "Unauthorized: invalid token"});
+    return res.status(401).send({message: 'Unauthorized: invalid token'});
   }
 }

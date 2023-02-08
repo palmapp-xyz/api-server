@@ -1,5 +1,3 @@
-// moralis-auth-ext is a Moralis extension that allows you to authenticate users with Moralis Auth. It is a wrapper around the Moralis Auth SDK.
-// request token
 /**
  * @typedef {object} AuthRequestMessage
  * @property {object} data
@@ -31,7 +29,6 @@
  *     }
  * }
 * */
-// issue token
 /**
  * @typedef {object} AuthIssueToken
  * @property {object} data
@@ -61,6 +58,5 @@
  *    }
  *    }
  */
-
-// it just a dummy ts file to make the swagger doc work for moralis-auth-ext
-export default null;
+declare const _default: null;
+export default _default;

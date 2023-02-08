@@ -1,8 +1,8 @@
-import express from "express";
+import express from 'express';
 import {
   create, update, getAll, del, addAddr, removeAddr, getAllAddr,
-} from "./streamController";
-import {isAuthenticated} from "../middlewares/authHandler";
+} from './streamController';
+import {isAuthenticated} from '../middlewares/authHandler';
 
 export const streamRouter = express.Router();
 /**
@@ -19,7 +19,7 @@ export const streamRouter = express.Router();
  * @return {object} 200 - Stream object
  * @security JWT
  */
-streamRouter.route("/create").post(isAuthenticated, create);
+streamRouter.route('/create').post(isAuthenticated, create);
 
 /**
  * PATCH /stream/update/:id
@@ -31,7 +31,7 @@ streamRouter.route("/create").post(isAuthenticated, create);
  * @security JWT
  *
  */
-streamRouter.route("/update/:id").patch(isAuthenticated, update);
+streamRouter.route('/update/:id').patch(isAuthenticated, update);
 /**
  * GET /stream/getAll
  * @summary Gets all streams on Moralis server
@@ -39,7 +39,7 @@ streamRouter.route("/update/:id").patch(isAuthenticated, update);
  * @return {object} 200 - Stream object
  *
  * */
-streamRouter.route("/getAll").get(getAll);
+streamRouter.route('/getAll').get(getAll);
 /**
  * DELETE /stream/delete/:id
  * @summary Deletes a stream on Moralis server
@@ -48,7 +48,7 @@ streamRouter.route("/getAll").get(getAll);
  * @return {object} 200 - Stream object
  *
  */
-streamRouter.route("/delete/:id").delete(isAuthenticated, del);
+streamRouter.route('/delete/:id').delete(isAuthenticated, del);
 /**
  * POST /stream/:id/add
  * @summary Adds an address to a stream
@@ -59,7 +59,7 @@ streamRouter.route("/delete/:id").delete(isAuthenticated, del);
  * @security JWT
  *
  */
-streamRouter.route("/:id/add").post(isAuthenticated, addAddr);
+streamRouter.route('/:id/add').post(isAuthenticated, addAddr);
 /**
  * POST /stream/:id/remove
  * @summary Removes an address from a stream
@@ -69,7 +69,7 @@ streamRouter.route("/:id/add").post(isAuthenticated, addAddr);
  * @return {object} 200 - Stream object
  * @security JWT
  */
-streamRouter.route("/:id/remove").post(isAuthenticated, removeAddr);
+streamRouter.route('/:id/remove').post(isAuthenticated, removeAddr);
 /**
  * GET /stream/:id/list
  * @summary Gets all addresses from a stream
@@ -78,4 +78,4 @@ streamRouter.route("/:id/remove").post(isAuthenticated, removeAddr);
  * @return {object} 200 - Stream object
  *
  */
-streamRouter.route("/:id/list").get(getAllAddr);
+streamRouter.route('/:id/list').get(getAllAddr);

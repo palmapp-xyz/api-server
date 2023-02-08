@@ -1,0 +1,157 @@
+[debug] [2023-02-08T07:40:03.351Z] ----------------------------------------------------------------------
+[debug] [2023-02-08T07:40:03.352Z] Command:       /Users/denniswon/.nvm/versions/node/v16.13.0/bin/node /Users/denniswon/.nvm/versions/node/v16.13.0/bin/firebase deploy
+[debug] [2023-02-08T07:40:03.352Z] CLI Version:   11.22.0
+[debug] [2023-02-08T07:40:03.352Z] Platform:      darwin
+[debug] [2023-02-08T07:40:03.352Z] Node Version:  v16.13.0
+[debug] [2023-02-08T07:40:03.356Z] Time:          Wed Feb 08 2023 16:40:03 GMT+0900 (Korean Standard Time)
+[debug] [2023-02-08T07:40:03.356Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2023-02-08T07:40:03.386Z] Object ".extensions" in "firebase.json" has unknown property: {"additionalProperty":"moralis-streams"}
+[debug] [2023-02-08T07:40:03.388Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-02-08T07:40:03.388Z] > authorizing via signed-in user (dennis.won@klaytn.foundation)
+[debug] [2023-02-08T07:40:03.388Z] [iam] checking project oedi-a1953 for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update",null]
+[debug] [2023-02-08T07:40:03.390Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/oedi-a1953:testIamPermissions [none]
+[debug] [2023-02-08T07:40:03.390Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/oedi-a1953:testIamPermissions x-goog-quota-user=projects/oedi-a1953
+[debug] [2023-02-08T07:40:03.390Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/oedi-a1953:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update",null]}
+[debug] [2023-02-08T07:40:05.239Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/oedi-a1953:testIamPermissions 200
+[debug] [2023-02-08T07:40:05.240Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/oedi-a1953:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2023-02-08T07:40:05.240Z] [iam] error while checking permissions, command may fail: FirebaseError: Authorization failed. This account is missing the following required permissions on project oedi-a1953:
+
+  
+[debug] [2023-02-08T07:40:05.240Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/oedi-a1953/serviceAccounts/oedi-a1953@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2023-02-08T07:40:05.240Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/oedi-a1953/serviceAccounts/oedi-a1953@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2023-02-08T07:40:06.476Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/oedi-a1953/serviceAccounts/oedi-a1953@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2023-02-08T07:40:06.477Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/oedi-a1953/serviceAccounts/oedi-a1953@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2023-02-08T07:40:06.478Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/oedi-a1953 [none]
+[debug] [2023-02-08T07:40:07.362Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/oedi-a1953 200
+[debug] [2023-02-08T07:40:07.362Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/oedi-a1953 {"projectId":"oedi-a1953","projectNumber":"219711213585","displayName":"Oedi","name":"projects/oedi-a1953","resources":{"hostingSite":"oedi-a1953"},"state":"ACTIVE","etag":"1_8b34e3db-85d0-49f7-907e-bb94b6e92452"}
+[info] 
+[info] === Deploying to 'oedi-a1953'...
+[info] 
+[info] i  deploying firestore, functions, hosting, extensions 
+[info] Running command: npm --prefix "$RESOURCE_DIR" run lint
+[info] Running command: npm --prefix "$RESOURCE_DIR" run build
+[info] ✔  functions: Finished running predeploy script. 
+[info] i  firestore: reading indexes from firestore.indexes.json... 
+[info] i  cloud.firestore: checking firestore.rules for compilation errors... 
+[debug] [2023-02-08T07:40:11.724Z] >>> [apiv2][query] POST https://firebaserules.googleapis.com/v1/projects/oedi-a1953:test [none]
+[debug] [2023-02-08T07:40:11.724Z] >>> [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/oedi-a1953:test [omitted]
+[debug] [2023-02-08T07:40:12.733Z] <<< [apiv2][status] POST https://firebaserules.googleapis.com/v1/projects/oedi-a1953:test 200
+[debug] [2023-02-08T07:40:12.733Z] <<< [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/oedi-a1953:test {}
+[info] ✔  cloud.firestore: rules file firestore.rules compiled successfully 
+[debug] [2023-02-08T07:40:12.734Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/oedi-a1953 [none]
+[debug] [2023-02-08T07:40:13.150Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/oedi-a1953 200
+[debug] [2023-02-08T07:40:13.150Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/oedi-a1953 {"projectId":"oedi-a1953","projectNumber":"219711213585","displayName":"Oedi","name":"projects/oedi-a1953","resources":{"hostingSite":"oedi-a1953"},"state":"ACTIVE","etag":"1_8b34e3db-85d0-49f7-907e-bb94b6e92452"}
+[info] i  functions: preparing codebase default for deployment 
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[info] i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled... 
+[debug] [2023-02-08T07:40:13.152Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/oedi-a1953/services/cloudfunctions.googleapis.com [none]
+[debug] [2023-02-08T07:40:13.152Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/oedi-a1953/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/oedi-a1953
+[debug] [2023-02-08T07:40:13.154Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/oedi-a1953/services/runtimeconfig.googleapis.com [none]
+[debug] [2023-02-08T07:40:13.154Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/oedi-a1953/services/runtimeconfig.googleapis.com x-goog-quota-user=projects/oedi-a1953
+[debug] [2023-02-08T07:40:13.154Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/oedi-a1953/services/cloudbuild.googleapis.com [none]
+[debug] [2023-02-08T07:40:13.154Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/oedi-a1953/services/cloudbuild.googleapis.com x-goog-quota-user=projects/oedi-a1953
+[debug] [2023-02-08T07:40:13.155Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/oedi-a1953/services/artifactregistry.googleapis.com [none]
+[debug] [2023-02-08T07:40:13.155Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/oedi-a1953/services/artifactregistry.googleapis.com x-goog-quota-user=projects/oedi-a1953
+[debug] [2023-02-08T07:40:14.365Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/oedi-a1953/services/cloudfunctions.googleapis.com 200
+[debug] [2023-02-08T07:40:14.365Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/oedi-a1953/services/cloudfunctions.googleapis.com [omitted]
+[info] ✔  functions: required API cloudfunctions.googleapis.com is enabled 
+[debug] [2023-02-08T07:40:14.366Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/oedi-a1953/services/runtimeconfig.googleapis.com 200
+[debug] [2023-02-08T07:40:14.366Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/oedi-a1953/services/runtimeconfig.googleapis.com [omitted]
+[debug] [2023-02-08T07:40:14.367Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/oedi-a1953/services/cloudbuild.googleapis.com 200
+[debug] [2023-02-08T07:40:14.367Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/oedi-a1953/services/cloudbuild.googleapis.com [omitted]
+[info] ✔  functions: required API cloudbuild.googleapis.com is enabled 
+[debug] [2023-02-08T07:40:14.431Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/oedi-a1953/services/artifactregistry.googleapis.com 200
+[debug] [2023-02-08T07:40:14.431Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/oedi-a1953/services/artifactregistry.googleapis.com [omitted]
+[info] ✔  artifactregistry: required API artifactregistry.googleapis.com is enabled 
+[debug] [2023-02-08T07:40:14.431Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/oedi-a1953/adminSdkConfig [none]
+[debug] [2023-02-08T07:40:15.393Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/oedi-a1953/adminSdkConfig 200
+[debug] [2023-02-08T07:40:15.393Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/oedi-a1953/adminSdkConfig {"projectId":"oedi-a1953","storageBucket":"oedi-a1953.appspot.com"}
+[debug] [2023-02-08T07:40:15.394Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/oedi-a1953/configs [none]
+[debug] [2023-02-08T07:40:16.447Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/oedi-a1953/configs 200
+[debug] [2023-02-08T07:40:16.447Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/oedi-a1953/configs {}
+[debug] [2023-02-08T07:40:16.450Z] Validating nodejs source
+[debug] [2023-02-08T07:40:17.090Z] > [functions] package.json contents: {
+  "name": "functions",
+  "scripts": {
+    "build": "rm -rf lib && tsc",
+    "build:watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "logs": "firebase functions:log",
+    "start:api": "ts-node src/index.ts",
+    "test": "mocha --exit --require ts-node/register 'test/*.ts' --timeout 240000",
+    "lint": "eslint --ext .js,.ts src",
+    "ts:start": "ts-node src/index.ts",
+    "ts:dev": "tsnd --respawn src/index.ts",
+    "deploy": "firebase deploy"
+  },
+  "engines": {
+    "node": "16"
+  },
+  "main": "lib/src/index.js",
+  "dependencies": {
+    "@moralisweb3/common-core": "^2.12.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "envalid": "7.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.7.0",
+    "firebase-admin": "^10.0.2",
+    "firebase-functions": "^4.2.1",
+    "moralis": "^2.12.0",
+    "ngrok": "^4.3.3",
+    "redis": "^4.2.0",
+    "swagger-autogen": "^2.23.0",
+    "swagger-ui-express": "^4.6.0",
+    "web3-utils": "^1.7.5"
+  },
+  "devDependencies": {
+    "@moralisweb3/eslint-config": "^1.0.2",
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.14",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.11.18",
+    "@types/swagger-jsdoc": "^6.0.1",
+    "@types/swagger-ui-express": "^4.1.3",
+    "@typescript-eslint/eslint-plugin": "^5.12.0",
+    "@typescript-eslint/parser": "^5.12.0",
+    "chai": "^4.3.7",
+    "eslint": "^8.9.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-etc": "^2.0.2",
+    "eslint-plugin-import": "^2.25.4",
+    "eth-sig-util": "^3.0.1",
+    "express-jsdoc-swagger": "^1.8.0",
+    "firebase": "^9.17.1",
+    "firebase-functions-test": "^3.0.0",
+    "jest": "^29.4.1",
+    "mocha": "^10.2.0",
+    "swagger-jsdoc": "^6.2.8",
+    "ts-jest": "^29.0.5",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typedoc": "^0.23.24",
+    "typescript": "^4.9.4"
+  },
+  "private": true
+}
+[debug] [2023-02-08T07:40:17.091Z] Building nodejs source
+[debug] [2023-02-08T07:40:17.091Z] Could not find functions.yaml. Must use http discovery
+[debug] [2023-02-08T07:40:17.098Z] Found firebase-functions binary at '/Users/denniswon/oedi/server/functions/node_modules/.bin/firebase-functions'
+[debug] [2023-02-08T07:40:17.686Z] Serving at port 8001
+
+[debug] [2023-02-08T07:40:18.210Z] FetchError: request to http://localhost:8001/__/quitquitquit failed, reason: connect ECONNREFUSED 127.0.0.1:8001
+    at ClientRequest.<anonymous> (/Users/denniswon/.nvm/versions/node/v16.13.0/lib/node_modules/firebase-tools/node_modules/node-fetch/lib/index.js:1491:11)
+    at ClientRequest.emit (node:events:390:28)
+    at ClientRequest.emit (node:domain:475:12)
+    at Socket.socketErrorListener (node:_http_client:447:9)
+    at Socket.emit (node:events:390:28)
+    at Socket.emit (node:domain:475:12)
+    at emitErrorNT (node:internal/streams/destroy:157:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:122:3)
+    at processTicksAndRejections (node:internal/process/task_queues:83:21)
+[error] 
+[error] Error: An unexpected error has occurred.

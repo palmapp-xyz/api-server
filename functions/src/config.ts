@@ -1,11 +1,18 @@
-import * as dotenv from "dotenv";
-import {cleanEnv, str} from "envalid";
+import * as dotenv from 'dotenv';
+import {cleanEnv, num, str} from 'envalid';
 
-dotenv.config();
+dotenv.config({path: `.env.${process.env.NODE_ENV}`});
 
 export default cleanEnv(process.env, {
+  HOST: str(),
+
+  PORT: num(),
+
   MORALIS_API_KEY: str(),
+
+  NGROK_AUTH_TOKEN: str(),
 });
+
 function readEnv(name: string): string {
   const value = process.env[name];
   if (!value) {
@@ -20,7 +27,7 @@ function readEnvPrivateKey(name: string): string {
 }
 
 export const appConfig = {
-  serviceAccountProjectId: readEnv("SERVICE_ACCOUNT_PROJECT_ID"),
-  serviceAccountEmail: readEnv("SERVICE_ACCOUNT_EMAIL"),
-  serviceAccountPrivateKey: readEnvPrivateKey("SERVICE_ACCOUNT_PRIVATE_KEY"),
+  serviceAccountProjectId: readEnv('SERVICE_ACCOUNT_PRIVATE_KEY_ID'),
+  serviceAccountEmail: readEnv('SERVICE_ACCOUNT_EMAIL'),
+  serviceAccountPrivateKey: readEnvPrivateKey('SERVICE_ACCOUNT_PRIVATE_KEY'),
 };

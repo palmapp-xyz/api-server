@@ -1,5 +1,5 @@
-import {NextFunction, Request, Response} from "express";
-import {firestore} from "../index";
+import {NextFunction, Request, Response} from 'express';
+import {firestore} from '../index';
 
 /**
  * Create a new profile
@@ -16,7 +16,7 @@ export async function create(req: Request, res: Response, next: NextFunction) {
     // eslint-disable-next-line no-console
     console.log(res.locals.displayName);
 
-    await firestore.collection("profile").doc(res.locals.displayName).set(
+    await firestore.collection('profile').doc(res.locals.displayName).set(
         {
           ...req.body,
         },
@@ -25,7 +25,7 @@ export async function create(req: Request, res: Response, next: NextFunction) {
         }
     );
 
-    res.status(200).json({message: "profile created"});
+    res.status(200).json({message: 'profile created'});
   } catch (err) {
     next(err);
   }
@@ -46,10 +46,10 @@ export async function get(req: Request, res: Response, next: NextFunction) {
     // get id from req.params
     const {id} = req.params;
     // fetch doc from firestore using id
-    const result = await firestore.collection("profile").doc(id).get();
+    const result = await firestore.collection('profile').doc(id).get();
     // check if doc exists
     if (!result.exists) {
-      throw new Error("profile not found");
+      throw new Error('profile not found');
     }
     // remove sendbird_token from result
     // @ts-ignore
@@ -73,10 +73,10 @@ export async function get(req: Request, res: Response, next: NextFunction) {
 export async function getSendbirdToken(req: Request, res: Response, next: NextFunction) {
   try {
     // fetch doc from firestore using id
-    const result = await firestore.collection("profile").doc(res.locals.displayName).get();
+    const result = await firestore.collection('profile').doc(res.locals.displayName).get();
     // check if doc exists
     if (!result.exists) {
-      throw new Error("profile not found");
+      throw new Error('profile not found');
     }
 
     // @ts-ignore
@@ -102,8 +102,8 @@ export async function update(req: Request, res: Response, next: NextFunction) {
   try {
     // fetch doc from firestore using id and update it with req.body
     // eslint-disable-next-line max-len
-    await firestore.collection("profile").doc(res.locals.displayName).update(req.body);
-    res.status(200).json({message: "profile updated"});
+    await firestore.collection('profile').doc(res.locals.displayName).update(req.body);
+    res.status(200).json({message: 'profile updated'});
   } catch (err) {
     next(err);
   }
@@ -121,9 +121,9 @@ export async function update(req: Request, res: Response, next: NextFunction) {
 export async function del(req: Request, res: Response, next: NextFunction) {
   try {
     // eslint-disable-next-line max-len
-    await firestore.collection("profile").doc(res.locals.displayName).delete();
+    await firestore.collection('profile').doc(res.locals.displayName).delete();
 
-    res.status(200).json({message: "profile deleted"});
+    res.status(200).json({message: 'profile deleted'});
   } catch (err) {
     next(err);
   }

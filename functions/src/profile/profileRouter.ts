@@ -1,9 +1,9 @@
-import express from "express";
+import express from 'express';
 import {
   create, update, get, del, getSendbirdToken,
-} from "./profileController";
-import {isAuthenticated} from "../middlewares/authHandler";
-import {isValidProfile} from "./utils";
+} from './profileController';
+import {isAuthenticated} from '../middlewares/authHandler';
+import {isValidProfile} from './utils';
 
 
 export const profileRouter = express.Router();
@@ -28,12 +28,12 @@ export const profileRouter = express.Router();
  * @return {object} 200 - Profile object
  * @example response - 200 - profile created
  * {
- *    "message": "profile created"
+ *    'message': 'profile created'
  *  }
  *  @security JWT
  */
 // eslint-disable-next-line max-len
-profileRouter.route("/create").post(isAuthenticated, isValidProfile, create);
+profileRouter.route('/create').post(isAuthenticated, isValidProfile, create);
 /**
  * PATCH /profile/update
  * @summary Updates a user's profile on Firestore
@@ -42,11 +42,11 @@ profileRouter.route("/create").post(isAuthenticated, isValidProfile, create);
  * @return {object} 200 - Profile object
  * @example response - 200 - profile updated
  * {
- *     "message": "profile updated"
+ *     'message': 'profile updated'
  * }
  * @security JWT
  */
-profileRouter.route("/update").patch(isAuthenticated, update);
+profileRouter.route('/update').patch(isAuthenticated, update);
 /**
  * GET /profile/get/:id
  * @summary Gets a user's profile on Firestore
@@ -55,16 +55,16 @@ profileRouter.route("/update").patch(isAuthenticated, update);
  * @return {Profile} 200 - Profile object
  * @example response - 200 - profile retrieved
  * {
- *  "nft_image_url": 'https://example.com/image.png',
- *  "nft_contract_addr": '0x1234567890abcdef1234567890abcdef12345678',
- *  "nft_tokenId": '123',
- *  "bio": 'This is user's bio',
- *  "user_name": 'nickname'
+ *  'nft_image_url': 'https://example.com/image.png',
+ *  'nft_contract_addr': '0x1234567890abcdef1234567890abcdef12345678',
+ *  'nft_tokenId': '123',
+ *  'bio': 'This is user's bio',
+ *  'user_name': 'nickname'
  *  ...
  *
  *  }
  */
-profileRouter.route("/get/:id").get(get);
+profileRouter.route('/get/:id').get(get);
 
 /**
  * GET /profile/sendbird_token
@@ -73,12 +73,12 @@ profileRouter.route("/get/:id").get(get);
  * @return {string} 200 - sendbird token
  * @example response - 200 - sendbird token
  * {
- *  "sendbird_token": 'abcdef123451234567890abcdef1234567890abcdef12345678'
+ *  'sendbird_token': 'abcdef123451234567890abcdef1234567890abcdef12345678'
  *
  *  }
  *  @security JWT
  */
-profileRouter.route("/sendbird_token").get(isAuthenticated, getSendbirdToken);
+profileRouter.route('/sendbird_token').get(isAuthenticated, getSendbirdToken);
 /**
  * DELETE /profile/delete
  * @summary Deletes a user's profile on Firestore
@@ -86,8 +86,8 @@ profileRouter.route("/sendbird_token").get(isAuthenticated, getSendbirdToken);
  * @return {object} 200 - success object
  * @example response - 200 - profile deleted
  * {
- *    "message": "profile deleted"
+ *    'message': 'profile deleted'
  * }
  * @security JWT
  */
-profileRouter.route("/delete").delete(isAuthenticated, del);
+profileRouter.route('/delete').delete(isAuthenticated, del);

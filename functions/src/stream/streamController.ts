@@ -1,14 +1,12 @@
-import {NextFunction, Request, Response} from "express";
-// eslint-disable-next-line max-len
-import {addStream, deleteStream, getStreams, updateStream, addAddress, removeAddress, getAllAddress} from "./streamService";
-
+import {NextFunction, Request, Response} from 'express';
+import {addStream, deleteStream, getStreams, updateStream, addAddress, removeAddress, getAllAddress} from './streamService';
 
 export async function create(req: Request, res: Response, next: NextFunction) {
   try {
     const {webhookUrl, triggers} = req.body;
 
     const result = await addStream({
-      networkType: "evm",
+      networkType: 'evm',
       webhookUrl,
       triggers,
     });
@@ -18,7 +16,6 @@ export async function create(req: Request, res: Response, next: NextFunction) {
     next(err);
   }
 }
-
 
 export async function getAll(req: Request, res: Response, next: NextFunction) {
   try {
@@ -30,14 +27,13 @@ export async function getAll(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-
 export async function update(req: Request, res: Response, next: NextFunction) {
   try {
     const {webhookUrl, triggers} = req.body;
     const {id} = req.params;
 
     const message = await updateStream(id, {
-      networkType: "evm",
+      networkType: 'evm',
       webhookUrl,
       triggers,
     });
@@ -47,7 +43,6 @@ export async function update(req: Request, res: Response, next: NextFunction) {
     next(err);
   }
 }
-
 
 export async function del(req: Request, res: Response, next: NextFunction) {
   try {
@@ -73,7 +68,6 @@ export async function addAddr(req: Request, res: Response, next: NextFunction) {
     next(err);
   }
 }
-
 
 export async function removeAddr(req: Request, res: Response, next: NextFunction) {
   try {
