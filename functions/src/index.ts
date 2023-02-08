@@ -8,7 +8,6 @@ import {errorHandler} from "./middlewares/errorHandler";
 import {streamRouter} from "./stream/streamRouter";
 import * as functions from "firebase-functions";
 import {profileRouter} from "./profile/profileRouter";
-import expressJSDocSwagger from "express-jsdoc-swagger";
 import swaggerui from "swagger-ui-express";
 // import {getSwagger} from "./Swagger";
 // initialize admin
@@ -30,8 +29,8 @@ app.use("/stream", streamRouter);
 app.use("/profile", profileRouter);
 app.use("/docs", swaggerui.serve);
 // eslint-disable-next-line no-inline-comments
-// getSwagger(app); // creating swagger.json file
+// getSwagger(app);
 app.get("/docs", swaggerui.setup(import("./swagger.json")));
 app.use(errorHandler);
-export default {app, expressJSDocSwagger};
+
 export const v1 = functions.https.onRequest(app);

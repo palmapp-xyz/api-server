@@ -21,7 +21,7 @@ const options = {
   // eslint-disable-next-line max-len
   // Glob pattern to find your jsdoc files (multiple patterns can be added in an array)
   // eslint-disable-next-line max-len
-  filesPattern: ["./stream/streamRouter.ts", "./apiRouter.ts", "./profile/profileRouter.ts", "./swagger-auth.ts"],
+  filesPattern: ["./stream/streamRouter.js", "./apiRouter.js", "./profile/profileRouter.js", "./swagger-auth.js"],
   exposeSwaggerUI: true,
 };
 
