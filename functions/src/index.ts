@@ -9,6 +9,7 @@ import {streamRouter} from './stream/streamRouter';
 import * as functions from 'firebase-functions';
 import {profileRouter} from './profile/profileRouter';
 import swaggerui from 'swagger-ui-express';
+// eslint-disable-next-line etc/no-commented-out-code
 // import {getSwagger} from './Swagger';
 
 // initialize admin
