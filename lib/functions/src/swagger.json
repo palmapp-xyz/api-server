@@ -495,7 +495,7 @@
                                 "examples": {
                                     "example1": {
                                         "summary": "profile retrieved",
-                                        "value": "{\n \"nft_image_url\": 'https://example.com/image.png',\n \"nft_contract_addr\": '0x1234567890abcdef1234567890abcdef12345678',\n \"nft_tokenId\": '123',\n \"bio\": 'This is user's bio',\n \"user_name\": 'nickname',\n \"sendbird_token\": '1234567890abcdef1234567890abcdef12345678'\n ...\n\n }"
+                                        "value": "{\n \"nft_image_url\": 'https://example.com/image.png',\n \"nft_contract_addr\": '0x1234567890abcdef1234567890abcdef12345678',\n \"nft_tokenId\": '123',\n \"bio\": 'This is user's bio',\n \"user_name\": 'nickname'\n ...\n\n }"
                                     }
                                 }
                             }
@@ -514,6 +514,39 @@
                         }
                     }
                 ],
+                "tags": [
+                    "Profile"
+                ]
+            }
+        },
+        "/profile/sendbird_token": {
+            "get": {
+                "deprecated": false,
+                "summary": "Gets a user's sendbird_token from Firestore",
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "sendbird token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "summary": "sendbird token",
+                                        "value": "{\n \"sendbird_token\": 'abcdef123451234567890abcdef1234567890abcdef12345678'\n\n }"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [],
                 "tags": [
                     "Profile"
                 ]
