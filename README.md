@@ -42,10 +42,10 @@ To start the project you need to have the following installed:
 3. Login to firebase with `firebase login` using your Google account (you need to be a member of the project `oedi-a1953`)
 4. Select the project with `firebase use oedi-a1953`
 5. Deploy the project with 
-   6. if you want to deploy all the services `firebase deploy`
-   7. if you want to deploy only function `firebase deploy --only functions`
-   8. if you want to deploy only hosting `firebase deploy --only hosting`
-   9. if you want to deploy only extensions `firebase deploy --only extensions`
+   - if you want to deploy all the services `firebase deploy`
+   - if you want to deploy only function `firebase deploy --only functions`
+   - if you want to deploy only hosting `firebase deploy --only hosting`
+   - if you want to deploy only extensions `firebase deploy --only extensions`
 
 ## Run locally
 To run the project locally using the firebase emulators `firebase emulators:start`
