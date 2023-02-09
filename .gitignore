@@ -6,6 +6,4 @@ node_modules
 firebase-debug.log
 .firebase/
 
-lib/**/*.js
-lib/**/*.js.map
-lib/**/*.d.ts
+lib/
