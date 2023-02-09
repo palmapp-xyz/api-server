@@ -150,7 +150,7 @@
       }
     },
     "/stream/update/:id": {
-      "patch": {
+      "put": {
         "deprecated": false,
         "summary": "Updates a stream on Moralis server",
         "security": [
@@ -434,7 +434,7 @@
       }
     },
     "/profile/update": {
-      "patch": {
+      "put": {
         "deprecated": false,
         "summary": "Updates a user's profile on Firestore",
         "security": [

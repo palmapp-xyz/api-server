@@ -35,7 +35,7 @@ export const profileRouter = express.Router();
 // eslint-disable-next-line max-len
 profileRouter.route('/create').post(isAuthenticated, isValidProfile, create);
 /**
- * PATCH /profile/update
+ * PUT /profile/update
  * @summary Updates a user's profile on Firestore
  * @tags Profile
  * @param {Profile} request.body.required - Profile to be updated
@@ -46,7 +46,7 @@ profileRouter.route('/create').post(isAuthenticated, isValidProfile, create);
  * }
  * @security JWT
  */
-profileRouter.route('/update').patch(isAuthenticated, update);
+profileRouter.route('/update').put(isAuthenticated, update);
 /**
  * GET /profile/get/:id
  * @summary Gets a user's profile on Firestore

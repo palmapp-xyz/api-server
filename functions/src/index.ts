@@ -37,5 +37,5 @@ app.use('/docs', swaggerui.serve);
 // getSwagger(app); // creating swagger.json file
 app.get('/docs', swaggerui.setup(import('./swagger.json')));
 app.use(errorHandler);
-
+// eslint-disable-next-line no-console
 export const v1 = functions.https.onRequest(app);
