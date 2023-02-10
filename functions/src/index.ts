@@ -35,7 +35,7 @@ app.use('/docs', swaggerui.serve);
 
 // eslint-disable-next-line no-inline-comments
 // getSwagger(app); // creating swagger.json file
-app.get('/docs', swaggerui.setup(import('./swagger.json')));
+app.get('/docs', swaggerui.setup(import('../swagger.json')));
 app.use(errorHandler);
 // functions should be deployed to specific region 'asia-northeast3'
 export const v1 = functions.region('asia-northeast3').https.onRequest(app);
