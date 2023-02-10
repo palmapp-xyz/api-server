@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from 'express';
 import web3 from 'web3';
-// generate type with name Offer using properties mentioned above
+// generating type with name Offer using properties
 export type Offer = {
     txHash: string;
     nftId: number;
@@ -12,6 +12,9 @@ export type Offer = {
     status: OfferStatus;
     type: OfferType;
     sendbirdMessageId: string;
+    sendbirdChannelUrl: string;
+    acceptedBuyOffer: OfferAccepted;
+
 }
 // generating enum with name OfferStatus using properties 'pending', 'accepted', 'rejected'
 export enum OfferStatus {
@@ -28,6 +31,11 @@ export enum OfferType {
 export type Price = {
     amount: number;
     symbol: string;
+}
+// generating type OfferAccepted using properties offerId & txHash
+export type OfferAccepted = {
+    offerId: string;
+    txHash: string;
 }
 /**
     * @param {Request} req - Express request object
@@ -78,23 +86,35 @@ export async function isValidOffer(req: Request, res: Response, next: NextFuncti
     if (!buyer || !web3.utils.isAddress(buyer)) {
       throw new Error('invalid buyer');
     }
-    // add status to req object with default value pending
-    req.body.status = OfferStatus.pending;
+    // add status to req object with default value pending only if offer is sell
+    if (type === OfferType.sell)
+        req.body.status = OfferStatus.pending;
     // validating type is valid OfferType enum
     if (!type || !Object.values(OfferType).includes(type)) {
       throw new Error('invalid type');
     }
+    //check if type is sell then login user must be seller buyer must be null
+    if (type === OfferType.sell && seller !== res.locals.displayName) {
+        throw new Error('invalid seller, you must sign in as seller');
+    }
+    //check if type is buy then login user must be buyer seller must not be null
+    if (type === OfferType.buy && buyer !== res.locals.displayName) {
+        throw new Error('invalid buyer, you must sign in as buyer');
+    }
+
+
     // call next middleware
     next();
   } catch (err) {
     next(err);
   }
 }
-// TODO: need to check if login user is seller then seller must be login user & if login user is buyer then buyer must be login user
+// TODO: need to check if login user is seller then seller must be login user & if login user is buyer then buyer must be login user [done]
+
 // TODO: need to check if seller has already escrowed the NFT or not
 // TODO: need to check if buyer has already escrowed the price or not
-// TODO: if offer is sell then buyer must null
-// TODO: buy offer should not have status accepted or rejected, they are considered accepted only when seller refer them in sell offer
+// TODO: if offer is sell then buyer must null. [done]
+// TODO: buy offer should not have status accepted or rejected [done], they are considered accepted only when seller refer them in sell offer, otherwise they are pending
 // TODO: sell type of offer must have buy offer's reference which got accepted by seller
 // function to generate random id for firestore document
 export function generateId() {
