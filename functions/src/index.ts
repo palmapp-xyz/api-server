@@ -25,8 +25,8 @@ Moralis.start({
 // eslint-disable-next-line no-console
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
-
-app.use(cors({origin: true}));
+// should allow all origins
+app.use(cors());
 
 app.use('/api', apiRouter);
 app.use('/stream', streamRouter);
@@ -37,5 +37,5 @@ app.use('/docs', swaggerui.serve);
 // getSwagger(app); // creating swagger.json file
 app.get('/docs', swaggerui.setup(import('./swagger.json')));
 app.use(errorHandler);
-// eslint-disable-next-line no-console
-export const v1 = functions.https.onRequest(app);
+// functions should be deployed to specific region 'asia-northeast3'
+export const v1 = functions.region('asia-northeast3').https.onRequest(app);
