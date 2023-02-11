@@ -16,11 +16,12 @@ export type Offer = {
     acceptedBuyOffer: OfferAccepted;
 
 }
-// generating enum with name OfferStatus using properties 'pending', 'accepted', 'rejected'
+// generating enum with name OfferStatus using properties 'pending', 'accepted', 'rejected', 'cancelled'
 export enum OfferStatus {
     pending = 'pending',
     accepted = 'accepted',
     rejected = 'rejected',
+    cancelled = 'cancelled',
 }
 // generating enum with name OfferType using properties 'buy', 'sell'
 export enum OfferType {
@@ -87,19 +88,20 @@ export async function isValidOffer(req: Request, res: Response, next: NextFuncti
       throw new Error('invalid buyer');
     }
     // add status to req object with default value pending only if offer is sell
-    if (type === OfferType.sell)
-        req.body.status = OfferStatus.pending;
+    if (type === OfferType.sell) {
+      req.body.status = OfferStatus.pending;
+    }
     // validating type is valid OfferType enum
     if (!type || !Object.values(OfferType).includes(type)) {
       throw new Error('invalid type');
     }
-    //check if type is sell then login user must be seller buyer must be null
+    // check if type is sell then login user must be seller buyer must be null
     if (type === OfferType.sell && seller !== res.locals.displayName) {
-        throw new Error('invalid seller, you must sign in as seller');
+      throw new Error('invalid seller, you must sign in as seller');
     }
-    //check if type is buy then login user must be buyer seller must not be null
+    // check if type is buy then login user must be buyer seller must not be null
     if (type === OfferType.buy && buyer !== res.locals.displayName) {
-        throw new Error('invalid buyer, you must sign in as buyer');
+      throw new Error('invalid buyer, you must sign in as buyer');
     }
 
 

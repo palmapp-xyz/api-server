@@ -9,6 +9,7 @@ import {streamRouter} from './stream/streamRouter';
 import * as functions from 'firebase-functions';
 import {profileRouter} from './profile/profileRouter';
 import swaggerui from 'swagger-ui-express';
+import {offerRouter} from './offer/offerRouter';
 // eslint-disable-next-line etc/no-commented-out-code
 // import {getSwagger} from './Swagger';
 
@@ -31,6 +32,7 @@ app.use(cors());
 app.use('/api', apiRouter);
 app.use('/stream', streamRouter);
 app.use('/profile', profileRouter);
+app.use('/offer', offerRouter);
 app.use('/docs', swaggerui.serve);
 
 // eslint-disable-next-line no-inline-comments
