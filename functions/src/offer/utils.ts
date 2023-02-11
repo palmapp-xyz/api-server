@@ -1,57 +1,62 @@
 import {NextFunction, Request, Response} from 'express';
 import web3 from 'web3';
+
 // generating type with name Offer using properties
 export type Offer = {
-    txHash: string;
-    nftId: number;
-    nftContractAddr: string;
-    price: Price;
-    expiryTime: number;
-    seller: string;
-    buyer: string;
-    status: OfferStatus;
-    type: OfferType;
-    sendbirdMessageId: string;
-    sendbirdChannelUrl: string;
-    acceptedBuyOffer: OfferAccepted;
-
+  txHash: string;
+  nftId: number;
+  nftContractAddr: string;
+  price: Price;
+  expiryTime: number;
+  seller: string;
+  buyer: string;
+  status: OfferStatus;
+  type: OfferType;
+  sendbirdMessageId: string;
+  sendbirdChannelUrl: string;
+  acceptedBuyOffer: OfferAccepted;
 }
+
 // generating enum with name OfferStatus using properties 'pending', 'accepted', 'rejected'
 export enum OfferStatus {
-    pending = 'pending',
-    accepted = 'accepted',
-    rejected = 'rejected',
+  pending = 'pending',
+  accepted = 'accepted',
+  rejected = 'rejected',
 }
+
 // generating enum with name OfferType using properties 'buy', 'sell'
 export enum OfferType {
-    buy = 'buy',
-    sell = 'sell',
+  buy = 'buy',
+  sell = 'sell',
 }
+
 // generating type with name Price using properties amount & symbol
 export type Price = {
-    amount: number;
-    symbol: string;
+  amount: number;
+  symbol: string;
 }
+
 // generating type OfferAccepted using properties offerId & txHash
 export type OfferAccepted = {
-    offerId: string;
-    txHash: string;
+  offerId: string;
+  txHash: string;
 }
+
 /**
-    * @param {Request} req - Express request object
-    * @param {Response} res - Express response object
-    * @param {Function} next - Express next middleware function
-    * @return {void}
-    * @description - validate body of profile creation request
-    * @example - validateBody(req, res, next)
-    * @throws - invalid body, minimum 6 keys are required
-    * @throws - nft_image_url is required
-    * @throws - nft_contract_addr is required
-    * @throws - nft_tokenId is required
-    * @throws - bio is required
-    * @throws - user_name is required
-    * @throws - sendbird_token is required
-    * @throws - invalid token
+  * @param {Request} req - Express request object
+  * @param {Response} res - Express response object
+  * @param {Function} next - Express next middleware function
+  * @return {void}
+  * @description - validate body of profile creation request
+  * @example - validateBody(req, res, next)
+  * @throws - invalid body, minimum 6 keys are required
+  * @throws - nft_image_url is required
+  * @throws - nft_contract_addr is required
+  * @throws - nft_tokenId is required
+  * @throws - bio is required
+  * @throws - user_name is required
+  * @throws - sendbird_token is required
+  * @throws - invalid token
 * */
 // eslint-disable-next-line complexity
 export async function isValidOffer(req: Request, res: Response, next: NextFunction) {
@@ -87,21 +92,21 @@ export async function isValidOffer(req: Request, res: Response, next: NextFuncti
       throw new Error('invalid buyer');
     }
     // add status to req object with default value pending only if offer is sell
-    if (type === OfferType.sell)
-        req.body.status = OfferStatus.pending;
+    if (type === OfferType.sell) {
+      req.body.status = OfferStatus.pending;
+    }
     // validating type is valid OfferType enum
     if (!type || !Object.values(OfferType).includes(type)) {
       throw new Error('invalid type');
     }
-    //check if type is sell then login user must be seller buyer must be null
+    // check if type is sell then login user must be seller buyer must be null
     if (type === OfferType.sell && seller !== res.locals.displayName) {
-        throw new Error('invalid seller, you must sign in as seller');
+      throw new Error('invalid seller, you must sign in as seller');
     }
-    //check if type is buy then login user must be buyer seller must not be null
+    // check if type is buy then login user must be buyer seller must not be null
     if (type === OfferType.buy && buyer !== res.locals.displayName) {
-        throw new Error('invalid buyer, you must sign in as buyer');
+      throw new Error('invalid buyer, you must sign in as buyer');
     }
-
 
     // call next middleware
     next();
@@ -109,6 +114,7 @@ export async function isValidOffer(req: Request, res: Response, next: NextFuncti
     next(err);
   }
 }
+
 // TODO: need to check if login user is seller then seller must be login user & if login user is buyer then buyer must be login user [done]
 
 // TODO: need to check if seller has already escrowed the NFT or not
