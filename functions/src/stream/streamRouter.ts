@@ -22,7 +22,7 @@ export const streamRouter = express.Router();
 streamRouter.route('/create').post(isAuthenticated, create);
 
 /**
- * PATCH /stream/update/:id
+ * PUT /stream/update/:id
  * @summary Updates a stream on Moralis server
  * @tags Stream
  * @param {Stream} request.body.required - Stream to be updated
@@ -31,7 +31,7 @@ streamRouter.route('/create').post(isAuthenticated, create);
  * @security JWT
  *
  */
-streamRouter.route('/update/:id').patch(isAuthenticated, update);
+streamRouter.route('/update/:id').put(isAuthenticated, update);
 /**
  * GET /stream/getAll
  * @summary Gets all streams on Moralis server

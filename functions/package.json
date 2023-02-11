@@ -15,7 +15,7 @@
   "engines": {
     "node": "16"
   },
-  "main": "lib/index.js",
+  "main": "lib/src/index.js",
   "dependencies": {
     "@moralisweb3/common-core": "^2.12.0",
     "cors": "^2.8.5",
@@ -29,6 +29,7 @@
     "redis": "^4.2.0",
     "swagger-autogen": "^2.23.0",
     "swagger-ui-express": "^4.6.0",
+    "web3": "^1.8.2",
     "web3-utils": "^1.7.5"
   },
   "devDependencies": {

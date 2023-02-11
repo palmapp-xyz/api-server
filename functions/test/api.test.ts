@@ -112,7 +112,7 @@ describe('API Testing', () => {
       it('should update user profile', async () => {
 
         // eslint-disable-next-line no-unreachable
-        const response = await Axios.patch('https://us-central1-oedi-a1953.cloudfunctions.net/v1/profile/update',
+        const response = await Axios.put('https://us-central1-oedi-a1953.cloudfunctions.net/v1/profile/update',
             {
               nft_tokenId: '200'
             },
