@@ -11,6 +11,8 @@ import {profileRouter} from './profile/profileRouter';
 import swaggerui from 'swagger-ui-express';
 import {jwtRouter} from './auth/jwtRouter';
 import {offerRouter} from './offer/offerRouter';
+import {SSXServer, SSXExpressMiddleware} from '@spruceid/ssx-server';
+
 // eslint-disable-next-line etc/no-commented-out-code
 // import {getSwagger} from './Swagger';
 
@@ -19,6 +21,17 @@ const firebaseApp = admin.initializeApp();
 export const firestore = firebaseApp.firestore();
 
 export const app = express();
+
+const ssx = new SSXServer({
+  providers: {
+    metrics: {service: 'ssx', apiKey: config.SSX_API_KEY},
+  },
+});
+
+app.use(SSXExpressMiddleware(ssx));
+// nonce: '/ssx-nonce',
+// login: '/ssx-login',
+// logout: '/ssx-logout',
 
 Moralis.start({
   apiKey: config.MORALIS_API_KEY,
