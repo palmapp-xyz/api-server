@@ -230,8 +230,21 @@ export async function accept(req: Request, res: Response, next: NextFunction) {
       // eslint-disable-next-line no-inline-comments
       offerAccepted: accepted, // TODO: test-case should be added to check if this works
     });
+    // update all buy offers of given nftId & nftContractAddr & seller to expired except given offerId
+    await firestore.collection('offer')
+        .where('nftId', '==', nftId)
+        .where('nftContractAddr', '==', nftContractAddr)
+        .where('seller', '==', res.locals.displayName)
+        .where('type', '==', 'buy')
+        .where('status', '==', 'pending')
+        .where('id', '!=', accepted.offerId).get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            doc.ref.update({status: 'expired'});
+          });
+        });
     // send response
-    res.status(200).json({result: 'offer updated'});
+    res.status(200).json({result: 'offer accepted'});
   } catch (err) {
     next(err);
   }

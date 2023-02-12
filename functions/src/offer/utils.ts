@@ -23,6 +23,7 @@ export enum OfferStatus {
     pending = 'pending',
     accepted = 'accepted',
     rejected = 'rejected',
+    expired = 'expired',
 }
 
 // generating enum with name OfferType using properties 'buy', 'sell'
