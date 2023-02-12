@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express';
 import {firestore} from '../index';
 import {generateId, Offer, OfferAccepted} from './utils';
-import {FirebaseFirestore} from '@firebase/firestore-types';
+import FirebaseFirestore from '@google-cloud/firestore';
 
 /**
  * Create a new offer
@@ -29,7 +29,7 @@ export async function create(req: Request, res: Response, next: NextFunction) {
 
       });
     } else {
-      // fetching doc from firestore based on buyer, seller & nftContractAddr & nftId & type is buy & status is pending
+      // fetching doc from firestore based on buyer, seller & nftContractAddr & nftId & type is buy & status is pendiing
       const result = await firestore.collection('offer').where('buyer', '==', offer.buyer).where('seller', '==', offer.seller).where('nftContractAddr', '==', offer.nftContractAddr).where('nftId', '==', offer.nftId).where('type', '==', 'buy').where('status', '==', 'pending').get();
       // check if doc exists throw error offer already exists
       if (!result.empty) {
@@ -66,23 +66,24 @@ export async function getBuyOffersPerNFT(req: Request, res: Response, next: Next
   try {
     // get id from req.params
     // eslint-disable-next-line no-inline-comments
-    const {nftContractAddr, nftId, expired} = req.params; // TODO: seller be login user: res.locals.displayName [DONE]
+    // TODO: seller be login user: res.locals.displayName [DONE]
+    const {nftContractAddr, nftId, expired} = req.params;
     let result: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>;
-    // eslint-disable-next-line no-inline-comments
-    if (!expired) { // non expired offers only
+    if (!expired) {
+      // non expired offers only
       // fetch docs from firestore based on nftContractAddr & nftId & seller & expiryTime > now
-      result = await firestore.collection('offer').where('nftContractAddr', '==', nftContractAddr).where('nftId', '==', nftId).where('type', '==', 'buy').where('expiryTime', '>', Date.now()).get();
-      // eslint-disable-next-line no-inline-comments
-    } else { // expired offers only
+      result = await firestore.collection('offer').where('nftContractAddr', '==', nftContractAddr).where('nftId', '==', nftId).where('type', '==', 'buy').where('expiryTime', '>', new Date()).get();
+    } else {
+      // expired offers only
       // fetch docs from firestore based on nftContractAddr & nftId & seller & expiryTime < now
-      result = await firestore.collection('offer').where('nftContractAddr', '==', nftContractAddr).where('nftId', '==', nftId).where('type', '==', 'buy').where('expiryTime', '<', Date.now()).get();
+      result = await firestore.collection('offer').where('nftContractAddr', '==', nftContractAddr).where('nftId', '==', nftId).where('type', '==', 'buy').where('expiryTime', '<', new Date()).get();
     }
     // remove id from each doc and parse them into Offer[]
     const offers = result.docs.map((doc) => {
       const {id, ...data} = doc.data();
       return data;
     });
-    // send response
+      // send response
     res.status(200).json({result: offers});
   } catch (err) {
     next(err);
@@ -102,7 +103,7 @@ export async function getBuyOffersPerNFT(req: Request, res: Response, next: Next
  */
 export async function getSellOffersPerNFT(req: Request, res: Response, next: NextFunction) {
   try {
-    // get id from req.params
+  // get id from req.params
     const {nftContractAddr, nftId, seller, status} = req.params;
     // fetch docs from firestore based on nftContractAddr & nftId & seller & status
     const result = await firestore.collection('offer').where('nftContractAddr', '==', nftContractAddr).where('nftId', '==', nftId).where('seller', '==', seller).where('type', '==', 'sell').where('status', '==', status).get();

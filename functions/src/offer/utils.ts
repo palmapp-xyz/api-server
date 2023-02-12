@@ -1,5 +1,6 @@
 import {NextFunction, Request, Response} from 'express';
 import web3 from 'web3';
+
 // generating type with name Offer using properties
 export type Offer = {
     txHash: string;
@@ -16,43 +17,47 @@ export type Offer = {
     acceptedBuyOffer: OfferAccepted;
 
 }
-// generating enum with name OfferStatus using properties 'pending', 'accepted', 'rejected', 'cancelled'
+
+// generating enum with name OfferStatus using properties 'pending', 'accepted', 'rejected'
 export enum OfferStatus {
     pending = 'pending',
     accepted = 'accepted',
     rejected = 'rejected',
-    cancelled = 'cancelled',
 }
+
 // generating enum with name OfferType using properties 'buy', 'sell'
 export enum OfferType {
     buy = 'buy',
     sell = 'sell',
 }
+
 // generating type with name Price using properties amount & symbol
 export type Price = {
     amount: number;
     symbol: string;
 }
+
 // generating type OfferAccepted using properties offerId & txHash
 export type OfferAccepted = {
     offerId: string;
     txHash: string;
 }
+
 /**
-    * @param {Request} req - Express request object
-    * @param {Response} res - Express response object
-    * @param {Function} next - Express next middleware function
-    * @return {void}
-    * @description - validate body of profile creation request
-    * @example - validateBody(req, res, next)
-    * @throws - invalid body, minimum 6 keys are required
-    * @throws - nft_image_url is required
-    * @throws - nft_contract_addr is required
-    * @throws - nft_tokenId is required
-    * @throws - bio is required
-    * @throws - user_name is required
-    * @throws - sendbird_token is required
-    * @throws - invalid token
+  * @param {Request} req - Express request object
+  * @param {Response} res - Express response object
+  * @param {Function} next - Express next middleware function
+  * @return {void}
+  * @description - validate body of profile creation request
+  * @example - validateBody(req, res, next)
+  * @throws - invalid body, minimum 6 keys are required
+  * @throws - nft_image_url is required
+  * @throws - nft_contract_addr is required
+  * @throws - nft_tokenId is required
+  * @throws - bio is required
+  * @throws - user_name is required
+  * @throws - sendbird_token is required
+  * @throws - invalid token
 * */
 // eslint-disable-next-line complexity
 export async function isValidOffer(req: Request, res: Response, next: NextFunction) {
@@ -111,6 +116,7 @@ export async function isValidOffer(req: Request, res: Response, next: NextFuncti
     next(err);
   }
 }
+
 // TODO: need to check if login user is seller then seller must be login user & if login user is buyer then buyer must be login user [done]
 
 // TODO: need to check if seller has already escrowed the NFT or not
