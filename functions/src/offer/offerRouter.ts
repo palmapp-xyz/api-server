@@ -1,5 +1,14 @@
 import {Router} from 'express';
-import {create, accept, reject, cancel, getSellOffersPerNFT, getSellOffers, getBuyOffersPerNFT, getAllBuyOffers} from './offerController';
+import {
+  create,
+  accept,
+  reject,
+  cancel,
+  getSellOffersPerNFT,
+  getSellOffers,
+  getBuyOffersPerNFT,
+  getAllBuyOffers,
+} from './offerController';
 import {isValidOffer} from './utils';
 import {isAuthenticated} from '../middlewares/authHandler';
 

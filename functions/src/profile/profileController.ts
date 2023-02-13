@@ -9,7 +9,7 @@ import {firestore} from '../index';
  * @return {void}
  * @description - create a new user's profile
  * @example - create(req, res, next)
-* */
+ * */
 export async function create(req: Request, res: Response, next: NextFunction) {
   try {
     // console displayName from res.locals
@@ -40,7 +40,7 @@ export async function create(req: Request, res: Response, next: NextFunction) {
  * @example - get(req, res, next)
  * @throws - profile not found
  *
-* */
+ * */
 export async function get(req: Request, res: Response, next: NextFunction) {
   try {
     // get id from req.params
@@ -60,6 +60,7 @@ export async function get(req: Request, res: Response, next: NextFunction) {
     next(err);
   }
 }
+
 /**
  * @param {Request} req - Express request object
  * @param {Response} res - Express response object
@@ -69,7 +70,7 @@ export async function get(req: Request, res: Response, next: NextFunction) {
  * @example - get(req, res, next)
  * @throws - profile not found
  *
-* */
+ * */
 export async function getSendbirdToken(req: Request, res: Response, next: NextFunction) {
   try {
     // fetch doc from firestore using id

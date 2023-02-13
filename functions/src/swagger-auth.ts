@@ -9,7 +9,7 @@
  *
  */
 /**
-* POST /ext-moralis-auth-requestMessage
+ * POST /ext-moralis-auth-requestMessage
  * @summary Request a message to be signed by the user. BaseURL: https://asia-northeast3-oedi-a1953.cloudfunctions.net
  * @tags Auth
  * @param {AuthRequestMessage} request.body.required - The request body object containing the data object with the networkType, address and chain
@@ -30,7 +30,7 @@
  *         'profileId': '0xad339ed840cb8c4e8f33a6fd07672c53f1c35ed197ba49f1536b43e27cb8b4a8'
  *     }
  * }
-* */
+ * */
 // issue token
 /**
  * @typedef {object} AuthIssueToken

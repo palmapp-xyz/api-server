@@ -83,7 +83,7 @@ export async function getBuyOffersPerNFT(req: Request, res: Response, next: Next
       const {id, ...data} = doc.data();
       return data;
     });
-      // send response
+    // send response
     res.status(200).json({result: offers});
   } catch (err) {
     next(err);
@@ -103,7 +103,7 @@ export async function getBuyOffersPerNFT(req: Request, res: Response, next: Next
  */
 export async function getSellOffersPerNFT(req: Request, res: Response, next: NextFunction) {
   try {
-  // get id from req.params
+    // get id from req.params
     const {nftContractAddr, nftId, seller, status} = req.params;
     // fetch docs from firestore based on nftContractAddr & nftId & seller & status
     const result = await firestore.collection('offer').where('nftContractAddr', '==', nftContractAddr).where('nftId', '==', nftId).where('seller', '==', seller).where('type', '==', 'sell').where('status', '==', status).get();

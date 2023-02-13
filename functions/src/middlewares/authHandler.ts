@@ -28,7 +28,7 @@ export async function isAuthenticated(
   try {
     const decodedToken: admin.auth.DecodedIdToken =
         await admin.auth().verifyIdToken(token);
-      // eslint-disable-next-line no-console
+    // eslint-disable-next-line no-console
     console.log('decodedToken', JSON.stringify(decodedToken));
     res.locals = {
       // eslint-disable-next-line max-len
