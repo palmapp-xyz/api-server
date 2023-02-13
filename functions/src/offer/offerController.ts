@@ -55,10 +55,6 @@ export async function create(req: Request, res: Response, next: NextFunction) {
         ...offer,
       });
     }
-    // create a new offer in firestore
-    await firestore.collection('offer').doc(generateId()).set({
-      ...offer,
-    });
 
     // send response
     res.status(200).json({message: 'offer created'});
@@ -79,36 +75,20 @@ export async function create(req: Request, res: Response, next: NextFunction) {
  * */
 export async function getBuyOffersPerNFT(req: Request, res: Response, next: NextFunction) {
   try {
-    // get id from req.params
-    // eslint-disable-next-line no-inline-comments
-    // TODO: seller be login user: res.locals.displayName [DONE]
-    const {nftContractAddr, nftId, expired} = req.params;
-    let result: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>;
-    if (!expired) {
-      // non expired offers only
-      // fetch docs from firestore based on nftContractAddr & nftId & seller & expiryTime > now
-      result = await firestore
-          .collection('offer')
-          .where('nftContractAddr', '==', nftContractAddr)
-          .where('nftId', '==', nftId)
-          .where('type', '==', 'buy')
-          .where('expiryTime', '>', new Date())
-          .get();
-    } else {
-      // expired offers only
-      // fetch docs from firestore based on nftContractAddr & nftId & seller & expiryTime < now
-      result = await firestore
-          .collection('offer')
-          .where('nftContractAddr', '==', nftContractAddr)
-          .where('nftId', '==', nftId)
-          .where('type', '==', 'buy')
-          .where('expiryTime', '<', new Date())
-          .get();
-    }
-    // remove id from each doc and parse them into Offer[]
+    // get id from req.query
+    const {nftContractAddr, nftId, status} = req.query;
+    // non expired offers only
+    // fetch docs from firestore based on nftContractAddr & nftId & seller & expiryTime > now
+    const result = await firestore
+        .collection('offer')
+        .where('nftContractAddr', '==', nftContractAddr)
+        .where('nftId', '==', nftId)
+        .where('type', '==', 'buy')
+        .where('status', '>', status)
+        .get();
     const offers = result.docs.map((doc) => {
-      const {id, ...data} = doc.data();
-      return data;
+      const {id} = doc;
+      return {id, ...doc.data()};
     });
     // send response
     res.status(200).json({result: offers});
@@ -130,8 +110,8 @@ export async function getBuyOffersPerNFT(req: Request, res: Response, next: Next
  */
 export async function getSellOffersPerNFT(req: Request, res: Response, next: NextFunction) {
   try {
-    // get id from req.params
-    const {nftContractAddr, nftId, seller, status} = req.params;
+    // get id from req.query
+    const {nftContractAddr, nftId, seller, status} = req.query;
     // fetch docs from firestore based on nftContractAddr & nftId & seller & status
     const result = await firestore
         .collection('offer')
@@ -141,10 +121,9 @@ export async function getSellOffersPerNFT(req: Request, res: Response, next: Nex
         .where('type', '==', 'sell')
         .where('status', '==', status)
         .get();
-    // remove id from each doc and parse them into Offer[]
     const offers = result.docs.map((doc) => {
-      const {id, ...data} = doc.data();
-      return data;
+      const {id} = doc;
+      return {id, ...doc.data()};
     });
     // send response
     res.status(200).json({result: offers});
@@ -166,8 +145,8 @@ export async function getSellOffersPerNFT(req: Request, res: Response, next: Nex
  */
 export async function getAllBuyOffers(req: Request, res: Response, next: NextFunction) {
   try {
-    // get id from req.params
-    const {buyer, status} = req.params;
+    // get id from req.query
+    const {buyer, status} = req.query;
     let result: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>;
     // fetch docs from firestore if status is accepted based on buyer & status and parse them into Offer[]
     if (status === 'accepted') {
@@ -184,10 +163,9 @@ export async function getAllBuyOffers(req: Request, res: Response, next: NextFun
           .where('type', '==', 'buy')
           .get();
     }
-    // remove id from each doc and parse them into Offer[]
     const offers = result.docs.map((doc) => {
-      const {id, ...data} = doc.data();
-      return data;
+      const {id} = doc;
+      return {id, ...doc.data()};
     });
     // send response
     res.status(200).json({result: offers});
@@ -209,8 +187,8 @@ export async function getAllBuyOffers(req: Request, res: Response, next: NextFun
  */
 export async function getSellOffers(req: Request, res: Response, next: NextFunction) {
   try {
-    // get id from req.params
-    const {seller, status} = req.params;
+    // get id from req.query
+    const {seller, status} = req.query;
     // fetch docs from firestore based on seller & status and parse them into Offer[]
     const result = await firestore
         .collection('offer')
@@ -220,8 +198,8 @@ export async function getSellOffers(req: Request, res: Response, next: NextFunct
         .get();
     // remove id from each doc and parse them into Offer[]
     const offers = result.docs.map((doc) => {
-      const {id, ...data} = doc.data();
-      return data;
+      const {id} = doc;
+      return {id, ...doc.data()};
     });
     // send response
     res.status(200).json({result: offers});
