@@ -1,4 +1,3 @@
-
 import expressJSDocSwagger from 'express-jsdoc-swagger';
 import {writeFileSync} from 'fs';
 import {Express} from 'express';

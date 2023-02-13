@@ -1,6 +1,14 @@
 import {NextFunction, Request, Response} from 'express';
 // eslint-disable-next-line max-len
-import {addStream, deleteStream, getStreams, updateStream, addAddress, removeAddress, getAllAddress} from './streamService';
+import {
+  addStream,
+  deleteStream,
+  getStreams,
+  updateStream,
+  addAddress,
+  removeAddress,
+  getAllAddress,
+} from './streamService';
 
 
 export async function create(req: Request, res: Response, next: NextFunction) {

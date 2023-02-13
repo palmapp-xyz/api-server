@@ -15,6 +15,7 @@ export type Offer = {
   sendbirdMessageId: string;
   sendbirdChannelUrl: string;
   acceptedBuyOffer: OfferAccepted;
+
 }
 
 // generating enum with name OfferStatus using properties 'pending', 'accepted', 'rejected'
@@ -22,6 +23,7 @@ export enum OfferStatus {
   pending = 'pending',
   accepted = 'accepted',
   rejected = 'rejected',
+  expired = 'expired',
 }
 
 // generating enum with name OfferType using properties 'buy', 'sell'
@@ -43,21 +45,21 @@ export type OfferAccepted = {
 }
 
 /**
-  * @param {Request} req - Express request object
-  * @param {Response} res - Express response object
-  * @param {Function} next - Express next middleware function
-  * @return {void}
-  * @description - validate body of profile creation request
-  * @example - validateBody(req, res, next)
-  * @throws - invalid body, minimum 6 keys are required
-  * @throws - nft_image_url is required
-  * @throws - nft_contract_addr is required
-  * @throws - nft_tokenId is required
-  * @throws - bio is required
-  * @throws - user_name is required
-  * @throws - sendbird_token is required
-  * @throws - invalid token
-* */
+ * @param {Request} req - Express request object
+ * @param {Response} res - Express response object
+ * @param {Function} next - Express next middleware function
+ * @return {void}
+ * @description - validate body of profile creation request
+ * @example - validateBody(req, res, next)
+ * @throws - invalid body, minimum 6 keys are required
+ * @throws - nft_image_url is required
+ * @throws - nft_contract_addr is required
+ * @throws - nft_tokenId is required
+ * @throws - bio is required
+ * @throws - user_name is required
+ * @throws - sendbird_token is required
+ * @throws - invalid token
+ * */
 // eslint-disable-next-line complexity
 export async function isValidOffer(req: Request, res: Response, next: NextFunction) {
   try {
@@ -107,6 +109,7 @@ export async function isValidOffer(req: Request, res: Response, next: NextFuncti
     if (type === OfferType.buy && buyer !== res.locals.displayName) {
       throw new Error('invalid buyer, you must sign in as buyer');
     }
+
 
     // call next middleware
     next();

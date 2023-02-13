@@ -17,6 +17,7 @@ export interface ProxyOptions {
 export class ProxyGenerator {
   private options: ProxyOptions;
   private api: string;
+
   // eslint-disable-next-line require-jsdoc
   constructor(api: 'evm', options: ProxyOptions) {
     this.options = options;

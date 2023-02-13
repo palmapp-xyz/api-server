@@ -8,8 +8,8 @@ const makeMoralisErrorMessage = (error: MoralisError) => {
   const errorResponse = error.details?.response;
 
   const errorResponseData =
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    typeof errorResponse === 'object' ? (error.details?.response as Record<string, any>).data : null;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      typeof errorResponse === 'object' ? (error.details?.response as Record<string, any>).data : null;
 
   if (errorResponseData) {
     // Handle MoralisError
