@@ -9,6 +9,7 @@ import {streamRouter} from './stream/streamRouter';
 import * as functions from 'firebase-functions';
 import {profileRouter} from './profile/profileRouter';
 import swaggerui from 'swagger-ui-express';
+import {jwtRouter} from "./auth/jwtRouter";
 // eslint-disable-next-line etc/no-commented-out-code
 // import {getSwagger} from './Swagger';
 
@@ -28,6 +29,7 @@ app.use(express.json());
 // should allow all origins
 app.use(cors());
 
+app.use('/jwt', jwtRouter);
 app.use('/api', apiRouter);
 app.use('/stream', streamRouter);
 app.use('/profile', profileRouter);
