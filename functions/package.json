@@ -10,7 +10,8 @@
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
     "docs": "yarn build && node lib/index.js",
-    "test": "mocha --exit --require ts-node/register 'test/*.ts' --timeout 240000"
+    "test": "mocha --exit --require ts-node/register 'test/*.ts' --timeout 240000",
+    "test:jwt": "mocha --exit --require ts-node/register 'test/jwt.test.ts' --timeout 240000"
   },
   "engines": {
     "node": "16"
