@@ -109,8 +109,6 @@ export async function isValidOffer(req: Request, res: Response, next: NextFuncti
     if (type === OfferType.buy && buyer !== res.locals.displayName) {
       throw new Error('invalid buyer, you must sign in as buyer');
     }
-
-
     // call next middleware
     next();
   } catch (err) {
