@@ -10,6 +10,8 @@ const config = {
   MORALIS_API_KEY: readEnv('MORALIS_API_KEY'),
 
   NGROK_AUTH_TOKEN: readEnv('NGROK_AUTH_TOKEN'),
+  MORALIS_STREAM_ID: readEnv('MORALIS_STREAM_ID'),
+
 };
 
 export default config;
