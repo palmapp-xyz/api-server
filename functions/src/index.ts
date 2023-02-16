@@ -24,12 +24,12 @@ Moralis.start({
   apiKey: config.MORALIS_API_KEY,
 });
 
-// eslint-disable-next-line no-console
-app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 // should allow all origins
+app.options('*', cors());
 app.use(cors());
 
+app.use('/docs', swaggerui.serve);
 app.use('/jwt', jwtRouter);
 app.use('/api', apiRouter);
 app.use('/stream', streamRouter);
