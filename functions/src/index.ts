@@ -34,8 +34,9 @@ app.use('/jwt', jwtRouter);
 app.use('/api', apiRouter);
 app.use('/stream', streamRouter);
 app.use('/profile', profileRouter);
-app.use('/offer', offerRouter);
-app.use('/docs', swaggerui.serve);
+// eslint-disable-next-line etc/no-commented-out-code
+// app.use('/offer', offerRouter);
+
 
 // eslint-disable-next-line no-inline-comments
 // getSwagger(app); // creating swagger.json file
