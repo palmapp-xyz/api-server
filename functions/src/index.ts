@@ -10,7 +10,8 @@ import * as functions from 'firebase-functions';
 import {profileRouter} from './profile/profileRouter';
 import swaggerui from 'swagger-ui-express';
 import {jwtRouter} from './auth/jwtRouter';
-import {offerRouter} from './offer/offerRouter';
+// eslint-disable-next-line etc/no-commented-out-code
+// import {offerRouter} from './offer/offerRouter';
 import {friendRouter} from './friends/friendRouter';
 // eslint-disable-next-line etc/no-commented-out-code
 // import {getSwagger} from './Swagger';
@@ -35,7 +36,8 @@ app.use('/jwt', jwtRouter);
 app.use('/api', apiRouter);
 app.use('/stream', streamRouter);
 app.use('/profile', profileRouter);
-app.use('/offer', offerRouter);
+// eslint-disable-next-line etc/no-commented-out-code
+// app.use('/offer', offerRouter);
 app.use('/friends', friendRouter);
 app.use('/docs', swaggerui.serve);
 
