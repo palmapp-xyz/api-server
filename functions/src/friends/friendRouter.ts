@@ -6,6 +6,7 @@ import {
   acceptFriend,
   unFriend,
   rejectFriend,
+  getPendingRequests,
 } from './friendController';
 import {isAuthenticated} from '../middlewares/authHandler';
 
@@ -15,6 +16,8 @@ export const friendRouter = Router();
 friendRouter.get('/:id', getFriends);
 // get all friend requests
 friendRouter.get('/requests', isAuthenticated, getRequests);
+// get all friend requests which are pending
+friendRouter.get('/pending', isAuthenticated, getPendingRequests);
 // send friend request
 friendRouter.post('/request', isAuthenticated, requestFriend);
 // accept friend request
