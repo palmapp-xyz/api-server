@@ -47,7 +47,18 @@ export const requestFriend = async (req: Request, res: Response, next: NextFunct
         .where('requests', 'array-contains', res.locals.displayName)
         .get();
     if (!requested.empty) {
+      // eslint-disable-next-line no-console
+      console.log('friend request already sent');
       res.status(400).json({message: 'Friend request already sent'});
+      return;
+    }
+    const requested2 = await firestore
+        .collection('friends')
+        .where('id', '==', friendId)
+        .where('pending', 'array-contains', res.locals.displayName)
+        .get();
+    if (!requested2.empty) {
+      res.status(400).json({message: 'you\'re already requested by this user'});
       return;
     }
     // add friend request to user
@@ -56,17 +67,23 @@ export const requestFriend = async (req: Request, res: Response, next: NextFunct
       await firestore.collection('friends').doc(friendId).set({
         requests: [res.locals.displayName],
       });
+    } else {
+      // insert friend request to friendId's requests list
+      friend.data()?.requests.push(res.locals.displayName);
+      await firestore.collection('friends').doc(friendId).update({
+        requests: friend.data()?.requests,
+      });
     }
-    await firestore.collection('friends').doc(friendId).update({
-      // eslint-disable-next-line no-unsafe-optional-chaining
-      requests: [...friend.data()?.requests, res.locals.displayName],
-    });
     // add friend request to friendId's pending requests
     const requester = await firestore.collection('friends').doc(res.locals.displayName).get();
     if (requester.exists) {
+      requester.data()?.pending.push(friendId);
       await firestore.collection('friends').doc(friendId).update({
-        // eslint-disable-next-line no-unsafe-optional-chaining
-        requests: [...requester.data()?.pending, friendId],
+        pending: requester.data()?.pending,
+      });
+    } else {
+      await firestore.collection('friends').doc(res.locals.displayName).set({
+        pending: [friendId],
       });
     }
 
