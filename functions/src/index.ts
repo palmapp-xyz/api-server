@@ -11,6 +11,7 @@ import {profileRouter} from './profile/profileRouter';
 import swaggerui from 'swagger-ui-express';
 import {jwtRouter} from './auth/jwtRouter';
 import {offerRouter} from './offer/offerRouter';
+import {friendRouter} from './friends/friendRouter';
 // eslint-disable-next-line etc/no-commented-out-code
 // import {getSwagger} from './Swagger';
 
@@ -35,6 +36,7 @@ app.use('/api', apiRouter);
 app.use('/stream', streamRouter);
 app.use('/profile', profileRouter);
 app.use('/offer', offerRouter);
+app.use('/friends', friendRouter);
 app.use('/docs', swaggerui.serve);
 
 // eslint-disable-next-line no-inline-comments
