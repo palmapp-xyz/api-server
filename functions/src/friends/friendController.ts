@@ -85,37 +85,46 @@ export const requestFriend = async (req: Request, res: Response, next: NextFunct
 export const acceptFriend = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const {friendId} = req.body;
-    const requested = await firestore
+    const accepter = await firestore
         .collection('friends')
-        .where('id', '==', res.locals.displayName)
-        .where('requests', 'array-contains', friendId)
+        .doc(res.locals.displayName)
         .get();
-    if (requested.empty) {
+    if (!accepter.exists || accepter.get('requests').includes(friendId)) {
       res.status(400).json({message: 'No friend request found'});
       return;
     }
     // delete friend request
     await firestore.collection('friends').doc(res.locals.displayName).update({
-      requests: requested.docs[0].data().requests.filter((request: string) => request !== friendId),
+      requests: accepter.get('requests').filter((request: string) => request !== friendId),
     });
     // delete pending request from friendId
     const requester = await firestore.collection('friends').doc(friendId).get();
-    if (requester.exists) {
+    // eslint-disable-next-line no-inline-comments
+    if (requester.exists) { // this should always be true
       await firestore.collection('friends').doc(friendId).update({
-        // eslint-disable-next-line no-unsafe-optional-chaining
-        pending: requester.data()?.pending.filter((request: string) => request !== res.locals.displayName),
+        pending: requester.get('pending').filter((request: string) => request !== res.locals.displayName),
       });
     }
-    // add friend to user accepted list
-    const friend = await firestore.collection('friends').doc(res.locals.displayName).get();
-    if (!friend.exists) {
+    // add friend to accepter's accepted list
+    if (!accepter.get('accepted')) {
       await firestore.collection('friends').doc(res.locals.displayName).set({
         accepted: [friendId],
       });
     } else {
+      accepter.data()?.accepted.push(friendId);
       await firestore.collection('friends').doc(res.locals.displayName).update({
-        // eslint-disable-next-line no-unsafe-optional-chaining
-        accepted: [...friend.data()?.accepted, friendId],
+        accepted: [accepter.data()?.accepted],
+      });
+    }
+    // add friend to requester's accepted list
+    if (!requester.get('accepted')) {
+      await firestore.collection('friends').doc(friendId).set({
+        accepted: [friendId],
+      });
+    } else {
+      requester.data()?.accepted.push(friendId);
+      await firestore.collection('friends').doc(friendId).update({
+        accepted: [accepter.data()?.accepted],
       });
     }
 
@@ -127,36 +136,25 @@ export const acceptFriend = async (req: Request, res: Response, next: NextFuncti
 export const rejectFriend = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const {friendId} = req.body;
-    const requested = await firestore
+    const rejecter = await firestore
         .collection('friends')
-        .where('id', '==', res.locals.displayName)
-        .where('requests', 'array-contains', friendId)
+        .doc(res.locals.displayName)
         .get();
-    if (requested.empty) {
+    if (!rejecter.exists || !rejecter.get('requests').includes(friendId)) {
       res.status(400).json({message: 'No friend request found'});
       return;
     }
     // delete friend request
     await firestore.collection('friends').doc(res.locals.displayName).update({
-      requests: requested.docs[0].data().requests.filter((request: string) => request !== friendId),
+      requests: rejecter.get('requests').filter((request: string) => request !== friendId),
     });
     // delete pending request from friendId
     const requester = await firestore.collection('friends').doc(friendId).get();
     if (requester.exists) {
       await firestore.collection('friends').doc(friendId).update({
-        // eslint-disable-next-line no-unsafe-optional-chaining
         pending: requester.data()?.pending.filter((request: string) => request !== res.locals.displayName),
       });
     }
-    // need to delete friend request from sender's pending array as well
-    const friend = await firestore.collection('friends').doc(friendId).get();
-    if (friend.exists) {
-      await firestore.collection('friends').doc(friendId).update({
-        requests: friend.data()?.pending.filter((p: string) => p !== res.locals.displayName),
-      });
-    }
-
-
     res.status(200).json({message: 'Friend request rejected'});
   } catch (error) {
     next(error);
@@ -166,10 +164,17 @@ export const rejectFriend = async (req: Request, res: Response, next: NextFuncti
 export const unFriend = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const {friendId} = req.body;
-    const friend = await firestore.collection('friends').doc(res.locals.displayName).get();
-    if (friend.exists) {
+    const friend1 = await firestore.collection('friends').doc(res.locals.displayName).get();
+    const friend2 = await firestore.collection('friends').doc(friendId).get();
+    if (friend1.get('accepted') &&
+        friend1.get('accepted').includes(friendId) &&
+        friend2.get('accepted') &&
+        friend2.get('accepted').includes(res.locals.displayName)) {
       await firestore.collection('friends').doc(res.locals.displayName).update({
-        friends: friend.data()?.friends.filter((f: string) => f !== friendId),
+        accepted: friend1.data()?.accepted.filter((f: string) => f !== friendId),
+      });
+      await firestore.collection('friends').doc(friendId).update({
+        accepted: friend2.data()?.accepted.filter((f: string) => f !== res.locals.displayName),
       });
     } else {
       res.status(400).json({message: 'No friend found'});
