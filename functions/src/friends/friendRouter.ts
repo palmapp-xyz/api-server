@@ -15,9 +15,9 @@ export const friendRouter = Router();
 // get all friends
 friendRouter.get('/list/:id', getFriends);
 // get all friend requests
-friendRouter.get('/requests', isAuthenticated, getRequests);
+friendRouter.get('/list/requests', isAuthenticated, getRequests);
 // get all friend requests which are pending
-friendRouter.get('/pending', isAuthenticated, getPendingRequests);
+friendRouter.get('/list/pending', isAuthenticated, getPendingRequests);
 // send friend request
 friendRouter.post('/request', isAuthenticated, requestFriend);
 // accept friend request
