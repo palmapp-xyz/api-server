@@ -27,58 +27,48 @@ export const getPendingRequests = async (req: Request, res: Response, next: Next
   }
 };
 
+// eslint-disable-next-line complexity
 export const requestFriend = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // send friend request to given user
     const {friendId} = req.body;
-    const accepted = await firestore
+    const requester = await firestore
         .collection('friends')
-        .where('id', '==', res.locals.displayName)
-        .where('accepted', 'array-contains', friendId)
+        .doc(res.locals.displayName)
         .get();
-    if (!accepted.empty) {
+    if (requester.get('accepted') && requester.get('accepted').includes(friendId)) {
       res.status(400).json({message: 'Already friends'});
       return;
     }
     // check if friend request already exists
     const requested = await firestore
         .collection('friends')
-        .where('id', '==', friendId)
-        .where('requests', 'array-contains', res.locals.displayName)
+        .doc(friendId)
         .get();
-    if (!requested.empty) {
-      // eslint-disable-next-line no-console
-      console.log('friend request already sent');
+    if (requested.get('requests') && requested.get('requests').includes(res.locals.displayName)) {
       res.status(400).json({message: 'Friend request already sent'});
       return;
     }
-    const requested2 = await firestore
-        .collection('friends')
-        .where('id', '==', friendId)
-        .where('pending', 'array-contains', res.locals.displayName)
-        .get();
-    if (!requested2.empty) {
+    if (requested.get('pending') && requested.get('pending').includes(res.locals.displayName)) {
       res.status(400).json({message: 'you\'re already requested by this user'});
       return;
     }
     // add friend request to user
-    const friend = await firestore.collection('friends').doc(friendId).get();
-    if (!friend.exists) {
+    if (!requested.get('requests') || requested.get('requests').length === 0) {
       await firestore.collection('friends').doc(friendId).set({
         requests: [res.locals.displayName],
       });
     } else {
       // insert friend request to friendId's requests list
-      friend.data()?.requests.push(res.locals.displayName);
+      requested.data()?.requests.push(res.locals.displayName);
       await firestore.collection('friends').doc(friendId).update({
-        requests: friend.data()?.requests,
+        requests: requested.data()?.requests,
       });
     }
     // add friend request to friendId's pending requests
-    const requester = await firestore.collection('friends').doc(res.locals.displayName).get();
-    if (requester.exists) {
+    if (!requester.get('pending') || requester.get('pending').length !== 0) {
       requester.data()?.pending.push(friendId);
-      await firestore.collection('friends').doc(friendId).update({
+      await firestore.collection('friends').doc(res.locals.displayName).update({
         pending: requester.data()?.pending,
       });
     } else {
