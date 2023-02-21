@@ -5,7 +5,7 @@ export const getFriends = async (req: Request, res: Response, next: NextFunction
   try {
     const {id} = req.params;
     const friends = await firestore.collection('friends').doc(id).get();
-    res.status(200).json({friends: friends.get('accepted')});
+    res.status(200).json({friends: friends.get('accepted') ?? []});
   } catch (error) {
     next(error);
   }
@@ -13,7 +13,7 @@ export const getFriends = async (req: Request, res: Response, next: NextFunction
 export const getRequests = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const friends = await firestore.collection('friends').doc(res.locals.displayName).get();
-    res.status(200).json({requests: friends.get('requests')});
+    res.status(200).json({requests: friends.get('requests') ?? []});
   } catch (error) {
     next(error);
   }
@@ -21,7 +21,7 @@ export const getRequests = async (req: Request, res: Response, next: NextFunctio
 export const getPendingRequests = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const friends = await firestore.collection('friends').doc(res.locals.displayName).get();
-    res.status(200).json({pending: friends.get('pending')});
+    res.status(200).json({pending: friends.get('pending') ?? []});
   } catch (error) {
     next(error);
   }
@@ -60,20 +60,20 @@ export const requestFriend = async (req: Request, res: Response, next: NextFunct
       });
     } else {
       // insert friend request to friendId's requests list
-      requested.data()?.requests.push(res.locals.displayName);
+      requested.get('requests').push(res.locals.displayName);
       await firestore.collection('friends').doc(friendId).update({
-        requests: requested.data()?.requests,
+        requests: requested.get('requests'),
       });
     }
     // add friend request to friendId's pending requests
-    if (!requester.get('pending') || requester.get('pending').length !== 0) {
-      requester.data()?.pending.push(friendId);
-      await firestore.collection('friends').doc(res.locals.displayName).update({
-        pending: requester.data()?.pending,
-      });
-    } else {
+    if (!requester.get('pending') || requester.get('pending').length === 0) {
       await firestore.collection('friends').doc(res.locals.displayName).set({
         pending: [friendId],
+      });
+    } else {
+      requester.get('pending').push(friendId);
+      await firestore.collection('friends').doc(res.locals.displayName).update({
+        pending: requester.get('pending'),
       });
     }
 
@@ -89,7 +89,7 @@ export const acceptFriend = async (req: Request, res: Response, next: NextFuncti
         .collection('friends')
         .doc(res.locals.displayName)
         .get();
-    if (!accepter.exists || accepter.get('requests').includes(friendId)) {
+    if (!accepter.exists || !accepter.get('requests').includes(friendId)) {
       res.status(400).json({message: 'No friend request found'});
       return;
     }
@@ -111,20 +111,20 @@ export const acceptFriend = async (req: Request, res: Response, next: NextFuncti
         accepted: [friendId],
       });
     } else {
-      accepter.data()?.accepted.push(friendId);
+      accepter.get('accepted').push(friendId);
       await firestore.collection('friends').doc(res.locals.displayName).update({
-        accepted: [accepter.data()?.accepted],
+        accepted: accepter.get('accepted'),
       });
     }
     // add friend to requester's accepted list
     if (!requester.get('accepted')) {
       await firestore.collection('friends').doc(friendId).set({
-        accepted: [friendId],
+        accepted: [res.locals.displayName],
       });
     } else {
-      requester.data()?.accepted.push(friendId);
+      requester.get('accepted').push(res.locals.displayName);
       await firestore.collection('friends').doc(friendId).update({
-        accepted: [accepter.data()?.accepted],
+        accepted: accepter.get('accepted'),
       });
     }
 
@@ -152,7 +152,7 @@ export const rejectFriend = async (req: Request, res: Response, next: NextFuncti
     const requester = await firestore.collection('friends').doc(friendId).get();
     if (requester.exists) {
       await firestore.collection('friends').doc(friendId).update({
-        pending: requester.data()?.pending.filter((request: string) => request !== res.locals.displayName),
+        pending: requester.get('pending').filter((request: string) => request !== res.locals.displayName),
       });
     }
     res.status(200).json({message: 'Friend request rejected'});
@@ -171,16 +171,16 @@ export const unFriend = async (req: Request, res: Response, next: NextFunction) 
         friend2.get('accepted') &&
         friend2.get('accepted').includes(res.locals.displayName)) {
       await firestore.collection('friends').doc(res.locals.displayName).update({
-        accepted: friend1.data()?.accepted.filter((f: string) => f !== friendId),
+        accepted: friend1.get('accepted').filter((f: string) => f !== friendId),
       });
       await firestore.collection('friends').doc(friendId).update({
-        accepted: friend2.data()?.accepted.filter((f: string) => f !== res.locals.displayName),
+        accepted: friend2.get('accepted').filter((f: string) => f !== res.locals.displayName),
       });
     } else {
       res.status(400).json({message: 'No friend found'});
       return;
     }
-    res.status(200).json({message: 'Friend deleted'});
+    res.status(200).json({message: 'Friend is unfriended'});
   } catch (error) {
     next(error);
   }
