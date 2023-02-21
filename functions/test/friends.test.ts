@@ -54,7 +54,7 @@ describe('Friend APIs', () => {
     // sign in seller
     const JWT = await signIn(user1Address, user1PrivateKey);
     // eslint-disable-next-line no-unreachable
-    const response = await Axios.get('https://asia-northeast3-oedi-a1953.cloudfunctions.net/v1/friends/pending',
+    const response = await Axios.get('https://asia-northeast3-oedi-a1953.cloudfunctions.net/v1/friends/list/pending',
         {
           headers: {
             'Authorization': `Bearer ${JWT}`
@@ -70,7 +70,7 @@ describe('Friend APIs', () => {
     // sign in seller
     const JWT = await signIn(user2Address, user2PrivateKey);
     // eslint-disable-next-line no-unreachable
-    const response = await Axios.get('https://asia-northeast3-oedi-a1953.cloudfunctions.net/v1/friends/requests',
+    const response = await Axios.get('https://asia-northeast3-oedi-a1953.cloudfunctions.net/v1/friends/list/requests',
         {
           headers: {
             'Authorization': `Bearer ${JWT}`
@@ -111,7 +111,7 @@ describe('Friend APIs', () => {
     // sign in seller
     const JWT = await signIn(user1Address, user1PrivateKey);
     // eslint-disable-next-line no-unreachable
-    const response = await Axios.get('https://asia-northeast3-oedi-a1953.cloudfunctions.net/v1/friends/pending',
+    const response = await Axios.get('https://asia-northeast3-oedi-a1953.cloudfunctions.net/v1/friends/list/pending',
         {
           headers: {
             'Authorization': `Bearer ${JWT}`
