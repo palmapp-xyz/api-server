@@ -5,7 +5,7 @@ export const getFriends = async (req: Request, res: Response, next: NextFunction
   try {
     const {id} = req.params;
     const friends = await firestore.collection('friends').doc(id).get();
-    res.status(200).json(friends.data()?.accepted);
+    res.status(200).json({friends: friends.get('accepted')});
   } catch (error) {
     next(error);
   }
@@ -13,7 +13,7 @@ export const getFriends = async (req: Request, res: Response, next: NextFunction
 export const getRequests = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const friends = await firestore.collection('friends').doc(res.locals.displayName).get();
-    res.status(200).json(friends.data()?.requests);
+    res.status(200).json({requests: friends.get('requests')});
   } catch (error) {
     next(error);
   }
@@ -21,7 +21,7 @@ export const getRequests = async (req: Request, res: Response, next: NextFunctio
 export const getPendingRequests = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const friends = await firestore.collection('friends').doc(res.locals.displayName).get();
-    res.status(200).json(friends.data()?.pending);
+    res.status(200).json({pending: friends.get('pending')});
   } catch (error) {
     next(error);
   }

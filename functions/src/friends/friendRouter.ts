@@ -13,7 +13,7 @@ import {isAuthenticated} from '../middlewares/authHandler';
 // generate router instance for friend routes and export it to use in app.ts and index.ts
 export const friendRouter = Router();
 // get all friends
-friendRouter.get('/:id', getFriends);
+friendRouter.get('/list/:id', getFriends);
 // get all friend requests
 friendRouter.get('/requests', isAuthenticated, getRequests);
 // get all friend requests which are pending
