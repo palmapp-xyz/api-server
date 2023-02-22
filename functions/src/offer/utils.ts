@@ -65,8 +65,16 @@ export async function isValidOffer(req: Request, res: Response, next: NextFuncti
   try {
     // get body from req object and parse it to Offer type
     const {txHash, nftId, nftContractAddr, price, expiryTime, seller, buyer, type} = req.body as Offer;
-    // validating txHash is valid web3 txHash using regex
-    if (!txHash || !txHash.match(/^0x[a-fA-F0-9]{64}$/)) {
+    // eslint-disable-next-line no-console
+    console.log('req.body', req.body);
+    // eslint-disable-next-line no-console
+    console.log('isHexStrict', !web3.utils.isHexStrict(txHash));
+    // eslint-disable-next-line no-console
+    console.log('!txHash', !txHash);
+    // eslint-disable-next-line no-console
+    console.log('!txHash || !web3.utils.isHexStrict(txHash)', !txHash || !web3.utils.isHexStrict(txHash));
+    // validating txHash is valid web3 txHash using web3 util isHexStrict
+    if (!txHash || !web3.utils.isHexStrict(txHash)) {
       throw new Error('invalid txHash');
     }
     // validating nftId is valid number
@@ -93,10 +101,8 @@ export async function isValidOffer(req: Request, res: Response, next: NextFuncti
     if (!buyer || !web3.utils.isAddress(buyer)) {
       throw new Error('invalid buyer');
     }
-    // add status to req object with default value pending only if offer is sell
-    if (type === OfferType.sell) {
-      req.body.status = OfferStatus.pending;
-    }
+    // add status to req object with default value pending
+    req.body.status = OfferStatus.pending;
     // validating type is valid OfferType enum
     if (!type || !Object.values(OfferType).includes(type)) {
       throw new Error('invalid type');
@@ -109,8 +115,6 @@ export async function isValidOffer(req: Request, res: Response, next: NextFuncti
     if (type === OfferType.buy && buyer !== res.locals.displayName) {
       throw new Error('invalid buyer, you must sign in as buyer');
     }
-
-
     // call next middleware
     next();
   } catch (err) {
@@ -128,4 +132,158 @@ export async function isValidOffer(req: Request, res: Response, next: NextFuncti
 // function to generate random id for firestore document
 export function generateId() {
   return Math.random().toString(36).substring(2) + Date.now().toString(36);
+}
+
+// function to validate accept offer request body
+// eslint-disable-next-line complexity
+export async function isValidAcceptOffer(req: Request, res: Response, next: NextFunction) {
+  try {
+    // get body from req object nftId, nftContractAddr
+    const {nftId, nftContractAddr} = req.body;
+    // get body from req object and parse it to Offer type
+    const {offerId, txHash} = req.body.offerAccepted as OfferAccepted;
+    // validating nftId is valid number & nftContractAddr is valid web3 address using web3 util isAddress
+    if (!nftId || isNaN(nftId) || !nftContractAddr || !web3.utils.isAddress(nftContractAddr)) {
+      throw new Error('invalid nftId or nftContractAddr');
+    }
+    // validating offerId is valid string of atleast 2 characters
+    if (!offerId || typeof offerId !== 'string' || offerId.length < 2) {
+      throw new Error('invalid offerAccepted');
+    }
+    // validating txHash is valid web3 txHash using regex
+    if (!txHash || !txHash.match(/^0x[a-fA-F0-9]{64}$/)) {
+      throw new Error('invalid txHash');
+    }
+    // call next middleware
+    next();
+  } catch (err) {
+    next(err);
+  }
+}
+
+// function to validate reject offer request body
+// eslint-disable-next-line complexity
+export async function isValidRejectBody(req: Request, res: Response, next: NextFunction) {
+  try {
+    // get body from req object nftId, nftContractAddr
+    const {nftId, nftContractAddr, offerId} = req.body;
+    // validating nftId is valid number & nftContractAddr is valid web3 address using web3 util isAddress
+    if (!nftId || isNaN(nftId) || !nftContractAddr || !web3.utils.isAddress(nftContractAddr)) {
+      throw new Error('invalid nftId or nftContractAddr');
+    }
+    // validating offerId is valid string of atleast 2 characters
+    if (!offerId || typeof offerId !== 'string' || offerId.length < 2) {
+      throw new Error('invalid offerRejected');
+    }
+    // call next middleware
+    next();
+  } catch (err) {
+    next(err);
+  }
+}
+
+// function to validate cancel offer request body
+export async function isValidCancelBody(req: Request, res: Response, next: NextFunction) {
+  try {
+    // get body from req object nftId, nftContractAddr
+    const {offerId} = req.body;
+    // validating offerId is valid string of atleast 2 characters
+    if (!offerId || typeof offerId !== 'string' || offerId.length < 2) {
+      throw new Error('invalid offerRejected');
+    }
+    // call next middleware
+    next();
+  } catch (err) {
+    next(err);
+  }
+}
+// function to validate get offer request body
+export async function isValidGetBuyOffersParams(req: Request, res: Response, next: NextFunction) {
+  try {
+    // get body from req object nftId, nftContractAddr
+    const {seller, status} = req.query;
+    // seller is valid web3 address using web3 util isAddress
+    if (!seller || !web3.utils.isAddress(<string>seller)) {
+      throw new Error('invalid seller address');
+    }
+    // status is valid OfferStatus enum
+    if (!status || !Object.values(OfferStatus).includes(status as OfferStatus)) {
+      throw new Error('invalid status');
+    }
+    // call next middleware
+    next();
+  } catch (err) {
+    next(err);
+  }
+}
+// function to validate get offer request body
+export async function isValidGetSellOffersParams(req: Request, res: Response, next: NextFunction) {
+  try {
+    // get body from req object nftId, nftContractAddr
+    const {seller, status} = req.query;
+    // seller is valid web3 address using web3 util isAddress
+    if (!seller || !web3.utils.isAddress(<string>seller)) {
+      throw new Error('invalid seller address');
+    }
+    // status is valid OfferStatus enum
+    if (!status || !Object.values(OfferStatus).includes(status as OfferStatus)) {
+      throw new Error('invalid status');
+    }
+    // call next middleware
+    next();
+  } catch (err) {
+    next(err);
+  }
+}
+
+// function to validate get offer request body
+export async function isValidGetBuyNFTOffersParams(req: Request, res: Response, next: NextFunction) {
+  try {
+    // get body from req object nftId, nftContractAddr
+    const {nftContractAddr, nftId, status} = req.query;
+    // nftId is valid number
+    if (!nftId || isNaN(Number(nftId))) {
+      throw new Error('invalid nftId');
+    }
+    // status is valid OfferStatus enum
+    if (!status || !Object.values(OfferStatus).includes(status as OfferStatus)) {
+      throw new Error('invalid status');
+    }
+    // nftContractAddr is valid web3 address using web3 util isAddress
+    if (!nftContractAddr || !web3.utils.isAddress(<string>nftContractAddr)) {
+      throw new Error('invalid "nftContractAddr"');
+    }
+    // call next middleware
+    next();
+  } catch (err) {
+    next(err);
+  }
+}
+// function to validate get offer request body
+// eslint-disable-next-line complexity
+export async function isValidGetSellNFTOffersParams(req: Request, res: Response, next: NextFunction) {
+  try {
+    // get body from req object nftId, nftContractAddr
+    const {nftContractAddr, nftId, seller, status} = req.query;
+    // nftId is valid number
+    if (!nftId || isNaN(Number(nftId))) {
+      throw new Error('invalid nftId');
+    }
+    // nftContractAddr is valid web3 address using web3 util isAddress
+    if (!nftContractAddr || !web3.utils.isAddress(<string>nftContractAddr)) {
+      throw new Error('invalid nftContractAddr');
+    }
+    // seller is valid web3 address using web3 util isAddress
+    if (!seller || !web3.utils.isAddress(<string>seller)) {
+      throw new Error('invalid seller address');
+    }
+    // status is valid OfferStatus enum
+    if (!status || !Object.values(OfferStatus).includes(status as OfferStatus)) {
+      throw new Error('invalid status');
+    }
+    // call next middleware
+    next();
+  } catch (err) {
+    next(err);
+  }
 }
