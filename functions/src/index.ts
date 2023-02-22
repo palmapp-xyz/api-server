@@ -46,8 +46,3 @@ app.use(errorHandler);
 // functions should be deployed to specific region 'asia-northeast3'
 export const v1 = functions.region('asia-northeast3').https.onRequest(app);
 
-// write a cloud function to update given stream based on the new user signup
-export const addUserIntoStream = functions.auth.user().onCreate((user) => {
-  const {displayName} = user; // TODO: need to check if displayName is pubKey ??
-  return addAddress(config.MORALIS_STREAM_ID!, displayName!);
-});
