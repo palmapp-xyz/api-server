@@ -1,1 +1,1055 @@
-{"openapi":"3.0.0","info":{"title":"Oedi API","description":"Oedi API powered by Firebase Functions and Moralis, base_url: https://us-central1-oedi-a1953.cloudfunctions.net/api ","termsOfService":"","version":"1.0.0"},"servers":[],"security":[{"JWT":[]}],"components":{"securitySchemes":{"JWT":{"type":"http","scheme":"bearer"}},"schemas":{"Stream":{"description":"","type":"object","properties":{"webhookUrl":{"description":"Webhook URL to send stream data on","type":"string"},"triggers":{"description":"Triggers to listen for on blockchain","type":"string"}}},"Profile":{"description":"","type":"object","properties":{"nft_image_url":{"description":"NFT's image URL to be displayed on profile","type":"string"},"nft_contract_addr":{"description":"user's NFT contract address","type":"string"},"nft_tokenId":{"description":"user's NFT token ID on given contract","type":"string"},"bio":{"description":"user's bio","type":"string"},"user_name":{"description":"user's name","type":"string"},"sendbird_token":{"description":"user's sendbird token\n...","type":"string"}}},"AuthRequestMessage":{"description":"","type":"object","properties":{"data":{"description":"","type":"object"},"networkType":{"description":"The network type e.g 'evm'","type":"string"},"address":{"description":"The address of the user","type":"string"},"chain":{"description":"The chain of the network e.g '0x1' for Ethereum Mainnet","type":"string"}}},"AuthIssueToken":{"description":"","type":"object","properties":{"data":{"description":"","type":"object"},"networkType":{"description":"The network type e.g 'evm'","type":"string"},"message":{"description":"The message that is signed by the user","type":"string"},"signature":{"description":"The signature of the message","type":"string"}}},"JwtIssueToken":{"description":"","type":"object","properties":{"networkType":{"description":"The network type e.g 'evm'","type":"string"},"message":{"description":"The message that is signed by the user","type":"string"},"signature":{"description":"The signature of the message","type":"string"}}}}},"paths":{"/stream/create":{"post":{"deprecated":false,"summary":"Creates a new stream on Moralis server","security":[{"JWT":[]}],"responses":{"200":{"description":"Stream object","content":{"application/json":{"schema":{"type":"object"}}}}},"parameters":[],"tags":["Stream"],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Stream"}}},"description":"Stream to be created","required":true}}},"/stream/update/:id":{"put":{"deprecated":false,"summary":"Updates a stream on Moralis server","security":[{"JWT":[]}],"responses":{"200":{"description":"Stream object","content":{"application/json":{"schema":{"type":"object"}}}}},"parameters":[{"name":"id","in":"params","description":"Stream ID to be updated","required":true,"deprecated":false,"schema":{"type":"string"}}],"tags":["Stream"],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Stream"}}},"description":"Stream to be updated","required":true}}},"/stream/getAll":{"get":{"deprecated":false,"summary":"Gets all streams on Moralis server","security":[],"responses":{"200":{"description":"Stream object","content":{"application/json":{"schema":{"type":"object"}}}}},"parameters":[],"tags":["Stream"]}},"/stream/delete/:id":{"delete":{"deprecated":false,"summary":"Deletes a stream on Moralis server","security":[],"responses":{"200":{"description":"Stream object","content":{"application/json":{"schema":{"type":"object"}}}}},"parameters":[{"name":"id","in":"params","description":"Stream ID to be deleted","required":true,"deprecated":false,"schema":{"type":"string"}}],"tags":["Stream"]}},"/stream/:id/add":{"post":{"deprecated":false,"summary":"Adds an address to a stream","security":[{"JWT":[]}],"responses":{"200":{"description":"Stream object","content":{"application/json":{"schema":{"type":"object"}}}}},"parameters":[{"name":"id","in":"params","description":"Stream ID where address is to be added","required":true,"deprecated":false,"schema":{"type":"string"}}],"tags":["Stream"],"requestBody":{"content":{"application/json":{"schema":{"type":"string"}}},"description":"Address to be added","required":true}}},"/stream/:id/remove":{"post":{"deprecated":false,"summary":"Removes an address from a stream","security":[{"JWT":[]}],"responses":{"200":{"description":"Stream object","content":{"application/json":{"schema":{"type":"object"}}}}},"parameters":[{"name":"id","in":"params","description":"Stream ID where address is to be removed","required":true,"deprecated":false,"schema":{"type":"string"}}],"tags":["Stream"],"requestBody":{"content":{"application/json":{"schema":{"type":"string"}}},"description":"Address to be removed","required":true}}},"/stream/:id/list":{"get":{"deprecated":false,"summary":"Gets all addresses from a stream","security":[],"responses":{"200":{"description":"Stream object","content":{"application/json":{"schema":{"type":"object"}}}}},"parameters":[{"name":"id","in":"params","description":"Stream ID where addresses are to be fetched","required":true,"deprecated":false,"schema":{"type":"string"}}],"tags":["Stream"]}},"/profile/create":{"post":{"deprecated":false,"summary":"Creates a new user's profile on Firestore","security":[{"JWT":[]}],"responses":{"200":{"description":"Profile object","content":{"application/json":{"schema":{"type":"object"},"examples":{"example1":{"summary":"profile created","value":"{\n   'message': 'profile created'\n }"}}}}}},"parameters":[],"tags":["Profile"],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Profile"}}},"description":"Profile to be created","required":true}}},"/profile/update":{"put":{"deprecated":false,"summary":"Updates a user's profile on Firestore","security":[{"JWT":[]}],"responses":{"200":{"description":"Profile object","content":{"application/json":{"schema":{"type":"object"},"examples":{"example1":{"summary":"profile updated","value":"{\n    'message': 'profile updated'\n}"}}}}}},"parameters":[],"tags":["Profile"],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Profile"}}},"description":"Profile to be updated","required":true}}},"/profile/get/:id":{"get":{"deprecated":false,"summary":"Gets a user's profile on Firestore","security":[],"responses":{"200":{"description":"Profile object","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Profile"},"examples":{"example1":{"summary":"profile retrieved","value":"{\n 'nft_image_url': 'https://example.com/image.png',\n 'nft_contract_addr': '0x1234567890abcdef1234567890abcdef12345678',\n 'nft_tokenId': '123',\n 'bio': 'This is user's bio',\n 'user_name': 'nickname'\n ...\n\n }"}}}}}},"parameters":[{"name":"id","in":"params","description":"User ID to get profile","required":true,"deprecated":false,"schema":{"type":"string"}}],"tags":["Profile"]}},"/profile/sendbird_token":{"get":{"deprecated":false,"summary":"Gets a user's profile on Firestore","security":[{"JWT":[]}],"responses":{"200":{"description":"sendbird token","content":{"application/json":{"schema":{"type":"string"},"examples":{"example1":{"summary":"sendbird token","value":"{\n 'sendbird_token': 'abcdef123451234567890abcdef1234567890abcdef12345678'\n\n }"}}}}}},"parameters":[],"tags":["Profile"]}},"/profile/delete":{"delete":{"deprecated":false,"summary":"Deletes a user's profile on Firestore","security":[{"JWT":[]}],"responses":{"200":{"description":"success object","content":{"application/json":{"schema":{"type":"object"},"examples":{"example1":{"summary":"profile deleted","value":"{\n   'message': 'profile deleted'\n}"}}}}}},"parameters":[],"tags":["Profile"]}},"/ext-moralis-auth-requestMessage":{"post":{"deprecated":false,"summary":"Request a message to be signed by the user. BaseURL: https://asia-northeast3-oedi-a1953.cloudfunctions.net","security":[],"responses":{"200":{"description":"The response object containing the message needs to be signed by the user","content":{"application/json":{"schema":{"type":"object"},"examples":{"example1":{"summary":"The response object containing the message needs to be signed by the user","value":"{\n    'result': {\n        'id': 'ZJN2CfqMldUWgezVH',\n        'message': 'oedi-a1953.web.app wants you to sign in with your Ethereum account:\\n0x1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0\\n\\nTo authenticate please sign this message.\\n\\nURI: https://oedi-a1953.web.app/\\nVersion: 1\\nChain ID: 1\\nNonce: Cwt6fznrxgHvIXdvv\\nIssued At: 2023-02-05T12:53:06.907Z\\nExpiration Time: 2023-02-05T13:08:06.641Z\\nNot Before: 2023-02-05T12:53:06.641Z',\n        'profileId': '0xad339ed840cb8c4e8f33a6fd07672c53f1c35ed197ba49f1536b43e27cb8b4a8'\n    }\n}"}}}}}},"parameters":[],"tags":["Auth"],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/AuthRequestMessage"},"examples":{"example1":{"summary":"The request object","value":"{\n   'data': {\n   'networkType': 'evm',\n   'address': '0x1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0',\n   'chain': '0x1'\n   }\n   }"}}}},"description":"The request body object containing the data object with the networkType, address and chain","required":true}}},"/ext-moralis-auth-issueToken":{"post":{"deprecated":false,"summary":"Issue a token for the user after verifying the signature, BaseURL: https://asia-northeast3-oedi-a1953.cloudfunctions.net","security":[],"responses":{"200":{"description":"The response object containing the auth token(custom token)","content":{"application/json":{"schema":{"type":"object"},"examples":{"example1":{"summary":"The response object containing the auth token(custom token)","value":"{\n   'result': {\n          'token': 'bXl0b2tlbg==23e4r23SDFasfdg'\n   }\n}"}}}}}},"parameters":[],"tags":["Auth"],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/AuthIssueToken"},"examples":{"example1":{"summary":"The request body object","value":"{\n  'data': {\n   'networkType': 'evm',\n   'message': 'oedi-a1953.web.app wants you to sign in with your Ethereum account:\\n0x1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0\\n\\nTo authenticate please sign this message.\\n\\nURI: https://oedi-a1953.web.app/\\nVersion: 1\\nChain ID: 1\\nNonce: Cwt6fznrxgHvIXdvv\\nIssued At: 2023-02-05T12:53:06.907Z\\nExpiration Time: 2023-02-05T13:08:06.641Z\\nNot Before: 2023-02-05T12:53:06.641Z',\n   'signature': '0xEfd3eFEfd3eFEfd3eF1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0eFEfd3eF1Efd3eFd7c78d9d3eFEfd3eF1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0eFEfd3eF1Efd3eFd7c78d9'\n   }\n   }"}}}},"description":"The request body object containing the data object with the networkType, message and signature","required":true}}},"/jwt/issue":{"post":{"deprecated":false,"summary":"Issue a jwt/id token for the user after verifying the signature, BaseURL: https://asia-northeast3-oedi-a1953.cloudfunctions.net/v1","security":[],"responses":{"200":{"description":"The response object containing the auth token(JWT token)","content":{"application/json":{"schema":{"type":"object"},"examples":{"example1":{"summary":"The response object containing the auth token(JWT token)","value":"{\n   'result': {\n          'idToken': 'bXl0b2tlbg==23e4r23SDFasfdg'\n   }\n}"}}}}}},"parameters":[],"tags":["Auth"],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/JwtIssueToken"},"examples":{"example1":{"summary":"The request body object","value":"{\n   'networkType': 'evm',\n   'message': 'oedi-a1953.web.app wants you to sign in with your Ethereum account:\\n0x1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0\\n\\nTo authenticate please sign this message.\\n\\nURI: https://oedi-a1953.web.app/\\nVersion: 1\\nChain ID: 1\\nNonce: Cwt6fznrxgHvIXdvv\\nIssued At: 2023-02-05T12:53:06.907Z\\nExpiration Time: 2023-02-05T13:08:06.641Z\\nNot Before: 2023-02-05T12:53:06.641Z',\n   'signature': '0xEfd3eFEfd3eFEfd3eF1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0eFEfd3eF1Efd3eFd7c78d9d3eFEfd3eF1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0eFEfd3eF1Efd3eFd7c78d9'\n   }"}}}},"description":"The request body object containing the data object with the networkType, message and signature","required":true}}}},"tags":[{"name":"Auth","description":""},{"name":"Profile","description":""},{"name":"Stream","description":""}]}
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Oedi API",
+    "description": "Oedi API powered by Firebase Functions and Moralis, base_url: https://us-central1-oedi-a1953.cloudfunctions.net/api ",
+    "termsOfService": "",
+    "version": "1.0.0"
+  },
+  "servers": [],
+  "security": [
+    {
+      "JWT": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "JWT": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "Stream": {
+        "description": "",
+        "type": "object",
+        "properties": {
+          "webhookUrl": {
+            "description": "Webhook URL to send stream data on",
+            "type": "string"
+          },
+          "triggers": {
+            "description": "Triggers to listen for on blockchain",
+            "type": "string"
+          }
+        }
+      },
+      "Profile": {
+        "description": "",
+        "type": "object",
+        "properties": {
+          "nft_image_url": {
+            "description": "NFT's image URL to be displayed on profile",
+            "type": "string"
+          },
+          "nft_contract_addr": {
+            "description": "user's NFT contract address",
+            "type": "string"
+          },
+          "nft_tokenId": {
+            "description": "user's NFT token ID on given contract",
+            "type": "string"
+          },
+          "bio": {
+            "description": "user's bio",
+            "type": "string"
+          },
+          "user_name": {
+            "description": "user's name",
+            "type": "string"
+          },
+          "sendbird_token": {
+            "description": "user's sendbird token\n...",
+            "type": "string"
+          }
+        }
+      },
+      "AuthRequestMessage": {
+        "description": "",
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "",
+            "type": "object"
+          },
+          "networkType": {
+            "description": "The network type e.g 'evm'",
+            "type": "string"
+          },
+          "address": {
+            "description": "The address of the user",
+            "type": "string"
+          },
+          "chain": {
+            "description": "The chain of the network e.g '0x1' for Ethereum Mainnet",
+            "type": "string"
+          }
+        }
+      },
+      "AuthIssueToken": {
+        "description": "",
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "",
+            "type": "object"
+          },
+          "networkType": {
+            "description": "The network type e.g 'evm'",
+            "type": "string"
+          },
+          "message": {
+            "description": "The message that is signed by the user",
+            "type": "string"
+          },
+          "signature": {
+            "description": "The signature of the message",
+            "type": "string"
+          }
+        }
+      },
+      "JwtIssueToken": {
+        "description": "",
+        "type": "object",
+        "properties": {
+          "networkType": {
+            "description": "The network type e.g 'evm'",
+            "type": "string"
+          },
+          "message": {
+            "description": "The message that is signed by the user",
+            "type": "string"
+          },
+          "signature": {
+            "description": "The signature of the message",
+            "type": "string"
+          }
+        }
+      },
+      "FriendBody": {
+        "description": "",
+        "required": [
+          "friendId"
+        ],
+        "type": "object",
+        "properties": {
+          "friendId": {
+            "description": "friendId ",
+            "type": "string",
+            "format": "eg: 0x1234567890abcdef1234567890abcdef12345678"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/stream/create": {
+      "post": {
+        "deprecated": false,
+        "summary": "Creates a new stream on Moralis server",
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stream object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "tags": [
+          "Stream"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Stream"
+              }
+            }
+          },
+          "description": "Stream to be created",
+          "required": true
+        }
+      }
+    },
+    "/stream/update/:id": {
+      "put": {
+        "deprecated": false,
+        "summary": "Updates a stream on Moralis server",
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stream object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Stream ID to be updated",
+            "required": true,
+            "deprecated": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Stream"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Stream"
+              }
+            }
+          },
+          "description": "Stream to be updated",
+          "required": true
+        }
+      }
+    },
+    "/stream/getAll": {
+      "get": {
+        "deprecated": false,
+        "summary": "Gets all streams on Moralis server",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Stream object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "tags": [
+          "Stream"
+        ]
+      }
+    },
+    "/stream/delete/:id": {
+      "delete": {
+        "deprecated": false,
+        "summary": "Deletes a stream on Moralis server",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Stream object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Stream ID to be deleted",
+            "required": true,
+            "deprecated": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Stream"
+        ]
+      }
+    },
+    "/stream/:id/add": {
+      "post": {
+        "deprecated": false,
+        "summary": "Adds an address to a stream",
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stream object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Stream ID where address is to be added",
+            "required": true,
+            "deprecated": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Stream"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Address to be added",
+          "required": true
+        }
+      }
+    },
+    "/stream/:id/remove": {
+      "post": {
+        "deprecated": false,
+        "summary": "Removes an address from a stream",
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stream object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Stream ID where address is to be removed",
+            "required": true,
+            "deprecated": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Stream"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Address to be removed",
+          "required": true
+        }
+      }
+    },
+    "/stream/:id/list": {
+      "get": {
+        "deprecated": false,
+        "summary": "Gets all addresses from a stream",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Stream object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Stream ID where addresses are to be fetched",
+            "required": true,
+            "deprecated": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Stream"
+        ]
+      }
+    },
+    "/profile/create": {
+      "post": {
+        "deprecated": false,
+        "summary": "Creates a new user's profile on Firestore",
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example1": {
+                    "summary": "profile created",
+                    "value": "{\n   'message': 'profile created'\n }"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "tags": [
+          "Profile"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Profile"
+              }
+            }
+          },
+          "description": "Profile to be created",
+          "required": true
+        }
+      }
+    },
+    "/profile/update": {
+      "put": {
+        "deprecated": false,
+        "summary": "Updates a user's profile on Firestore",
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example1": {
+                    "summary": "profile updated",
+                    "value": "{\n    'message': 'profile updated'\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "tags": [
+          "Profile"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Profile"
+              }
+            }
+          },
+          "description": "Profile to be updated",
+          "required": true
+        }
+      }
+    },
+    "/profile/get/:id": {
+      "get": {
+        "deprecated": false,
+        "summary": "Gets a user's profile on Firestore",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Profile object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                },
+                "examples": {
+                  "example1": {
+                    "summary": "profile retrieved",
+                    "value": "{\n 'nft_image_url': 'https://example.com/image.png',\n 'nft_contract_addr': '0x1234567890abcdef1234567890abcdef12345678',\n 'nft_tokenId': '123',\n 'bio': 'This is user's bio',\n 'user_name': 'nickname'\n ...\n\n }"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "User ID to get profile",
+            "required": true,
+            "deprecated": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Profile"
+        ]
+      }
+    },
+    "/profile/sendbird_token": {
+      "get": {
+        "deprecated": false,
+        "summary": "Gets a user's profile on Firestore",
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "sendbird token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "example1": {
+                    "summary": "sendbird token",
+                    "value": "{\n 'sendbird_token': 'abcdef123451234567890abcdef1234567890abcdef12345678'\n\n }"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "tags": [
+          "Profile"
+        ]
+      }
+    },
+    "/profile/delete": {
+      "delete": {
+        "deprecated": false,
+        "summary": "Deletes a user's profile on Firestore",
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example1": {
+                    "summary": "profile deleted",
+                    "value": "{\n   'message': 'profile deleted'\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "tags": [
+          "Profile"
+        ]
+      }
+    },
+    "/ext-moralis-auth-requestMessage": {
+      "post": {
+        "deprecated": false,
+        "summary": "Request a message to be signed by the user. BaseURL: https://asia-northeast3-oedi-a1953.cloudfunctions.net",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "The response object containing the message needs to be signed by the user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example1": {
+                    "summary": "The response object containing the message needs to be signed by the user",
+                    "value": "{\n    'result': {\n        'id': 'ZJN2CfqMldUWgezVH',\n        'message': 'oedi-a1953.web.app wants you to sign in with your Ethereum account:\\n0x1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0\\n\\nTo authenticate please sign this message.\\n\\nURI: https://oedi-a1953.web.app/\\nVersion: 1\\nChain ID: 1\\nNonce: Cwt6fznrxgHvIXdvv\\nIssued At: 2023-02-05T12:53:06.907Z\\nExpiration Time: 2023-02-05T13:08:06.641Z\\nNot Before: 2023-02-05T12:53:06.641Z',\n        'profileId': '0xad339ed840cb8c4e8f33a6fd07672c53f1c35ed197ba49f1536b43e27cb8b4a8'\n    }\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthRequestMessage"
+              },
+              "examples": {
+                "example1": {
+                  "summary": "The request object",
+                  "value": "{\n   'data': {\n   'networkType': 'evm',\n   'address': '0x1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0',\n   'chain': '0x1'\n   }\n   }"
+                }
+              }
+            }
+          },
+          "description": "The request body object containing the data object with the networkType, address and chain",
+          "required": true
+        }
+      }
+    },
+    "/ext-moralis-auth-issueToken": {
+      "post": {
+        "deprecated": false,
+        "summary": "Issue a token for the user after verifying the signature, BaseURL: https://asia-northeast3-oedi-a1953.cloudfunctions.net",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "The response object containing the auth token(custom token)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example1": {
+                    "summary": "The response object containing the auth token(custom token)",
+                    "value": "{\n   'result': {\n          'token': 'bXl0b2tlbg==23e4r23SDFasfdg'\n   }\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthIssueToken"
+              },
+              "examples": {
+                "example1": {
+                  "summary": "The request body object",
+                  "value": "{\n  'data': {\n   'networkType': 'evm',\n   'message': 'oedi-a1953.web.app wants you to sign in with your Ethereum account:\\n0x1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0\\n\\nTo authenticate please sign this message.\\n\\nURI: https://oedi-a1953.web.app/\\nVersion: 1\\nChain ID: 1\\nNonce: Cwt6fznrxgHvIXdvv\\nIssued At: 2023-02-05T12:53:06.907Z\\nExpiration Time: 2023-02-05T13:08:06.641Z\\nNot Before: 2023-02-05T12:53:06.641Z',\n   'signature': '0xEfd3eFEfd3eFEfd3eF1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0eFEfd3eF1Efd3eFd7c78d9d3eFEfd3eF1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0eFEfd3eF1Efd3eFd7c78d9'\n   }\n   }"
+                }
+              }
+            }
+          },
+          "description": "The request body object containing the data object with the networkType, message and signature",
+          "required": true
+        }
+      }
+    },
+    "/jwt/issue": {
+      "post": {
+        "deprecated": false,
+        "summary": "Issue a jwt/id token for the user after verifying the signature, BaseURL: https://asia-northeast3-oedi-a1953.cloudfunctions.net/v1",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "The response object containing the auth token(JWT token)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example1": {
+                    "summary": "The response object containing the auth token(JWT token)",
+                    "value": "{\n   'result': {\n          'idToken': 'bXl0b2tlbg==23e4r23SDFasfdg'\n   }\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JwtIssueToken"
+              },
+              "examples": {
+                "example1": {
+                  "summary": "The request body object",
+                  "value": "{\n   'networkType': 'evm',\n   'message': 'oedi-a1953.web.app wants you to sign in with your Ethereum account:\\n0x1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0\\n\\nTo authenticate please sign this message.\\n\\nURI: https://oedi-a1953.web.app/\\nVersion: 1\\nChain ID: 1\\nNonce: Cwt6fznrxgHvIXdvv\\nIssued At: 2023-02-05T12:53:06.907Z\\nExpiration Time: 2023-02-05T13:08:06.641Z\\nNot Before: 2023-02-05T12:53:06.641Z',\n   'signature': '0xEfd3eFEfd3eFEfd3eF1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0eFEfd3eF1Efd3eFd7c78d9d3eFEfd3eF1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0eFEfd3eF1Efd3eFd7c78d9'\n   }"
+                }
+              }
+            }
+          },
+          "description": "The request body object containing the data object with the networkType, message and signature",
+          "required": true
+        }
+      }
+    },
+    "/friends/list/:id": {
+      "get": {
+        "deprecated": false,
+        "summary": "Gets a user's friends list",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Friends list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example1": {
+                    "summary": "friends list retrieved",
+                    "value": "{\n'friends': [ '0x1234567890abcdef1234567890abcdef12345678']\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "User ID to get friends list",
+            "required": true,
+            "deprecated": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Friends"
+        ]
+      }
+    },
+    "/friends/list/requests": {
+      "get": {
+        "deprecated": false,
+        "summary": "Gets a user's friend requests, which are pending for user to accept/reject",
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Friend requests list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example1": {
+                    "summary": "friend requests list retrieved",
+                    "value": "{\n'requests': [ '0x1234567890abcdef1234567890abcdef12345678']\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "tags": [
+          "Friends"
+        ]
+      }
+    },
+    "/friends/list/pending": {
+      "get": {
+        "deprecated": false,
+        "summary": "Gets a user's friend requests, which are pending for user to accept/reject",
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Friend requests list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example1": {
+                    "summary": "friend requests list retrieved",
+                    "value": "{\n'pending': [ '0x1234567890abcdef1234567890abcdef12345678']\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "tags": [
+          "Friends"
+        ]
+      }
+    },
+    "/friends/request": {
+      "post": {
+        "deprecated": false,
+        "summary": "Sends a friend request to another user",
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Friend request sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example1": {
+                    "summary": "friend request sent",
+                    "value": "{\n'message': 'friend request sent'\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "tags": [
+          "Friends"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FriendBody"
+              }
+            }
+          },
+          "description": "friendId to send friend request",
+          "required": true
+        }
+      }
+    },
+    "/friends/accept": {
+      "post": {
+        "deprecated": false,
+        "summary": "Accepts a friend's request of given user",
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Friend request accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example1": {
+                    "summary": "friend request accepted",
+                    "value": "{\n'message': 'friend request accepted'\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "tags": [
+          "Friends"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FriendBody"
+              }
+            }
+          },
+          "description": "friendId to accept friend request",
+          "required": true
+        }
+      }
+    },
+    "/friends/reject": {
+      "post": {
+        "deprecated": false,
+        "summary": "Rejects a friend's request of given user",
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Friend request rejected",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example1": {
+                    "summary": "friend request rejected",
+                    "value": "{\n'message': 'friend request rejected'\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "tags": [
+          "Friends"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FriendBody"
+              }
+            }
+          },
+          "description": "friendId to reject friend request",
+          "required": true
+        }
+      }
+    },
+    "/friends/unfriend": {
+      "post": {
+        "deprecated": false,
+        "summary": "Unfriends a given user from current user's friend list",
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Friend is unfriended",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example1": {
+                    "summary": "Friend is unfriended",
+                    "value": "{\n'message': 'Friend is unfriended'\n}"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "tags": [
+          "Friends"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FriendBody"
+              }
+            }
+          },
+          "description": "friendId to unfriend",
+          "required": true
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Auth",
+      "description": ""
+    },
+    {
+      "name": "Friends",
+      "description": ""
+    },
+    {
+      "name": "Profile",
+      "description": ""
+    },
+    {
+      "name": "Stream",
+      "description": ""
+    }
+  ]
+}
