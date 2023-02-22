@@ -7,7 +7,7 @@ const options = {
   info: {
     version: '1.0.0',
     title: 'Oedi API',
-    description: 'Oedi API powered by Firebase Functions and Moralis, base_url: https://us-central1-oedi-a1953.cloudfunctions.net/api ',
+    description: 'Oedi API powered by Firebase Functions and Moralis, base_url: https://us-central1-oedi-a1953.cloudfunctions.net/v1 ',
   },
   security: {
     JWT: {
