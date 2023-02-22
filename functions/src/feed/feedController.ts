@@ -30,7 +30,7 @@ export const getFriendFeed = async (req: Request, res: Response, next: NextFunct
   try {
     // request body
     const {limit, offset} = req.body;
-    const {friendId} = req.query;
+    const {friendId} = req.params;
     // check if given friendId is valid friend of login user
     const friends = await firestore.collection('friends').doc(res.locals.displayName).get();
     if (!friends.get('accepted').includes(friendId)) {
