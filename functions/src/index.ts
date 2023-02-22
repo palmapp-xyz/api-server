@@ -12,6 +12,7 @@ import swaggerui from 'swagger-ui-express';
 import {jwtRouter} from './auth/jwtRouter';
 import {offerRouter} from './offer/offerRouter';
 import {addAddress} from './stream/streamService';
+import feedRouter from "./feed/feedRouter";
 // eslint-disable-next-line etc/no-commented-out-code
 // import {getSwagger} from './Swagger';
 
@@ -37,6 +38,7 @@ app.use('/stream', streamRouter);
 app.use('/profile', profileRouter);
 // eslint-disable-next-line etc/no-commented-out-code
 // app.use('/offer', offerRouter);
+app.use('/feed', feedRouter);
 
 
 // eslint-disable-next-line no-inline-comments
