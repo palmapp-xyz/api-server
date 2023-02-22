@@ -12,12 +12,17 @@ import {isAuthenticated} from '../middlewares/authHandler';
 
 // generate router instance for friend routes and export it to use in app.ts and index.ts
 export const friendRouter = Router();
+/**
+ * @typedef {object} FriendBody - body object for friend APIs calls
+ * @property {string} friendId.required - friendId  - eg: 0x1234567890abcdef1234567890abcdef12345678
+ *
+ */
 // get all friends
 /**
  * GET /friends/list/:id
  * @summary Gets a user's friends list
  * @tags Friends
- * @param {string} id.params.required - User ID to get friends list
+ * @param {string} id.query.required - User ID to get friends list
  * @return {object} 200 - Friends list
  * @example response - 200 - friends list retrieved
  * {
@@ -56,12 +61,16 @@ friendRouter.get('/list/pending', isAuthenticated, getPendingRequests);
  * POST /friends/request
  * @summary Sends a friend request to another user
  * @tags Friends
- * @param {string} request.body.friendId.required - User ID to send friend request
+ * @param {FriendBody} request.body.required - friendId to send friend request
  * @return {object} 200 - Friend request sent
  * @example response - 200 - friend request sent
  * {
  * 'message': 'friend request sent'
  * }
+ * @example param - friendId
+ * {
+ *  friendId: '0x1234567890abcdef1234567890abcdef12345678'
+ *  }
  * @security JWT
  */
 friendRouter.post('/request', isAuthenticated, requestFriend);
@@ -70,11 +79,15 @@ friendRouter.post('/request', isAuthenticated, requestFriend);
  * POST /friends/accept
  * @summary Accepts a friend's request of given user
  * @tags Friends
- * @param {string} request.body.friendId.required - User ID to accept friend request
+ * @param {FriendBody} request.body.required - friendId to accept friend request
  * @return {object} 200 - Friend request accepted
  * @example response - 200 - friend request accepted
  * {
  * 'message': 'friend request accepted'
+ * }
+ * @example param - friendId
+ * {
+ *   friendId: '0x1234567890abcdef1234567890abcdef12345678'
  * }
  * @security JWT
  */
@@ -84,12 +97,16 @@ friendRouter.post('/accept', isAuthenticated, acceptFriend);
  * POST /friends/reject
  * @summary Rejects a friend's request of given user
  * @tags Friends
- * @param {string} request.body.friendId.required - User ID to reject friend request
+ * @param {FriendBody} request.body.required - friendId to reject friend request
  * @return {object} 200 - Friend request rejected
  * @example response - 200 - friend request rejected
  * {
  * 'message': 'friend request rejected'
  * }
+ * @example param - friendId
+ * {
+ *  friendId: '0x1234567890abcdef1234567890abcdef12345678'
+ *  }
  * @security JWT
  */
 friendRouter.post('/reject', isAuthenticated, rejectFriend);
@@ -98,11 +115,15 @@ friendRouter.post('/reject', isAuthenticated, rejectFriend);
  * POST /friends/unfriend
  * @summary Unfriends a given user from current user's friend list
  * @tags Friends
- * @param {string} request.body.friendId.required - User ID to unfriend
+ * @param {FriendBody} request.body.required - friendId to unfriend
  * @return {object} 200 - Friend is unfriended
  * @example response - 200 - Friend is unfriended
  * {
  * 'message': 'Friend is unfriended'
+ * }
+ * @example param - friendId
+ * {
+ * friendId: '0x1234567890abcdef1234567890abcdef12345678'
  * }
  * @security JWT
  */
