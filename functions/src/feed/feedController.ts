@@ -17,6 +17,7 @@ export const getFriendsFeed = async (req: Request, res: Response, next: NextFunc
         .where('name', 'in', friends.get('accepted'))
         .offset(offset)
         .limit(limit)
+        .orderBy('blockTimestamp', 'desc')
         .get();
     // sending feed to client
     res.status(200).json({feed: feed.docs.map((doc) => doc.data())});
@@ -42,6 +43,7 @@ export const getFriendFeed = async (req: Request, res: Response, next: NextFunct
         .where('name', '==', friendId)
         .offset(offset)
         .limit(limit)
+        .orderBy('blockTimestamp', 'desc')
         .get();
     // sending feed to client
     res.status(200).json({feed: feed.docs.map((doc) => doc.data())});
@@ -61,6 +63,7 @@ export const getFeed = async (req: Request, res: Response, next: NextFunction) =
         .where('name', '==', res.locals.displayName)
         .offset(offset)
         .limit(limit)
+        .orderBy('blockTimestamp', 'desc')
         .get();
     // sending feed to client
     res.status(200).json({feed: feed.docs.map((doc) => doc.data())});
