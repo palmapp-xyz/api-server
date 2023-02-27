@@ -164,7 +164,7 @@ export const getFeed = async (req: Request, res: Response, next: NextFunction) =
 export const getCollectionFeed = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // request body
-    const {limit, offset, collectionAddr} = req.body;
+    const {limit, offset, collectionAddr} = req.params as unknown as {limit: number; offset: number, collectionAddr: string};
     // fetching taker feed of friends from firestore
     const feedByTaker = await firestore
         .collection('moralis/events/InAppTrades')
