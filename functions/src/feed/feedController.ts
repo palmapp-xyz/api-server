@@ -57,16 +57,27 @@ export const getFeed = async (req: Request, res: Response, next: NextFunction) =
   try {
     // request body
     const {limit, offset} = req.body;
-    // fetching feed of friends from firestore
-    const feed = await firestore
+    // fetching feed of user from firestore based on maker or taker is login user
+    const feedByMaker = await firestore
         .collection('moralis/events/InAppTrades')
-        .where('name', '==', res.locals.displayName)
+        .where('maker', '==', res.locals.displayName)
         .offset(offset)
         .limit(limit)
         .orderBy('blockTimestamp', 'desc')
         .get();
+    const feedByTaker = await firestore
+        .collection('moralis/events/InAppTrades')
+        .where('maker', '==', res.locals.displayName)
+        .offset(offset)
+        .limit(limit)
+        .orderBy('blockTimestamp', 'desc')
+        .get();
+    // merging both feeds and sorting them by blockTimestamp
+    const feed = feedByMaker.docs.concat(feedByTaker.docs).sort((a, b) => {
+      return b.data().blockTimestamp - a.data().blockTimestamp;
+    });
     // sending feed to client
-    res.status(200).json({feed: feed.docs.map((doc) => doc.data())});
+    res.status(200).json({feed: feed.map((doc) => doc.data())});
   } catch (error) {
     next(error);
   }
