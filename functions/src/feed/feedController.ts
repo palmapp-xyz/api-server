@@ -164,12 +164,12 @@ export const getFeed = async (req: Request, res: Response, next: NextFunction) =
 export const getCollectionFeed = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // request body
-    const {limit, offset, collection} = req.body;
+    const {limit, offset, collectionAddr} = req.body;
     // fetching taker feed of friends from firestore
     const feedByTaker = await firestore
         .collection('moralis/events/InAppTrades')
         .where('taker', '==', res.locals.displayName)
-        .where('erc721Token', '==', collection)
+        .where('erc721Token', '==', collectionAddr)
         .offset(offset)
         .limit(limit)
         .orderBy('blockTimestamp', 'desc')
@@ -178,7 +178,7 @@ export const getCollectionFeed = async (req: Request, res: Response, next: NextF
     const feedByMaker = await firestore
         .collection('moralis/events/InAppTrades')
         .where('maker', '==', res.locals.displayName)
-        .where('erc721Token', '==', collection)
+        .where('erc721Token', '==', collectionAddr)
         .offset(offset)
         .limit(limit)
         .orderBy('blockTimestamp', 'desc')
