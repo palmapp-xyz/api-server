@@ -5,10 +5,11 @@ import {body, validationResult} from 'express-validator';
 import {firestore} from '../index';
 
 // writing a controller function to fetch feed of a user's friends using their public keys from firestore
+// eslint-disable-next-line complexity
 export const getFriendsFeed = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // validating request body
-    const {limit, offset} = req.body;
+    const {limit, offset} = req.params as unknown as {limit: number; offset: number};
     // fetching friends public keys from firestore
     const friends = await firestore.collection('friends').doc(res.locals.displayName).get();
     // check if login user has any friends
@@ -62,9 +63,8 @@ export const getFriendsFeed = async (req: Request, res: Response, next: NextFunc
 // writing a controller to fetch feed of login user's given friend using their public key from firestore
 export const getFriendFeed = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // request body
-    const {limit, offset} = req.body;
-    const {friendId} = req.params;
+    // request params
+    const {limit, offset, friendId} = req.params as unknown as {limit: number; offset: number, friendId: string};
     // check if given friendId is valid friend of login user
     const friends = await firestore.collection('friends').doc(res.locals.displayName).get();
     if (!friends.get('accepted').includes(friendId)) {
@@ -114,8 +114,9 @@ export const getFriendFeed = async (req: Request, res: Response, next: NextFunct
 // writing a controller to fetch feed of login user
 export const getFeed = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // request body
-    const {limit, offset} = req.body;
+    // request params for pagination
+    const {limit, offset} = req.params as unknown as {limit: number; offset: number};
+
     // fetching feed of user from firestore based on maker or taker is login user
     const feedByMaker = await firestore
         .collection('moralis/events/InAppTrades')
