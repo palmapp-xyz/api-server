@@ -152,3 +152,58 @@ export const getFeed = async (req: Request, res: Response, next: NextFunction) =
     next(error);
   }
 };
+
+// get feed per collection of user
+// TODO: get feed per collection of friend
+// TODO: get feed per collection of friends
+// TODO: sort feed by block number or block timestamp. (blockTimestamp is better) (done)
+// TODO: get public feed of user
+
+// writing a controller to fetch feed of login user's given collection
+export const getCollectionFeed = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // request body
+    const {limit, offset, collection} = req.body;
+    // fetching taker feed of friends from firestore
+    const feedByTaker = await firestore
+        .collection('moralis/events/InAppTrades')
+        .where('taker', '==', res.locals.displayName)
+        .where('erc721Token', '==', collection)
+        .offset(offset)
+        .limit(limit)
+        .orderBy('blockTimestamp', 'desc')
+        .get();
+    // fetching maker feed of friends from firestore
+    const feedByMaker = await firestore
+        .collection('moralis/events/InAppTrades')
+        .where('maker', '==', res.locals.displayName)
+        .where('erc721Token', '==', collection)
+        .offset(offset)
+        .limit(limit)
+        .orderBy('blockTimestamp', 'desc')
+        .get();
+    // check if both feeds are non empty
+    if (!feedByTaker.docs.length && !feedByMaker.docs.length) {
+      // merging both feeds and sorting them by blockTimestamp in descending order
+      const feed = feedByTaker.docs
+          .concat(feedByMaker.docs)
+          .sort((a, b) => b.data().blockTimestamp - a.data().blockTimestamp);
+      // sending feed to client
+      res.status(200).json({feed: feed.map((doc) => doc.data())});
+    } else {
+      // check if both feeds are empty
+      if (!feedByTaker.docs.length && !feedByMaker.docs.length) {
+        // sending error response to client if both feeds are empty
+        throw new Error('no feed');
+      } else {
+        // check if taker feed is empty and maker feed is non-empty then send maker feed to client, vice versa
+        res.status(200).json({
+          feed: feedByTaker.docs.length ? feedByTaker.docs.map((doc) => doc.data()) : feedByMaker.docs.map((doc) => doc.data()),
+        });
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
