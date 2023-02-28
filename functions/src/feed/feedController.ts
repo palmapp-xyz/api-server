@@ -1,7 +1,5 @@
 import {NextFunction, Request, Response} from 'express';
 
-// we are using express-validator to validate the request body
-import {body, validationResult} from 'express-validator';
 import {firestore} from '../index';
 
 // writing a controller function to fetch feed of a user's friends using their public keys from firestore
