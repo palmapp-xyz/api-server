@@ -7,9 +7,16 @@ import {firestore} from '../index';
 export const getFriendsFeed = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // validating request body
-    const {limit, offset} = req.params as unknown as {limit: number; offset: number};
+    const {limit, offset, address} = req.query;
+    // parse limit and offset to integer
+    const limitInt = parseInt(limit as string, 10);
+    const offsetInt = parseInt(offset as string, 10);
+
     // fetching friends public keys from firestore
-    const friends = await firestore.collection('friends').doc(res.locals.displayName).get();
+    const friends = await firestore
+        .collection('friends')
+        .doc(address as string)
+        .get();
     // check if login user has any friends
     if (!friends.get('accepted').length && friends.get('accepted').length === 0) {
       // sending error response to client if login user has no friends
@@ -18,18 +25,18 @@ export const getFriendsFeed = async (req: Request, res: Response, next: NextFunc
 
     // fetching taker feed of friends from firestore
     const feedByTaker = await firestore
-        .collection('moralis/events/InAppTrades')
+        .collection('/moralis/events/InAppTrades')
         .where('taker', 'in', friends.get('accepted'))
-        .offset(offset)
-        .limit(limit)
+        .offset(offsetInt)
+        .limit(limitInt)
         .orderBy('blockTimestamp', 'desc')
         .get();
     // fetching maker feed of friends from firestore
     const feedByMaker = await firestore
         .collection('moralis/events/InAppTrades')
         .where('maker', 'in', friends.get('accepted'))
-        .offset(offset)
-        .limit(limit)
+        .offset(offsetInt)
+        .limit(limitInt)
         .orderBy('blockTimestamp', 'desc')
         .get();
     // check if both feeds are non empty
@@ -61,27 +68,35 @@ export const getFriendsFeed = async (req: Request, res: Response, next: NextFunc
 // writing a controller to fetch feed of login user's given friend using their public key from firestore
 export const getFriendFeed = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    // request query params
+    const {limit, offset, address} = req.query;
     // request params
-    const {limit, offset, friendId} = req.params as unknown as {limit: number; offset: number, friendId: string};
+    const {friendId} = req.params;
+    // parse limit and offset to number
+    const limit_n = parseInt(limit as string, 10);
+    const offset_n = parseInt(offset as string, 10);
     // check if given friendId is valid friend of login user
-    const friends = await firestore.collection('friends').doc(res.locals.displayName).get();
+    const friends = await firestore
+        .collection('friends')
+        .doc(address as string)
+        .get();
     if (!friends.get('accepted').includes(friendId)) {
       throw new Error('invalid friendId');
     }
     // fetching taker feed of friends from firestore
     const feedByTaker = await firestore
-        .collection('moralis/events/InAppTrades')
+        .collection('/moralis/events/InAppTrades')
         .where('taker', '==', friendId)
-        .offset(offset)
-        .limit(limit)
+        .offset(offset_n)
+        .limit(limit_n)
         .orderBy('blockTimestamp', 'desc')
         .get();
     // fetching maker feed of friends from firestore
     const feedByMaker = await firestore
         .collection('moralis/events/InAppTrades')
         .where('maker', '==', friendId)
-        .offset(offset)
-        .limit(limit)
+        .offset(offset_n)
+        .limit(limit_n)
         .orderBy('blockTimestamp', 'desc')
         .get();
     // check if both feeds are non empty
@@ -113,21 +128,23 @@ export const getFriendFeed = async (req: Request, res: Response, next: NextFunct
 export const getFeed = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // request params for pagination
-    const {limit, offset} = req.params as unknown as {limit: number; offset: number};
-
+    const {limit, offset, address} = req.query;
+    // parse limit and offset to number
+    const limit_n = parseInt(limit as unknown as string, 10);
+    const offset_n = parseInt(offset as unknown as string, 10);
     // fetching feed of user from firestore based on maker or taker is login user
     const feedByMaker = await firestore
-        .collection('moralis/events/InAppTrades')
-        .where('maker', '==', res.locals.displayName)
-        .offset(offset)
-        .limit(limit)
+        .collection('/moralis/events/InAppTrades')
+        .where('maker', '==', address)
+        .offset(offset_n)
+        .limit(limit_n)
         .orderBy('blockTimestamp', 'desc')
         .get();
     const feedByTaker = await firestore
-        .collection('moralis/events/InAppTrades')
-        .where('maker', '==', res.locals.displayName)
-        .offset(offset)
-        .limit(limit)
+        .collection('InAppTrades')
+        .where('taker', '==', address)
+        .offset(offset_n)
+        .limit(limit_n)
         .orderBy('blockTimestamp', 'desc')
         .get();
     // checking if both feeds are not empty
@@ -162,23 +179,27 @@ export const getFeed = async (req: Request, res: Response, next: NextFunction) =
 export const getCollectionFeed = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // request body
-    const {limit, offset, collectionAddr} = req.params as unknown as {limit: number; offset: number, collectionAddr: string};
+    const {limit, offset, address} = req.query;
+    const {collectionAddr} = req.params;
+    // parse limit and offset to integer
+    const limit_n = parseInt(limit as unknown as string, 10);
+    const offset_n = parseInt(offset as unknown as string, 10);
     // fetching taker feed of friends from firestore
     const feedByTaker = await firestore
-        .collection('moralis/events/InAppTrades')
-        .where('taker', '==', res.locals.displayName)
+        .collection('/moralis/events/InAppTrades')
+        .where('taker', '==', address)
         .where('erc721Token', '==', collectionAddr)
-        .offset(offset)
-        .limit(limit)
+        .offset(offset_n)
+        .limit(limit_n)
         .orderBy('blockTimestamp', 'desc')
         .get();
     // fetching maker feed of friends from firestore
     const feedByMaker = await firestore
-        .collection('moralis/events/InAppTrades')
-        .where('maker', '==', res.locals.displayName)
+        .collection('/moralis/events/InAppTrades')
+        .where('maker', '==', address)
         .where('erc721Token', '==', collectionAddr)
-        .offset(offset)
-        .limit(limit)
+        .offset(offset_n)
+        .limit(limit_n)
         .orderBy('blockTimestamp', 'desc')
         .get();
     // check if both feeds are non empty
@@ -205,4 +226,3 @@ export const getCollectionFeed = async (req: Request, res: Response, next: NextF
     next(error);
   }
 };
-
