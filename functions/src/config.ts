@@ -5,7 +5,8 @@ dotenv.config({path: `.env.${process.env.NODE_ENV}`});
 const config = {
   HOST: readEnv('HOST'),
 
-  PORT: Number(readEnv('PORT')),
+  // eslint-disable-next-line etc/no-commented-out-code
+  // PORT: Number(readEnv('PORT')),
 
   MORALIS_API_KEY: readEnv('MORALIS_API_KEY'),
 
