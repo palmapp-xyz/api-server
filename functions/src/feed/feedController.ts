@@ -168,13 +168,6 @@ export const getFeed = async (req: Request, res: Response, next: NextFunction) =
     next(error);
   }
 };
-
-// get feed per collection of user
-// TODO: get feed per collection of friend
-// TODO: get feed per collection of friends
-// TODO: sort feed by block number or block timestamp. (blockTimestamp is better) (done)
-// TODO: get public feed of user
-
 // writing a controller to fetch feed of login user's given collection
 export const getCollectionFeed = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -226,3 +219,5 @@ export const getCollectionFeed = async (req: Request, res: Response, next: NextF
     next(error);
   }
 };
+// TODO: get feed per collection of friend
+// TODO: get feed per collection of friends
