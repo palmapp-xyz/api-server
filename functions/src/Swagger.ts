@@ -7,7 +7,7 @@ const options = {
   info: {
     version: '1.0.0',
     title: 'Oedi API',
-    description: 'Oedi API powered by Firebase Functions and Moralis, base_url: https://us-central1-oedi-a1953.cloudfunctions.net/api ',
+    description: 'Oedi API powered by Firebase Functions and Moralis, base_url: https://us-central1-oedi-a1953.cloudfunctions.net/v1 ',
   },
   security: {
     JWT: {
@@ -20,7 +20,7 @@ const options = {
   // eslint-disable-next-line max-len
   // Glob pattern to find your jsdoc files (multiple patterns can be added in an array)
   // eslint-disable-next-line max-len
-  filesPattern: ['./stream/streamRouter.js', './apiRouter.js', './profile/profileRouter.js', './swagger-auth.js'],
+  filesPattern: ['./stream/streamRouter.js', './apiRouter.js', './profile/profileRouter.js', './swagger-auth.js', './auth/jwtRouter.js', './friends/friendRouter.js'],
   exposeSwaggerUI: true,
 };
 

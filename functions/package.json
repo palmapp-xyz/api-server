@@ -9,6 +9,9 @@
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
+    "test:jwt": "mocha --exit --require ts-node/register 'test/jwt.test.ts' --timeout 240000",
+    "test:offer": "mocha --exit --require ts-node/register 'test/offer.test.ts' --timeout 240000",
+    "test:friends": "mocha --exit --require ts-node/register 'test/friends.test.ts' --timeout 240000"
     "docs": "yarn build && node lib/index.js",
     "test": "mocha --exit --require ts-node/register 'test/*.ts' --timeout 240000",
     "test:feed": "mocha --exit --require ts-node/register 'test/feed.test.ts' --timeout 240000"
