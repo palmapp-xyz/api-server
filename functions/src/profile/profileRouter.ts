@@ -51,7 +51,7 @@ profileRouter.route('/update').put(isAuthenticated, update);
  * GET /profile/get/:id
  * @summary Gets a user's profile on Firestore
  * @tags Profile
- * @param {string} id.params.required - User ID to get profile
+ * @param {string} id.query.required - User ID to get profile
  * @return {Profile} 200 - Profile object
  * @example response - 200 - profile retrieved
  * {
