@@ -12,7 +12,7 @@ const feedRouter = express.Router();
  * @param {string} address.query.required - address of user
  * @param {integer} limit.query.required - limit of feed
  * @param {integer} offset.query.required - offset of feed
- * @param {integer} chainId.query.required - chianId of feed to fetch
+ * @param {integer} chainId.query.required - chainId of feed to fetch
  * @return {object} 200 - feed of given user
  * @example response - 200 - success response example
  * {
@@ -53,7 +53,7 @@ feedRouter.get('/', /* isAuthenticated,*/ validatePagination, validateChainId, g
  * @param {string} friendId.path.required - address of friend
  * @param {integer} limit.query.required - limit of feed
  * @param {integer} offset.query.required - offset of feed
- * @param {integer} chainId.query.required - chianId of feed to fetch
+ * @param {integer} chainId.query.required - chainId of feed to fetch
  * @param {string} address.query.required - address of user
  * @return {object} 200 - feed of given user's given friend
  * @example response - 200 - success response example
@@ -93,7 +93,7 @@ feedRouter.get('/friends/:friendId', /* isAuthenticated,*/ validatePagination, v
  * @summary fetch feed of given user's friends
  * @param {integer} limit.query.required - limit of feed
  * @param {integer} offset.query.required - offset of feed
- * @param {integer} chainId.query.required - chianId of feed to fetch
+ * @param {integer} chainId.query.required - chainId of feed to fetch
  * @param {string} address.query.required - address of user
  * @return {object} 200 - feed of given user's friends
  * @example response - 200 - success response example
@@ -134,7 +134,7 @@ feedRouter.get('/friends', /* isAuthenticated,*/ validatePagination, validateCha
  * @param {string} collectionAddr.path.required - address of collection
  * @param {integer} limit.query.required - limit of feed
  * @param {integer} offset.query.required - offset of feed
- * @param {integer} chainId.query.required - chianId of feed to fetch
+ * @param {integer} chainId.query.required - chain of feed to fetch
  * @param {string} address.query.required - address of user
  * @return {object} 200 - feed of given user's given collection
  * @example response - 200 - success response example
