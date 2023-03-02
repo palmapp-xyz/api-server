@@ -27,3 +27,22 @@ export const refreshSessionToken = async (req: Request, res: Response, next: Nex
     next(error);
   }
 };
+
+export const revokeAllSessionTokens = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const URL = `https://api-${appId}.sendbird.com/v3/users/${res.locals.displayName}/token`;
+    await Axios.delete(URL);
+    await db()
+        .collection('profile')
+        .doc(res.locals.displayName)
+        .set({
+          'sendbird_token': '',
+        },
+        {
+          merge: true,
+        });
+    return res.status(200).json({message: 'all session tokens revoked'});
+  } catch (error) {
+    next(error);
+  }
+};
