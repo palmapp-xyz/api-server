@@ -7,7 +7,7 @@ const feedRouter = express.Router();
 // a route to fetch feed of login user
 /**
  * GET /feed/
- * @tags feed
+ * @tags Feed
  * @summary fetch feed of given user
  * @param {string} address.query.required - address of user
  * @param {integer} limit.query.required - limit of feed
@@ -48,7 +48,7 @@ feedRouter.get('/', /* isAuthenticated,*/ validatePagination, validateChainId, g
 // a route to fetch feed of login user's given friend
 /**
  * GET /feed/friends/:{friendId}
- * @tags feed
+ * @tags Feed
  * @summary fetch feed of given user's given friend
  * @param {string} friendId.path.required - address of friend
  * @param {integer} limit.query.required - limit of feed
@@ -89,7 +89,7 @@ feedRouter.get('/friends/:friendId', /* isAuthenticated,*/ validatePagination, v
 // a route to fetch feed of login user's friends
 /**
  * GET /feed/friends
- * @tags feed
+ * @tags Feed
  * @summary fetch feed of given user's friends
  * @param {integer} limit.query.required - limit of feed
  * @param {integer} offset.query.required - offset of feed
@@ -129,7 +129,7 @@ feedRouter.get('/friends', /* isAuthenticated,*/ validatePagination, validateCha
 // a route to fetch feed of login user's given collection
 /**
  * GET /feed/collection/:{collectionAddr}
- * @tags feed
+ * @tags Feed
  * @summary fetch feed of given user's given collection
  * @param {string} collectionAddr.path.required - address of collection
  * @param {integer} limit.query.required - limit of feed
