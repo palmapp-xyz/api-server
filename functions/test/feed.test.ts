@@ -10,7 +10,7 @@ describe('Feed API Testing', () => {
 
     it('GET /feed/', async () => {
       const response = await Axios.get('https://asia-northeast3-oedi-a1953.cloudfunctions.net/v1/feed/',
-          {params: {limit: 10, offset: 0, address}},
+          {params: {limit: 10, offset: 0, address, chainId: 137}},
       );
       // log response
         console.log(response.data)
@@ -18,7 +18,7 @@ describe('Feed API Testing', () => {
     });
     it('GET /feed/friends/:friendId', async () => {
       const response = await Axios.get('https://asia-northeast3-oedi-a1953.cloudfunctions.net/v1/feed/friends/0x87cf728b8074fd109ba33098e64570c6c1a61390',
-          {params: {limit: 10, offset: 0, address}},
+          {params: {limit: 10, offset: 0, address, chainId: 137}},
       );
       // log response
         console.log(response.data)
@@ -26,7 +26,7 @@ describe('Feed API Testing', () => {
     });
     it('GET /feed/friends', async () => {
       const response = await Axios.get('https://asia-northeast3-oedi-a1953.cloudfunctions.net/v1/feed/friends',
-          {params: {limit: 10, offset: 0, address}},
+          {params: {limit: 10, offset: 0, address, chainId: 137}},
       );
       // log response
         console.log(response.data)
@@ -34,7 +34,7 @@ describe('Feed API Testing', () => {
     });
     it('GET /feed/collection/:collectionAddr', async () => {
       const response = await Axios.get('https://asia-northeast3-oedi-a1953.cloudfunctions.net/v1/feed/collection/0x9c25ee0f938122a504be82189536df74687858e4',
-          {params: {limit: 10, offset: 0, address}},
+          {params: {limit: 10, offset: 0, address, chainId: 137}},
       );
       // log response
         console.log(response.data)
