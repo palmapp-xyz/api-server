@@ -7,10 +7,12 @@ import {firestore} from '../index';
 export const getFriendsFeed = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // validating request body
-    const {limit, offset, address} = req.query;
+    const {limit, offset, address, chainId} = req.query;
     // parse limit and offset to integer
     const limitInt = parseInt(limit as string, 10);
     const offsetInt = parseInt(offset as string, 10);
+    // parsing chainId to number
+    const chainIdInt = parseInt(chainId as string, 10);
 
     // fetching friends public keys from firestore
     const friends = await firestore
@@ -27,6 +29,7 @@ export const getFriendsFeed = async (req: Request, res: Response, next: NextFunc
     const feedByTaker = await firestore
         .collection('/moralis/events/InAppTrades')
         .where('taker', 'in', friends.get('accepted'))
+        .where('chainId', '==', chainIdInt)
         .offset(offsetInt)
         .limit(limitInt)
         .orderBy('blockTimestamp', 'desc')
@@ -35,6 +38,7 @@ export const getFriendsFeed = async (req: Request, res: Response, next: NextFunc
     const feedByMaker = await firestore
         .collection('moralis/events/InAppTrades')
         .where('maker', 'in', friends.get('accepted'))
+        .where('chainId', '==', chainIdInt)
         .offset(offsetInt)
         .limit(limitInt)
         .orderBy('blockTimestamp', 'desc')
@@ -69,12 +73,14 @@ export const getFriendsFeed = async (req: Request, res: Response, next: NextFunc
 export const getFriendFeed = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // request query params
-    const {limit, offset, address} = req.query;
+    const {limit, offset, address, chainId} = req.query;
     // request params
     const {friendId} = req.params;
     // parse limit and offset to number
     const limit_n = parseInt(limit as string, 10);
     const offset_n = parseInt(offset as string, 10);
+    // parse chainId to number
+    const chainId_n = parseInt(chainId as string, 10);
     // check if given friendId is valid friend of login user
     const friends = await firestore
         .collection('friends')
@@ -87,6 +93,7 @@ export const getFriendFeed = async (req: Request, res: Response, next: NextFunct
     const feedByTaker = await firestore
         .collection('/moralis/events/InAppTrades')
         .where('taker', '==', friendId)
+        .where('chainId', '==', chainId_n)
         .offset(offset_n)
         .limit(limit_n)
         .orderBy('blockTimestamp', 'desc')
@@ -95,6 +102,7 @@ export const getFriendFeed = async (req: Request, res: Response, next: NextFunct
     const feedByMaker = await firestore
         .collection('moralis/events/InAppTrades')
         .where('maker', '==', friendId)
+        .where('chainId', '==', chainId_n)
         .offset(offset_n)
         .limit(limit_n)
         .orderBy('blockTimestamp', 'desc')
@@ -128,14 +136,17 @@ export const getFriendFeed = async (req: Request, res: Response, next: NextFunct
 export const getFeed = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // request params for pagination
-    const {limit, offset, address} = req.query;
+    const {limit, offset, address, chainId} = req.query;
     // parse limit and offset to number
     const limit_n = parseInt(limit as unknown as string, 10);
     const offset_n = parseInt(offset as unknown as string, 10);
+    // parse chainId to number
+    const chainId_n = parseInt(chainId as unknown as string, 10);
     // fetching feed of user from firestore based on maker or taker is login user
     const feedByMaker = await firestore
         .collection('/moralis/events/InAppTrades')
         .where('maker', '==', address)
+        .where('chainId', '==', chainId_n)
         .offset(offset_n)
         .limit(limit_n)
         .orderBy('blockTimestamp', 'desc')
@@ -143,6 +154,7 @@ export const getFeed = async (req: Request, res: Response, next: NextFunction) =
     const feedByTaker = await firestore
         .collection('InAppTrades')
         .where('taker', '==', address)
+        .where('chainId', '==', chainId_n)
         .offset(offset_n)
         .limit(limit_n)
         .orderBy('blockTimestamp', 'desc')
@@ -172,16 +184,19 @@ export const getFeed = async (req: Request, res: Response, next: NextFunction) =
 export const getCollectionFeed = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // request body
-    const {limit, offset, address} = req.query;
+    const {limit, offset, address, chainId} = req.query;
     const {collectionAddr} = req.params;
     // parse limit and offset to integer
     const limit_n = parseInt(limit as unknown as string, 10);
     const offset_n = parseInt(offset as unknown as string, 10);
+    // parse chainId to number
+    const chainId_n = parseInt(chainId as unknown as string, 10);
     // fetching taker feed of friends from firestore
     const feedByTaker = await firestore
         .collection('/moralis/events/InAppTrades')
         .where('taker', '==', address)
         .where('erc721Token', '==', collectionAddr)
+        .where('chainId', '==', chainId_n)
         .offset(offset_n)
         .limit(limit_n)
         .orderBy('blockTimestamp', 'desc')
@@ -191,6 +206,7 @@ export const getCollectionFeed = async (req: Request, res: Response, next: NextF
         .collection('/moralis/events/InAppTrades')
         .where('maker', '==', address)
         .where('erc721Token', '==', collectionAddr)
+        .where('chainId', '==', chainId_n)
         .offset(offset_n)
         .limit(limit_n)
         .orderBy('blockTimestamp', 'desc')
