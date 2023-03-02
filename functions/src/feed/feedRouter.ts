@@ -1,6 +1,6 @@
 import express from 'express';
 import {getFeed, getFriendFeed, getFriendsFeed, getCollectionFeed} from './feedController';
-import {validateCollectionAddr, validateFriendId, validatePagination} from './utils';
+import {validateChainId, validateCollectionAddr, validateFriendId, validatePagination} from './utils';
 // initializing feedRouter
 const feedRouter = express.Router();
 
@@ -12,8 +12,8 @@ const feedRouter = express.Router();
  * @param {string} address.query.required - address of user
  * @param {integer} limit.query.required - limit of feed
  * @param {integer} offset.query.required - offset of feed
+ * @param {integer} chainId.query.required - chianId of feed to fetch
  * @return {object} 200 - feed of given user
- * @return {Error}  default - Unexpected error
  * @example response - 200 - success response example
  * {
  *   feed: [
@@ -44,7 +44,7 @@ const feedRouter = express.Router();
  *     }
  *
  */
-feedRouter.get('/', /* isAuthenticated,*/ validatePagination, getFeed);
+feedRouter.get('/', /* isAuthenticated,*/ validatePagination, validateChainId, getFeed);
 // a route to fetch feed of login user's given friend
 /**
  * GET /feed/friends/:friendId
@@ -53,9 +53,9 @@ feedRouter.get('/', /* isAuthenticated,*/ validatePagination, getFeed);
  * @param {string} friendId.path.required - address of friend
  * @param {integer} limit.query.required - limit of feed
  * @param {integer} offset.query.required - offset of feed
+ * @param {integer} chainId.query.required - chianId of feed to fetch
  * @param {string} address.query.required - address of user
  * @return {object} 200 - feed of given user's given friend
- * @return {Error}  default - Unexpected error
  * @example response - 200 - success response example
  * {
  *  feed: [
@@ -85,7 +85,7 @@ feedRouter.get('/', /* isAuthenticated,*/ validatePagination, getFeed);
  *     ]
  *     }
  */
-feedRouter.get('/friends/:friendId', /* isAuthenticated,*/ validatePagination, validateFriendId, getFriendFeed);
+feedRouter.get('/friends/:friendId', /* isAuthenticated,*/ validatePagination, validateChainId, validateFriendId, getFriendFeed);
 // a route to fetch feed of login user's friends
 /**
  * GET /feed/friends
@@ -93,9 +93,9 @@ feedRouter.get('/friends/:friendId', /* isAuthenticated,*/ validatePagination, v
  * @summary fetch feed of given user's friends
  * @param {integer} limit.query.required - limit of feed
  * @param {integer} offset.query.required - offset of feed
+ * @param {integer} chainId.query.required - chianId of feed to fetch
  * @param {string} address.query.required - address of user
  * @return {object} 200 - feed of given user's friends
- * @return {Error}  default - Unexpected error
  * @example response - 200 - success response example
  * {
  * feed: [
@@ -125,7 +125,7 @@ feedRouter.get('/friends/:friendId', /* isAuthenticated,*/ validatePagination, v
  *   ]
  * }
  */
-feedRouter.get('/friends', /* isAuthenticated,*/ validatePagination, getFriendsFeed);
+feedRouter.get('/friends', /* isAuthenticated,*/ validatePagination, validateChainId, getFriendsFeed);
 // a route to fetch feed of login user's given collection
 /**
  * GET /feed/collection/:collectionAddr
@@ -134,9 +134,9 @@ feedRouter.get('/friends', /* isAuthenticated,*/ validatePagination, getFriendsF
  * @param {string} collectionAddr.path.required - address of collection
  * @param {integer} limit.query.required - limit of feed
  * @param {integer} offset.query.required - offset of feed
+ * @param {integer} chainId.query.required - chianId of feed to fetch
  * @param {string} address.query.required - address of user
  * @return {object} 200 - feed of given user's given collection
- * @return {Error}  default - Unexpected error
  * @example response - 200 - success response example
  * {
  * feed: [
@@ -168,7 +168,7 @@ feedRouter.get('/friends', /* isAuthenticated,*/ validatePagination, getFriendsF
  *   ]
  * }
  */
-feedRouter.get('/collection/:collectionAddr', /* isAuthenticated,*/ validatePagination, validateCollectionAddr, getCollectionFeed);
+feedRouter.get('/collection/:collectionAddr', /* isAuthenticated,*/ validatePagination, validateChainId, validateCollectionAddr, getCollectionFeed);
 
 export default feedRouter;
 
