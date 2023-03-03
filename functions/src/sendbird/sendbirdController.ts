@@ -22,7 +22,7 @@ export const refreshSessionToken = async (req: Request, res: Response, next: Nex
         {
           merge: true,
         });
-    return res.status(200).json({token: response.data.access_token});
+    res.status(200).json({token: response.data.access_token});
   } catch (error) {
     next(error);
   }
@@ -41,7 +41,7 @@ export const revokeAllSessionTokens = async (req: Request, res: Response, next: 
         {
           merge: true,
         });
-    return res.status(200).json({message: 'all session tokens revoked'});
+    res.status(200).json({message: 'all session tokens revoked'});
   } catch (error) {
     next(error);
   }
