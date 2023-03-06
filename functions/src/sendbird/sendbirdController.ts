@@ -1,11 +1,12 @@
 import {Request, Response, NextFunction} from 'express';
 import {firestore as db} from 'firebase-admin';
 import Axios from 'axios';
+import config from '../config';
 
 // initializing sendbird sdk
 
 // get sendbird app id from env
-const appId = process.env.SENDBIRD_APP_ID;
+const appId = config.SENDBIRD_APP_ID;
 export const refreshSessionToken = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const URL = `https://api-${appId}.sendbird.com/v3/users/${res.locals.displayName}/token`;
