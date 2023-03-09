@@ -11,7 +11,9 @@ const config = {
 
   NGROK_AUTH_TOKEN: readEnv('NGROK_AUTH_TOKEN'),
 
-  SENDBIRD_APP_ID: readEnv('SENDGRID_API_KEY'),
+  SENDBIRD_APP_ID: readEnv('SENDBIRD_APP_ID'),
+
+  SENDBIRD_API_TOKEN: readEnv('SENDBIRD_API_TOKEN'),
 
 };
 
