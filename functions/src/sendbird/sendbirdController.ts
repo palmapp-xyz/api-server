@@ -7,6 +7,29 @@ import config from '../config';
 
 // get sendbird app id from env
 const appId = config.SENDBIRD_APP_ID;
+
+// create sendbird user
+// eslint-disable-next-line consistent-return
+export const createSendbirdUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const URL = `https://api-${appId}.sendbird.com/v3/users`;
+    const response = await Axios.post(URL, {
+      'user_id': res.locals.displayName,
+      'nickname': req.body.user_name,
+      'profile_url': req.body.nft_image_url,
+    }, {
+      headers: {
+        'Api-Token': config.SENDBIRD_API_TOKEN,
+      },
+    });
+    // log response
+    // eslint-disable-next-line no-console
+    console.log(response.data);
+    return next();
+  } catch (err) {
+    next(err);
+  }
+};
 export const refreshSessionToken = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const URL = `https://api-${appId}.sendbird.com/v3/users/${res.locals.displayName}/token`;
