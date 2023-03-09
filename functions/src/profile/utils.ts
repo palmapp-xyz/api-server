@@ -25,8 +25,8 @@ export async function isValidProfile(req: Request, res: Response, next: NextFunc
     const {nft_image_url, nft_contract_addr, nft_tokenId, bio, user_name} = req.body;
 
     // check: body should be defined & minimum 6 keys are required
-    if (!req.body || Object.keys(req.body).length < 6) {
-      throw new Error('invalid body, minimum 6 keys are required');
+    if (!req.body || Object.keys(req.body).length < 5) {
+      throw new Error('invalid body, minimum 5 keys are required');
     }
     // eslint-disable-next-line max-len
     // check: individually check that each key defined above should be present in body
