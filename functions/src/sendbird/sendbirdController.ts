@@ -36,6 +36,11 @@ export const refreshSessionToken = async (req: Request, res: Response, next: Nex
     const response = await Axios.post(URL, {
       // set token expiration time 1 day
       'expires_at': Math.floor(Date.now() / 1000) + 86400,
+    },
+    {
+      headers: {
+        'Api-Token': config.SENDBIRD_API_TOKEN,
+      },
     });
     await db()
         .collection('profile')
