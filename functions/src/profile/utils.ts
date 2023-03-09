@@ -22,7 +22,7 @@ export async function isValidProfile(req: Request, res: Response, next: NextFunc
     // eslint-disable-next-line camelcase
     // @ts-ignore
     // eslint-disable-next-line max-len
-    const {nft_image_url, nft_contract_addr, nft_tokenId, bio, user_name, sendbird_token} = req.body;
+    const {nft_image_url, nft_contract_addr, nft_tokenId, bio, user_name} = req.body;
 
     // check: body should be defined & minimum 6 keys are required
     if (!req.body || Object.keys(req.body).length < 6) {
@@ -45,9 +45,11 @@ export async function isValidProfile(req: Request, res: Response, next: NextFunc
     if (!user_name) {
       throw new Error('user_name is required');
     }
+    // eslint-disable-next-line etc/no-commented-out-code
+    /*
     if (!sendbird_token) {
       throw new Error('sendbird_token is required');
-    }
+    }*/
 
     next();
   } catch (err) {
