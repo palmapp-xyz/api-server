@@ -32,7 +32,12 @@ export const createSendbirdUser = async (req: Request, res: Response, next: Next
 };
 export const refreshSessionToken = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const URL = `https://api-${appId}.sendbird.com/v3/users/${res.locals.displayName}/token`;
+    // check if user exists on firestore
+    const result = await db().collection('profile').doc(<string>req.query.address).get();
+    if (!result.exists) {
+      throw new Error('user does not exist, please create a profile first');
+    }
+    const URL = `https://api-${appId}.sendbird.com/v3/users/${req.query.address}/token`;
     const response = await Axios.post(URL, {
       // set token expiration time 1 day
       'expires_at': Math.floor(Date.now() / 1000) + 86400,
@@ -46,12 +51,12 @@ export const refreshSessionToken = async (req: Request, res: Response, next: Nex
         .collection('profile')
         .doc(res.locals.displayName)
         .set({
-          'sendbird_token': response.data.access_token,
+          'sendbird_token': response.data.token,
         },
         {
           merge: true,
         });
-    res.status(200).json({token: response.data.access_token});
+    res.status(200).json({data: response.data});
   } catch (error) {
     next(error);
   }
@@ -59,8 +64,17 @@ export const refreshSessionToken = async (req: Request, res: Response, next: Nex
 
 export const revokeAllSessionTokens = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const URL = `https://api-${appId}.sendbird.com/v3/users/${res.locals.displayName}/token`;
-    await Axios.delete(URL);
+    // check if user exists on firestore
+    const result = await db().collection('profile').doc(<string>req.query.address).get();
+    if (!result.exists) {
+      throw new Error('user does not exist, please create a profile first');
+    }
+    const URL = `https://api-${appId}.sendbird.com/v3/users/${req.query.address}/token`;
+    await Axios.delete(URL, {
+      headers: {
+        'Api-Token': config.SENDBIRD_API_TOKEN,
+      },
+    });
     await db()
         .collection('profile')
         .doc(res.locals.displayName)
