@@ -10,7 +10,8 @@
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
     "docs": "yarn build && node lib/index.js",
-    "test": "mocha --exit --require ts-node/register 'test/*.ts' --timeout 240000"
+    "test": "mocha --exit --require ts-node/register 'test/*.ts' --timeout 240000",
+    "test:sendbird": "mocha --exit --require ts-node/register 'test/sendbirdToken.test.ts' --timeout 240000"
   },
   "engines": {
     "node": "16"
@@ -27,6 +28,7 @@
     "firebase-functions": "^4.2.1",
     "moralis": "^2.12.0",
     "redis": "^4.2.0",
+    "sendbird": "^3.1.32",
     "swagger-autogen": "^2.23.0",
     "swagger-ui-express": "^4.6.0",
     "web3": "^1.8.2",
