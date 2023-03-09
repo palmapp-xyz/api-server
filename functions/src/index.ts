@@ -11,7 +11,7 @@ import {profileRouter} from './profile/profileRouter';
 import swaggerui from 'swagger-ui-express';
 import {jwtRouter} from './auth/jwtRouter';
 import {offerRouter} from './offer/offerRouter';
-import {sendbirdRouter} from "./sendbird/sendbirdRouter";
+import {sendbirdRouter} from './sendbird/sendbirdRouter';
 // eslint-disable-next-line etc/no-commented-out-code
 // import {getSwagger} from './Swagger';
 
