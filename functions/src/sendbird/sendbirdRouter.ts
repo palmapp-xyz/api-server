@@ -8,13 +8,14 @@ import {
   revokeAllSessionTokens,
 } from './sendbirdController';
 // importing auth middleware
+import {isAuthenticated} from '../middlewares/authHandler';
 
 // generate router instance for sendbird routes and export it to use in index.ts
 export const sendbirdRouter = Router();
 // refresh session token
 // eslint-disable-next-line no-inline-comments
-sendbirdRouter.get('/refresh', /* isAuthenticated,*/ refreshSessionToken);
+sendbirdRouter.get('/refresh', isAuthenticated, refreshSessionToken);
 // revoke all session tokens
 // eslint-disable-next-line no-inline-comments
-sendbirdRouter.get('/revoke', /* isAuthenticated,*/ revokeAllSessionTokens);
+sendbirdRouter.get('/revoke', isAuthenticated, revokeAllSessionTokens);
 
