@@ -8,7 +8,7 @@ import config from '../config';
 // get sendbird app id from env
 const appId = config.SENDBIRD_APP_ID;
 
-// create sendbird user
+// create sendbird user on sendbird server at the time of profile creation
 // eslint-disable-next-line consistent-return
 export const createSendbirdUser = async (req: Request, res: Response, next: NextFunction) => {
   try {

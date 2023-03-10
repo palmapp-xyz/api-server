@@ -14,8 +14,31 @@ import {isAuthenticated} from '../middlewares/authHandler';
 export const sendbirdRouter = Router();
 // refresh session token
 // eslint-disable-next-line no-inline-comments
+/**
+ * GET /sendbird/token/refresh
+ * @description - refresh sendbird's session token
+ * @tags Sendbird
+ * @return {object} 200 - sendbird's session token
+ * @example response - 200 - session token refreshed
+ * {
+ *  token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZXMiOlsic2VuZGJpcmQiXSwiaWF0IjoxNjIyNjQxNjQyLCJleHAiOjE'
+ *  expires_at: 1622641642
+ *  }
+ *  @security JWT
+ *
+ */
 sendbirdRouter.get('/refresh', isAuthenticated, refreshSessionToken);
 // revoke all session tokens
-// eslint-disable-next-line no-inline-comments
+/**
+ * GET /sendbird/token/revoke
+ * @description - revoke all sendbird's session tokens of logged in user
+ * @tags Sendbird
+ * @return {object} 200 - sendbird's session token
+ * @example response - 200 - session token revoked
+ * {
+ * message: 'session token revoked'
+ * }
+ * @security JWT
+ */
 sendbirdRouter.get('/revoke', isAuthenticated, revokeAllSessionTokens);
 
