@@ -4,6 +4,7 @@ import {
 } from './profileController';
 import {isAuthenticated} from '../middlewares/authHandler';
 import {isValidProfile} from './utils';
+import {createSendbirdUser} from '../sendbird/sendbirdController';
 
 
 export const profileRouter = express.Router();
@@ -33,7 +34,7 @@ export const profileRouter = express.Router();
  *  @security JWT
  */
 // eslint-disable-next-line max-len
-profileRouter.route('/create').post(isAuthenticated, isValidProfile, create);
+profileRouter.route('/create').post(isAuthenticated, isValidProfile, createSendbirdUser, create);
 /**
  * PUT /profile/update
  * @summary Updates a user's profile on Firestore

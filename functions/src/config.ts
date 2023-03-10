@@ -10,6 +10,11 @@ const config = {
   MORALIS_API_KEY: readEnv('MORALIS_API_KEY'),
 
   NGROK_AUTH_TOKEN: readEnv('NGROK_AUTH_TOKEN'),
+
+  SENDBIRD_APP_ID: readEnv('SENDBIRD_APP_ID'),
+
+  SENDBIRD_API_TOKEN: readEnv('SENDBIRD_API_TOKEN'),
+
 };
 
 export default config;
