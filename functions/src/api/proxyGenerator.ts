@@ -6,7 +6,7 @@ import {errorHandler} from '../middlewares/errorHandler';
 // eslint-disable-next-line max-len
 import {EndpointDescriptor, convertOperationToDescriptor} from '@moralisweb3/api-utils';
 import config from '../config';
-import {NftItem, NftItemsFetchResult} from './moralis';
+import {NftItem, NftItemsFetchResult, NftType} from './moralis';
 import {KasNftItem, KasNftItemsFetchResult} from './kas';
 import {Request, ParamsDictionary, Response, NextFunction} from 'express-serve-static-core';
 import {ParsedQs} from 'qs';
@@ -171,7 +171,7 @@ export class ProxyGenerator {
         token_hash: '',
         block_number_minted: '',
         block_number: '',
-        contract_type: 'ERC721',
+        contract_type: NftType.KIP17,
         metadata: JSON.stringify(metadata),
         name: metadata?.name || '',
         symbol: metadata?.symbol || '',

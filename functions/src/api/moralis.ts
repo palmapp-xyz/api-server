@@ -24,6 +24,7 @@ export enum Status {
 export enum NftType {
   ERC721 = 'ERC721',
   ERC1155 = 'ERC1155',
+  KIP17 = 'KIP17',
 }
 
 export type NftCollection = {
