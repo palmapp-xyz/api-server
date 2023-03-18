@@ -7,7 +7,9 @@
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
+    "predeploy": "cp $INIT_CWD/../.env.production $INIT_CWD/.",
+    "deploy": "npm run predeploy; NODE_ENV=production firebase deploy --only functions; npm run postdeploy",
+    "postdeploy": "rm -rf $INIT_CWD/.env*",
     "logs": "firebase functions:log",
     "docs": "yarn build && node lib/index.js",
     "test": "mocha --exit --require ts-node/register 'test/*.ts' --timeout 240000"
@@ -18,6 +20,7 @@
   "main": "lib/src/index.js",
   "dependencies": {
     "@moralisweb3/common-core": "^2.12.0",
+    "app-root-path": "^3.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "envalid": "7.3.1",

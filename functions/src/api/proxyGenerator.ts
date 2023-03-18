@@ -154,6 +154,8 @@ export class ProxyGenerator {
     };
     if (!data.cursor) {
       ret.cursor = null;
+    } else {
+      ret.cursor = data.cursor;
     }
     let metadatas = data.items.map((item: KasNftItem) => {
       return getTokenMetadata(item.extras.tokenUri);
