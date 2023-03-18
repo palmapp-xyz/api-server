@@ -1,9 +1,11 @@
 node_modules
 
-.env.development
-.env.production
-
 firebase-debug.log
 .firebase/
 
 lib/
+
+.env.development
+.env.production
+
+kas-credential.json

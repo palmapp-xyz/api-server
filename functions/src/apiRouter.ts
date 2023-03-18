@@ -17,6 +17,8 @@ export const apiRouter = express.Router();
 
 const evmProxyRouter = new ProxyGenerator('evm', {
   apiKey: config.MORALIS_API_KEY,
+  api_key_id: config.KAS_API_ACCESS_KEY_ID,
+  api_secret: config.KAS_API_SECRET_ACCESS_KEY,
 });
 
 

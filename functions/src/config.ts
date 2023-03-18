@@ -10,6 +10,13 @@ const config = {
   MORALIS_API_KEY: readEnv('MORALIS_API_KEY'),
 
   NGROK_AUTH_TOKEN: readEnv('NGROK_AUTH_TOKEN'),
+
+  KAS_API_ACCESS_KEY_ID: readEnv('KAS_API_ACCESS_KEY_ID'),
+
+  KAS_API_SECRET_ACCESS_KEY: readEnv('KAS_API_SECRET_ACCESS_KEY'),
+
+  KAS_ENDPOINT: readEnv('KAS_ENDPOINT'),
+
 };
 
 export default config;
