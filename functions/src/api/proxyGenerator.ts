@@ -53,9 +53,10 @@ export class ProxyGenerator {
       if (this.api === 'evm') {
         // eslint-disable-next-line max-len
         proxyRouter.route(urlPattern)[descriptor.method](async (req, res, next) => {
+          const query = req.query as {[key: string]: string};
+          const {chain} = query;
+
           if (urlPattern === '/:address/nft') {
-            const query = req.query as {[key: string]: string};
-            const {chain} = query;
             if (Number(chain) === 1001 || Number(chain) === 8217) {
               return this.handleKasRequests(req, res, next);
             }
@@ -93,7 +94,7 @@ export class ProxyGenerator {
                 'x-api-key': this.options.apiKey,
               },
             });
-            return res.send(response.data);
+            return res.send(await this.formatResults(Number(chain || '0x1'), response.data));
           } catch (error) {
             return errorHandler(error as Error, req, res, next);
           }
@@ -137,13 +138,24 @@ export class ProxyGenerator {
       if (!Array.isArray((response.data as {[key: string]: string}).items)) {
         throw new Error(`invalid response from KAS endpoint ${request.url}`);
       }
-      return res.send(await this.formatResults(response.data));
+      return res.send(await this.formatResults(Number(chain), response.data));
     } catch (error) {
       return errorHandler(error as Error, req, res, next);
     }
   }
 
-  async formatResults(data: KasNftItemsFetchResult): Promise<NftItemsFetchResult> {
+  async formatResults(chain: number, data: KasNftItemsFetchResult | NftItemsFetchResult): Promise<NftItemsFetchResult> {
+    if (chain !== 1001 && chain !== 8217) {
+      const result = data as NftItemsFetchResult;
+      result.chainId = chain;
+      result.result = result.result.map((item: NftItem) => {
+        item.chainId = chain;
+        return item;
+      });
+      return result;
+    }
+
+    data = data as KasNftItemsFetchResult;
     const ret: NftItemsFetchResult = {
       total: null,
       page: 0,
@@ -171,7 +183,7 @@ export class ProxyGenerator {
         token_hash: '',
         block_number_minted: '',
         block_number: '',
-        contract_type: NftType.KIP17,
+        contract_type: NftType.ERC721,
         metadata: JSON.stringify(metadata),
         name: metadata?.name || '',
         symbol: metadata?.symbol || '',
@@ -179,6 +191,7 @@ export class ProxyGenerator {
         last_token_uri_sync: '',
         last_metadata_sync: '',
         minter_address: '',
+        chainId: chain,
       } as unknown as NftItem;
     });
     return ret;

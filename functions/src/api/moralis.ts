@@ -14,6 +14,7 @@ export type NftItem = {
   last_token_uri_sync: string
   last_metadata_sync: string
   minter_address: string
+  chainId?: number
 }
 
 export enum Status {
@@ -24,7 +25,6 @@ export enum Status {
 export enum NftType {
   ERC721 = 'ERC721',
   ERC1155 = 'ERC1155',
-  KIP17 = 'KIP17',
 }
 
 export type NftCollection = {
@@ -32,6 +32,7 @@ export type NftCollection = {
   contract_type: NftType
   name: string
   symbol: string | null
+  chainId: string
 }
 
 export type NftItemsFetchResult = {
@@ -41,4 +42,5 @@ export type NftItemsFetchResult = {
   cursor: string | null
   result: NftItem[],
   status: 'SYNCED'
+  chainId?: number
 }
