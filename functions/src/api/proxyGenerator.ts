@@ -125,7 +125,7 @@ export class ProxyGenerator {
       url: `${config.KAS_ENDPOINT}${url}`,
       headers: {
         'Content-Type': 'application/json',
-        'x-chain-id': chain,
+        'x-chain-id': Number(chain),
       },
       auth: {
         username: this.options.api_key_id,
