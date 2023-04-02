@@ -77,7 +77,7 @@ export class ProxyGenerator {
 
           const params = Object.keys(req.body).reduce((result, key) => {
             // eslint-disable-next-line max-len
-            if (!req.body[key] || key in body || descriptor.urlPatternParamNames.includes(key)) {
+            if (!req.body[key] || key in body || descriptor.urlPatternParamNames?.includes(key)) {
               return result;
             }
             return {...result, [key]: req.body[key]};
@@ -88,7 +88,7 @@ export class ProxyGenerator {
               method: descriptor.method,
               params: {...params, ...req.query},
               url: `${baseUrl}${url}`,
-              data: body,
+              data: descriptor.name === 'uploadFolder' ? req.body : body,
               headers: {
                 'Content-Type': 'application/json',
                 'x-api-key': this.options.apiKey,

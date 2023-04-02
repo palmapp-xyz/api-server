@@ -27,6 +27,7 @@ Moralis.start({
 // eslint-disable-next-line no-console
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
+// For parsing application/json:
 // should allow all origins
 app.use(cors());
 
