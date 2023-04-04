@@ -11,6 +11,7 @@ import {profileRouter} from './profile/profileRouter';
 import swaggerui from 'swagger-ui-express';
 import {jwtRouter} from './auth/jwtRouter';
 import {offerRouter} from './offer/offerRouter';
+import {searchRouter} from './search/router';
 // eslint-disable-next-line etc/no-commented-out-code
 // import {getSwagger} from './Swagger';
 
@@ -37,10 +38,11 @@ app.use('/stream', streamRouter);
 app.use('/profile', profileRouter);
 app.use('/offer', offerRouter);
 app.use('/docs', swaggerui.serve);
+app.use('/search', searchRouter);
 
 // eslint-disable-next-line no-inline-comments
 // getSwagger(app); // creating swagger.json file
 app.get('/docs', swaggerui.setup(import('../swagger.json')));
 app.use(errorHandler);
 // functions should be deployed to specific region 'asia-northeast3'
-export const v1 = functions.region('asia-northeast3').https.onRequest(app);
+export const dev = functions.region('asia-northeast3').https.onRequest(app);
