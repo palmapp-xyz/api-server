@@ -129,7 +129,11 @@ export async function updateStream(id: string, options: StreamOptions) {
   return result.raw;
 }
 
-// eslint-disable-next-line require-jsdoc
+/**
+ * Add address to existing moralis stream
+ * @param {string} id - stream id in which the address will be added
+ * @param {string} address - address to be added
+ */
 export async function addAddress(id: string, address: string) {
   // Add contract address
   const result = await Moralis.Streams.addAddress({
