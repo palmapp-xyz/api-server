@@ -62,7 +62,7 @@ app.get('/', (req, res) => {
 app.get('/docs', swaggerui.setup(import('../swagger.json')));
 app.use(errorHandler);
 // functions should be deployed to specific region 'asia-northeast3'
-export const dev = functions.region('asia-northeast3').https.onRequest(app);
+export const v1 = functions.region('asia-northeast3').https.onRequest(app);
 
 
 export const onProfileCreate = functions.firestore
