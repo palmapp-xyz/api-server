@@ -2,6 +2,9 @@ import * as admin from 'firebase-admin';
 import Moralis from 'moralis';
 import express from 'express';
 import cors from 'cors';
+
+import {SSXServer, SSXExpressMiddleware} from '@spruceid/ssx-server';
+
 import config from './config';
 import {apiRouter} from './apiRouter';
 import {errorHandler} from './middlewares/errorHandler';
@@ -12,8 +15,8 @@ import swaggerui from 'swagger-ui-express';
 import {jwtRouter} from './auth/jwtRouter';
 import {offerRouter} from './offer/offerRouter';
 import {searchRouter} from './search/router';
-import {SSXServer, SSXExpressMiddleware} from '@spruceid/ssx-server';
 import {initListeners} from './search/listenerFunctions';
+
 // eslint-disable-next-line etc/no-commented-out-code
 // import {getSwagger} from './Swagger';
 
