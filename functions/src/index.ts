@@ -11,6 +11,7 @@ import {profileRouter} from './profile/profileRouter';
 import swaggerui from 'swagger-ui-express';
 import {jwtRouter} from './auth/jwtRouter';
 import {offerRouter} from './offer/offerRouter';
+import {SSXServer, SSXExpressMiddleware} from '@spruceid/ssx-server';
 // eslint-disable-next-line etc/no-commented-out-code
 // import {getSwagger} from './Swagger';
 
@@ -37,6 +38,20 @@ app.use('/stream', streamRouter);
 app.use('/profile', profileRouter);
 app.use('/offer', offerRouter);
 app.use('/docs', swaggerui.serve);
+
+const ssx = new SSXServer({
+  signingKey: config.SSX_SECRET,
+  providers: {
+    metrics: {service: 'ssx', apiKey: config.SSX_API_KEY},
+  },
+});
+
+app.use(SSXExpressMiddleware(ssx));
+
+
+app.get('/', (req, res) => {
+  res.send('Palm server side');
+});
 
 // eslint-disable-next-line no-inline-comments
 // getSwagger(app); // creating swagger.json file

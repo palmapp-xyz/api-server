@@ -17,6 +17,10 @@ const config = {
 
   KAS_ENDPOINT: readEnv('KAS_ENDPOINT'),
 
+  SSX_API_KEY: readEnv('SSX_API_KEY'),
+
+  SSX_SECRET: readEnv('SSX_SECRET'),
+
 };
 
 export default config;
