@@ -12,7 +12,7 @@ import swaggerui from 'swagger-ui-express';
 import {jwtRouter} from './auth/jwtRouter';
 import {offerRouter} from './offer/offerRouter';
 import {searchRouter} from './search/router';
-import {addDocuments, deleteDocuments, updateDocuments} from './search/controller';
+import {initListeners} from './search/listenerFunctions';
 // eslint-disable-next-line etc/no-commented-out-code
 // import {getSwagger} from './Swagger';
 
@@ -48,75 +48,14 @@ app.use(errorHandler);
 // functions should be deployed to specific region 'asia-northeast3'
 export const v1 = functions.region('asia-northeast3').https.onRequest(app);
 
+// elastic search indexing functions
+const indexers = initListeners();
+export const {
+  onProfileCreate,
+  onProfileUpdate,
+  onProfileDelete,
+  onChannelCreate,
+  onChannelUpdate,
+  onChannelDelete,
+} = indexers;
 
-export const onProfileCreate = functions.firestore
-    .document('profiles/{profileId}')
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    .onCreate(async (snap, context) => {
-      const data = snap.data();
-      const docId = snap.id;
-      const doc = {
-        id: docId,
-        ...data,
-      };
-      await addDocuments(config.ELASTIC_APP_SEARCH_PROFILE_ENGINE_NAME, [doc]);
-    });
-// firebase function to trigger upone document update in firestore
-export const onProfileUpdate = functions.firestore
-    .document('profiles/{profileId}')
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    .onUpdate(async (change, context) => {
-      const data = change.after.data();
-      const docId = change.after.id;
-      const doc = {
-        id: docId,
-        ...data,
-      };
-      await updateDocuments(config.ELASTIC_APP_SEARCH_PROFILE_ENGINE_NAME, [doc]);
-    } );
-
-// firebase function to trigger upone document delete in firestore
-export const onProfileDelete = functions.firestore
-    .document('profiles/{profileId}')
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    .onDelete(async (snap, context) => {
-      const docId = snap.id;
-      await deleteDocuments(config.ELASTIC_APP_SEARCH_PROFILE_ENGINE_NAME, [docId]);
-    } );
-
-// firebase function to trigger upon channel document create in firestore
-export const onChannelCreate = functions.firestore
-    .document('channels/{channelId}')
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    .onCreate(async (snap, context) => {
-      const data = snap.data();
-      const docId = snap.id;
-      const doc = {
-        id: docId,
-        ...data,
-      };
-      await addDocuments(config.ELASTIC_APP_SEARCH_CHANNEL_ENGINE_NAME, [doc]);
-    } );
-
-// firebase function to trigger upon channel document update in firestore
-export const onChannelUpdate = functions.firestore
-    .document('channels/{channelId}')
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    .onUpdate(async (change, context) => {
-      const data = change.after.data();
-      const docId = change.after.id;
-      const doc = {
-        id: docId,
-        ...data,
-      };
-      await updateDocuments(config.ELASTIC_APP_SEARCH_CHANNEL_ENGINE_NAME, [doc]);
-    } );
-
-// firebase function to trigger upon channel document delete in firestore
-export const onChannelDelete = functions.firestore
-    .document('channels/{channelId}')
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    .onDelete(async (snap, context) => {
-      const docId = snap.id;
-      await deleteDocuments(config.ELASTIC_APP_SEARCH_CHANNEL_ENGINE_NAME, [docId]);
-    } );
