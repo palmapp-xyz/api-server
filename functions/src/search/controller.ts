@@ -1,130 +1,65 @@
-import {Client} from '@elastic/enterprise-search';
+import {Client} from '@elastic/elasticsearch';
 import {Request, Response, NextFunction} from 'express';
 import config from '../config';
-import {lowercaseTheKeys} from './utils';
-import {GetSchemaResponse} from '@elastic/enterprise-search/lib/api/app/types';
 
-const apiKey = config.ELASTIC_APP_SEARCH_KEY;
-const profileEngineName = config.ELASTIC_APP_SEARCH_PROFILE_ENGINE_NAME;
-const channelEngineName = config.ELASTIC_APP_SEARCH_CHANNEL_ENGINE_NAME;
-const baseUrl = config.ELASTIC_APP_SEARCH_BASE_URL;
+const cloudId = config.ELASTIC_SEARCH_CLOUD_ID;
+const elasticUsername = config.ELASTIC_SEARCH_USERNAME;
+const elasticPassword = config.ELASTIC_SEARCH_PASSWORD;
+
 const client = new Client({
-  url: baseUrl,
+  cloud: {
+    id: cloudId,
+  },
   auth: {
-    token: apiKey,
+    username: elasticUsername,
+    password: elasticPassword,
   },
 });
 
-export async function suggestProfilesByHandle(req: Request, res: Response, next: NextFunction) {
-  const {query, searchFields, size} = req.body;
-  const options = {
-    query,
-    size,
-    types: {
-      documents: {
-        fields: searchFields,
-      },
-    },
-  };
-  // eslint-disable-next-line no-console
-  console.log('options', JSON.stringify(options, null, 2));
+export async function searchProfiles(req: Request, res: Response, next: NextFunction) {
+  const {query, searchFields, page, pageSize} = req.body;
+  const from: number = (page - 1) * pageSize;
   client
-      .app
-      .querySuggestion({
-        engine_name: profileEngineName,
-        body: {
-          ...options,
-        }})
-      .then((response) => {
-        res.status(200).json({response});
-      })
-      .catch((error) => {
-        next(error);
-      });
-}
-
-export async function fetchProfile(req: Request, res: Response, next: NextFunction) {
-  const {query, searchFields, offset, size} = req.body;
-  const search_fields = {}; // search only in the given fields
-  searchFields.forEach((field: string) => {
-    // @ts-ignore
-    search_fields[field] = {};
-  });
-  const options = {
-    page: {
-      current: offset,
-      size,
-    },
-    search_fields,
-    query,
-
-  };
-
-  client
-      .app
       .search({
-        engine_name: profileEngineName,
-        body: {
-          ...options,
-        }})
-      .then((response) => {
-        res.status(200).json({response});
+        index: config.ELASTIC_SEARCH_PROFILE_INDEX_NAME,
+        query: {
+          multi_match: {
+            query,
+            fields: searchFields,
+            type: 'phrase_prefix',
+            operator: 'or',
+            analyzer: 'standard',
+          },
+        },
+        from,
+        size: pageSize,
       })
-      .catch((error) => {
-        next(error);
-      });
-}
-export async function suggestChannelsByName(req: Request, res: Response, next: NextFunction) {
-  const {query, searchFields, size} = req.body;
-  const options = {
-    query,
-    size,
-    types: {
-      documents: {
-        fields: searchFields,
-      },
-    },
-  };
-
-  client
-      .app
-      .querySuggestion({
-        engine_name: channelEngineName,
-        body: {
-          ...options,
-        }})
       .then((response) => {
-        res.status(200).json({response});
+        res.status(200).json({response}); // TODO: need to remove noise from response
       })
       .catch((error) => {
         next(error);
       });
 }
 
-export async function fetchChannel(req: Request, res: Response, next: NextFunction) {
-  const {query, searchFields, offset, size} = req.body;
-  const search_fields = {}; // search only in the given fields
-  searchFields.forEach((field: string) => {
-    // @ts-ignore
-    search_fields[field] = {};
-  });
-  const options = {
-    page: {
-      current: offset,
-      size,
-    },
-    search_fields,
-    query,
-
-  };
-
+export async function searchChannels(req: Request, res: Response, next: NextFunction) {
+  const {query, searchFields, page, pageSize} = req.body;
+  const from: number = (page - 1) * pageSize;
   client
-      .app
       .search({
-        engine_name: channelEngineName,
-        body: {
-          ...options,
-        }})
+        index: config.ELASTIC_SEARCH_CHANNEL_INDEX_NAME,
+        query: {
+          multi_match: {
+            query,
+            fields: searchFields,
+            type: 'phrase_prefix',
+            operator: 'or',
+            analyzer: 'standard',
+          },
+        },
+        from,
+        size: pageSize,
+      })
       .then((response) => {
         res.status(200).json({response});
       })
@@ -134,15 +69,14 @@ export async function fetchChannel(req: Request, res: Response, next: NextFuncti
 }
 
 // writing a function to post data to elastic search engine
-export async function addDocuments(engineName: string, docs: [{ [p: string]: any; id: string }]) {
+export async function addDocument(indexName: string, doc: { [p: string]: any}, docId: string) {
   // eslint-disable-next-line no-console
-  console.log('indexing @ engineName', engineName);
-  const docsV2 = docs.map((doc) => lowercaseTheKeys(doc));
+  console.log('indexing @ index-name', indexName);
   client
-      .app
-      .indexDocuments({
-        engine_name: engineName,
-        documents: docsV2})
+      .index({
+        index: indexName,
+        id: docId,
+        document: doc})
       .then((response) => {
         // eslint-disable-next-line no-console
         console.log('document indexed successfully', response);
@@ -152,62 +86,39 @@ export async function addDocuments(engineName: string, docs: [{ [p: string]: any
         console.log('error while indexing document', error);
       });
 }
-export async function updateDocuments(engineName: string, docs: [{ [p: string]: any; id: string }]) {
+export async function updateDocument(indexName: string, doc: { [p: string]: any; }, docId: string) {
   // eslint-disable-next-line no-console
-  console.log('updating @ engineName', engineName);
-  const docsV2 = docs.map((doc) => lowercaseTheKeys(doc));
+  console.log('updating @ engineName', indexName);
+  // update the document
   client
-      .app
-      .putDocuments({
-        engine_name: engineName,
-        documents: docsV2})
+      .update({
+        index: indexName,
+        id: docId,
+        doc: {
+          ...doc,
+        }})
       .then((response) => {
         // eslint-disable-next-line no-console
-        console.log('documents updated successfully', response);
+        console.log(`document id:${docId} updated successfully`, response);
       })
       .catch((error) => {
         // eslint-disable-next-line no-console
-        console.log('error while updating documents', error);
-      });
+        console.log('error while updating document', error);
+      } );
 }
-export async function deleteDocuments(engineName: string, docIds: [string]) {
+export async function deleteDocument(indexName: string, docId: string) {
   // eslint-disable-next-line no-console
-  console.log('deleting @ engineName', engineName);
+  console.log('deleting @ engineName', indexName);
   client
-      .app
-      .deleteDocuments({
-        engine_name: engineName,
-        documentIds: docIds})
+      .delete({
+        index: indexName,
+        id: docId})
       .then((response) => {
         // eslint-disable-next-line no-console
-        console.log('documents deleted successfully', response);
+        console.log(`document id:${docId} deleted successfully`, response);
       })
       .catch((error) => {
         // eslint-disable-next-line no-console
         console.log('error while deleting documents', error);
       });
-}
-
-// middleware to validate searchFields are valid fields in the engine schema
-export async function validateProfileSearchFields(req: Request, res: Response, next: NextFunction) {
-  const {searchFields} = req.body;
-  const engineSchema: GetSchemaResponse = await client.app.getSchema({engine_name: config.ELASTIC_APP_SEARCH_PROFILE_ENGINE_NAME});
-  const engineSchemaFields = Object.keys(engineSchema);
-  const invalidFields = searchFields.filter((field: string) => !engineSchemaFields.includes(field));
-  if (invalidFields.length) {
-    res.status(400).json({message: `Invalid search fields: ${invalidFields.join(', ')}`});
-  } else {
-    next();
-  }
-}
-export async function validateChannelSearchFields(req: Request, res: Response, next: NextFunction) {
-  const {searchFields} = req.body;
-  const engineSchema: GetSchemaResponse = await client.app.getSchema({engine_name: config.ELASTIC_APP_SEARCH_CHANNEL_ENGINE_NAME});
-  const engineSchemaFields = Object.keys(engineSchema);
-  const invalidFields = searchFields.filter((field: string) => !engineSchemaFields.includes(field));
-  if (invalidFields.length) {
-    res.status(400).json({message: `Invalid search fields: ${invalidFields.join(', ')}`});
-  } else {
-    next();
-  }
 }
