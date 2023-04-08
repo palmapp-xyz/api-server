@@ -12,9 +12,11 @@ import {firestore} from '../index';
  * */
 export async function create(req: Request, res: Response, next: NextFunction) {
   try {
-    // console displayName from res.locals
-    // eslint-disable-next-line no-console
-    console.log(res.locals.displayName);
+    // check if profile already exists
+    const result = await firestore.collection('profile').doc(res.locals.displayName).get();
+    if (result.exists) {
+      throw new Error('profile already exists');
+    }
 
     await firestore.collection('profile').doc(res.locals.displayName).set(
         {
@@ -37,7 +39,7 @@ export async function create(req: Request, res: Response, next: NextFunction) {
  * @param {Function} next - Express next middleware function
  * @return {void}
  * @description - get user's profile
- * @example - get(req, res, next)
+ * @example - get(req,res, next)
  * @throws - profile not found
  *
  * */

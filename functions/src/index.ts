@@ -2,6 +2,9 @@ import * as admin from 'firebase-admin';
 import Moralis from 'moralis';
 import express from 'express';
 import cors from 'cors';
+
+import {SSXServer, SSXExpressMiddleware} from '@spruceid/ssx-server';
+
 import config from './config';
 import {apiRouter} from './apiRouter';
 import {errorHandler} from './middlewares/errorHandler';
@@ -11,7 +14,9 @@ import {profileRouter} from './profile/profileRouter';
 import swaggerui from 'swagger-ui-express';
 import {jwtRouter} from './auth/jwtRouter';
 import {offerRouter} from './offer/offerRouter';
-import {SSXServer, SSXExpressMiddleware} from '@spruceid/ssx-server';
+import {searchRouter} from './search/router';
+import {initListeners} from './search/listenerFunctions';
+
 // eslint-disable-next-line etc/no-commented-out-code
 // import {getSwagger} from './Swagger';
 
@@ -38,6 +43,7 @@ app.use('/stream', streamRouter);
 app.use('/profile', profileRouter);
 app.use('/offer', offerRouter);
 app.use('/docs', swaggerui.serve);
+app.use('/search', searchRouter);
 
 const ssx = new SSXServer({
   signingKey: config.SSX_SECRET,
@@ -59,3 +65,15 @@ app.get('/docs', swaggerui.setup(import('../swagger.json')));
 app.use(errorHandler);
 // functions should be deployed to specific region 'asia-northeast3'
 export const v1 = functions.region('asia-northeast3').https.onRequest(app);
+
+// elastic search indexing functions
+const indexers = initListeners();
+export const {
+  onProfileCreate,
+  onProfileUpdate,
+  onProfileDelete,
+  onChannelCreate,
+  onChannelUpdate,
+  onChannelDelete,
+} = indexers;
+
