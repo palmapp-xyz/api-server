@@ -3,6 +3,7 @@ import {personalSign} from 'eth-sig-util';
 import {expect} from 'chai';
 import {initializeApp} from 'firebase/app';
 import {signInWithCustomToken, getAuth, Auth} from 'firebase/auth';
+import {describe} from 'mocha'
 
 // eslint-disable-next-line no-undef
 describe('API Testing', () => {
@@ -79,7 +80,7 @@ describe('API Testing', () => {
       it('should create user profile', async () => {
 
         // eslint-disable-next-line no-unreachable
-        const response = await Axios.post('https://us-central1-oedi-a1953.cloudfunctions.net/v1/profile/create',
+        const response = await Axios.post('https://asia-northeast1-oedi-a1953.cloudfunctions.net/v1/profile/create',
             {
               nft_image_url: 'https://example.com/image.png',
               nft_contract_addr: '0x1234567890abcdef1234567890abcdef12345678',
@@ -103,7 +104,7 @@ describe('API Testing', () => {
 
         const id = '0x1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0'
         // eslint-disable-next-line no-unreachable
-        const response = await Axios.get('https://us-central1-oedi-a1953.cloudfunctions.net/v1/profile/get/'+id);
+        const response = await Axios.get('https://asia-northeast1-oedi-a1953.cloudfunctions.net/v1/profile/get/'+id);
         // eslint-disable-next-line no-console
         console.log(response.data);
         // eslint-disable-next-line no-undef,no-unused-expressions
@@ -112,7 +113,7 @@ describe('API Testing', () => {
       it('should update user profile', async () => {
 
         // eslint-disable-next-line no-unreachable
-        const response = await Axios.put('https://us-central1-oedi-a1953.cloudfunctions.net/v1/profile/update',
+        const response = await Axios.put('https://asia-northeast1-oedi-a1953.cloudfunctions.net/v1/profile/update',
             {
               nft_tokenId: '200'
             },
@@ -132,7 +133,7 @@ describe('API Testing', () => {
 
         const id = '0x1Efd3eFd7c78d98B155F724EB6A161C50d8CFbf0'
         // eslint-disable-next-line no-unreachable
-        const response = await Axios.get('https://us-central1-oedi-a1953.cloudfunctions.net/v1/profile/sendbird_token',
+        const response = await Axios.get('https://asia-northeast1-oedi-a1953.cloudfunctions.net/v1/profile/sendbird_token',
             {
               headers: {
                 'Authorization': `Bearer ${JWT}`
@@ -147,7 +148,7 @@ describe('API Testing', () => {
       it('should delete user profile', async () => {
 
         // eslint-disable-next-line no-unreachable
-        const response = await Axios.delete('https://us-central1-oedi-a1953.cloudfunctions.net/v1/profile/delete',
+        const response = await Axios.delete('https://asia-northeast1-oedi-a1953.cloudfunctions.net/v1/profile/delete',
             {
               headers: {
                 'Authorization': `Bearer ${JWT}`

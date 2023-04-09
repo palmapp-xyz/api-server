@@ -6,8 +6,8 @@ import {Express} from 'express';
 const options = {
   info: {
     version: '1.0.0',
-    title: 'Oedi API',
-    description: 'Oedi API powered by Firebase Functions and Moralis, base_url: https://us-central1-oedi-a1953.cloudfunctions.net/api ',
+    title: 'Palm API',
+    description: 'Palm API powered by Firebase Functions and Moralis, base_url: https://asia-northeast1-oedi-a1953.cloudfunctions.net/api ',
   },
   security: {
     JWT: {

@@ -9,3 +9,7 @@ lib/
 .env.production
 
 kas-credential.json
+
+**/*.env
+**/*.env.development
+**/*.env.production

@@ -1,5 +1,5 @@
 {
-  "name": "oedi-server",
+  "name": "api-server",
   "version": "1.0.0",
   "main": "functions/lib/src/index.js",
   "private": true,

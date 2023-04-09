@@ -1,8 +1,8 @@
 import {NextFunction, Request, Response} from 'express';
-import * as functions from 'firebase-functions';
 import axios from 'axios';
 import {initializeApp} from 'firebase/app';
 import {getAuth, signInWithCustomToken} from 'firebase/auth';
+import config from '../config';
 // custome token to id token generation function
 
 export async function idTokenGenertor(req: Request, res: Response, next: NextFunction) {
@@ -17,7 +17,7 @@ export async function idTokenGenertor(req: Request, res: Response, next: NextFun
   try {
     // trigger ext-moralis-auth-issueToken post function to convert signature, message & networkType to custom token using axios
     const response = await axios.post(
-        `https://asia-northeast1-${functions.config().project.id}.cloudfunctions.net/ext-moralis-auth-issueToken`,
+        `https://asia-northeast1-${config.FIREBASE_PROJECT_ID}.cloudfunctions.net/ext-moralis-auth-issueToken`,
         {
           data: {
             signature,
@@ -29,12 +29,12 @@ export async function idTokenGenertor(req: Request, res: Response, next: NextFun
 
     // initialize firebase app
     const firebaseConfig = {
-      apiKey: 'AIzaSyARxuVV-AJdLNj2kz_4yArs-CWEvML4u2o',
-      authDomain: 'oedi-a1953.firebaseapp.com',
-      projectId: 'oedi-a1953',
-      storageBucket: 'oedi-a1953.appspot.com',
-      messagingSenderId: '219711213585',
-      appId: '1:219711213585:web:6b625686c7f514699121b0',
+      apiKey: config.FIREBASE_API_KEY,
+      authDomain: config.FIREBASE_AUTH_DOMAIN,
+      projectId: config.FIREBASE_PROJECT_ID,
+      storageBucket: config.FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: config.FIREBASE_MESSAGING_SENDER_ID,
+      appId: config.FIREBASE_APP_ID,
     };
     // initialize app
     const app = initializeApp(firebaseConfig);

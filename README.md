@@ -1,8 +1,8 @@
-# Oedi Backend
-This project contains the server for the Oedi project based on firebase services.
+# Palm API Server
+This project contains the server for the Palm project based on firebase services.
 
 ## Firebase services
-Oedi backend is based on the following firebase services:
+Palm backend is based on the following firebase services:
 - [Firebase Extensions](https://firebase.google.com/docs/extensions)
 - [Firebase Cloud Functions](https://firebase.google.com/docs/functions)
 - [Firebase Hosting](https://firebase.google.com/docs/hosting)
