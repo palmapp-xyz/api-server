@@ -16,8 +16,6 @@
     }
   ],
   "extensions": {
-    "moralis-streams": "moralis/moralis-streams@0.1.11",
-    "moralis-auth": "moralis/moralis-auth@0.1.4"
   },
   "emulators": {
     "auth": {
@@ -37,10 +35,10 @@
     },
     "singleProjectMode": true
   },
-    "firestore": {
-        "rules": "firestore.rules",
-        "indexes": "firestore.indexes.json"
-    },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
   "hosting": {
     "public": "./hosting/public",
     "ignore": [

@@ -18,7 +18,7 @@ import {searchRouter} from './search/router';
 import {initListeners} from './search/listenerFunctions';
 
 // eslint-disable-next-line etc/no-commented-out-code
-// import {getSwagger} from './Swagger';
+// import {getSwagger} from './swagger';
 
 // initialize admin
 const firebaseApp = admin.initializeApp();
