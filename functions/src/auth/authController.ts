@@ -63,10 +63,8 @@ export async function challengeVerify(req: Request, res: Response, next: NextFun
     const response: AxiosResponse<AuthChallengeResult> = await axios.post(
         `https://authapi.moralis.io/challenge/verify/evm`,
         {
-          data: {
-            message,
-            signature,
-          },
+          message,
+          signature,
         },
         {
           headers: {
