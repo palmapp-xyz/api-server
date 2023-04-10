@@ -1,6 +1,7 @@
 import express from 'express';
-import {idTokenGenertor} from './authController';
+import {challengeRequest, challengeVerify} from './authController';
 
 export const authRouter = express.Router();
 
-authRouter.post('/issue', idTokenGenertor);
+authRouter.post('/challenge/request', challengeRequest);
+authRouter.post('/challenge/verify', challengeVerify);

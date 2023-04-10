@@ -8,12 +8,9 @@ import {SSXServer, SSXExpressMiddleware} from '@spruceid/ssx-server';
 import config from './config';
 import {apiRouter} from './apiRouter';
 import {errorHandler} from './middlewares/errorHandler';
-import {streamRouter} from './stream/streamRouter';
 import * as functions from 'firebase-functions';
-import {profileRouter} from './profile/profileRouter';
 import swaggerui from 'swagger-ui-express';
 import {authRouter} from './auth/authRouter';
-import {offerRouter} from './offer/offerRouter';
 import {searchRouter} from './search/router';
 import {initListeners} from './search/listenerFunctions';
 
@@ -30,18 +27,12 @@ Moralis.start({
   apiKey: config.MORALIS_API_KEY,
 });
 
-// eslint-disable-next-line no-console
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
-// For parsing application/json:
-// should allow all origins
 app.use(cors());
 
 app.use('/auth', authRouter);
 app.use('/api', apiRouter);
-app.use('/stream', streamRouter);
-app.use('/profile', profileRouter);
-app.use('/offer', offerRouter);
 app.use('/docs', swaggerui.serve);
 app.use('/search', searchRouter);
 
@@ -59,10 +50,9 @@ app.get('/', (req, res) => {
   res.send('Palm server side');
 });
 
-// eslint-disable-next-line no-inline-comments
-// getSwagger(app); // creating swagger.json file
 app.get('/docs', swaggerui.setup(import('../swagger.json')));
 app.use(errorHandler);
+
 // functions should be deployed to specific region 'asia-northeast3'
 export const v1 = functions.region('asia-northeast3').https.onRequest(app);
 
@@ -76,4 +66,3 @@ export const {
   onChannelUpdate,
   onChannelDelete,
 } = indexers;
-
