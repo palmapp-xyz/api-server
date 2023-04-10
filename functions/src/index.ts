@@ -13,6 +13,8 @@ import swaggerui from 'swagger-ui-express';
 import {authRouter} from './auth/authRouter';
 import {searchRouter} from './search/router';
 import {initListeners} from './search/listenerFunctions';
+import {notificationRouter} from './notification/router';
+import {initListener} from './notification/listenerFunction';
 
 // eslint-disable-next-line etc/no-commented-out-code
 // import {getSwagger} from './swagger';
@@ -35,6 +37,7 @@ app.use('/auth', authRouter);
 app.use('/api', apiRouter);
 app.use('/docs', swaggerui.serve);
 app.use('/search', searchRouter);
+app.use('notification', notificationRouter);
 
 const ssx = new SSXServer({
   signingKey: config.SSX_SECRET,
@@ -66,3 +69,12 @@ export const {
   onChannelUpdate,
   onChannelDelete,
 } = indexers;
+
+// notification functions
+// eslint-disable-next-line etc/no-commented-out-code
+/**
+const notification = initListener();
+export const {
+  sendNotification,
+} = notification;
+**/
