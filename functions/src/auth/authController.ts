@@ -32,6 +32,21 @@ export async function challengeRequest(req: Request, res: Response, next: NextFu
           },
         }
     );
+
+    // to support arbitrary wallet-to-wallet messaging
+    // TODO remove once on-chain profiles are integrated
+    const userSnapshot = await admin.firestore().collection('profiles').doc(address).get();
+    if (!userSnapshot.exists) {
+      const {profileId} = response.data;
+      await admin.auth().createUser({uid: profileId});
+      const profileField: Profile = {
+        profileId,
+        address,
+        verified: false,
+      };
+      await admin.firestore().collection('profiles').doc(profileId).set(profileField);
+    }
+
     res.send(response.data);
   } catch (err) {
     next(err);
@@ -62,15 +77,19 @@ export async function challengeVerify(req: Request, res: Response, next: NextFun
         }
     );
 
-    const userSnapshot = await admin.firestore().collection('profiles').doc(response.data.address).get();
+    const {profileId} = response.data;
+    const profileField: Profile = {
+      profileId,
+      address: response.data.address,
+      verified: true,
+    };
+    const userSnapshot = await admin.firestore().collection('profiles').doc(response.data.profileId).get();
     if (!userSnapshot.exists) {
-      const {profileId} = response.data;
-      await admin.auth().createUser({uid: profileId});
-      const profileField: Profile = {
-        profileId,
-        address: response.data.address,
-      };
-      await admin.firestore().collection('profiles').doc(profileId).set(profileField);
+      await admin.auth().createUser({uid: profileId}).then(() => {
+        return admin.firestore().collection('profiles').doc(profileId).set(profileField);
+      });
+    } else {
+      await admin.firestore().collection('profiles').doc(profileId).set(profileField, {merge: true});
     }
     res.send(response.data);
   } catch (err) {
