@@ -3,7 +3,8 @@ import axios, {AxiosResponse} from 'axios';
 import * as admin from 'firebase-admin';
 import config from '../config';
 import {AuthChallengeInfo, AuthChallengeResult, Profile} from './auth';
-
+import {UserRecord} from 'firebase-admin/auth';
+import * as functions from 'firebase-functions';
 
 export async function challengeRequest(req: Request, res: Response, next: NextFunction) {
   const {address, chainId} = req.body;
@@ -35,10 +36,14 @@ export async function challengeRequest(req: Request, res: Response, next: NextFu
 
     // to support arbitrary wallet-to-wallet messaging
     // TODO remove once on-chain profiles are integrated
-    const userSnapshot = await admin.firestore().collection('profiles').doc(address).get();
-    if (!userSnapshot.exists) {
-      const {profileId} = response.data;
+    const {profileId} = response.data;
+    const userRecord: UserRecord = await admin.auth().getUser(profileId);
+    if (!userRecord) {
+      functions.logger.log(`challengeRequest: creating a new user ${profileId}`);
       await admin.auth().createUser({uid: profileId});
+    }
+    const userSnapshot = await admin.firestore().collection('profiles').doc(profileId).get();
+    if (!userSnapshot.exists) {
       const profileField: Profile = {
         profileId,
         address,
@@ -47,6 +52,7 @@ export async function challengeRequest(req: Request, res: Response, next: NextFu
       await admin.firestore().collection('profiles').doc(profileId).set(profileField);
     }
 
+    functions.logger.log(`challengeRequest return ${JSON.stringify(response.data)}`);
     res.send(response.data);
   } catch (err) {
     next(err);
@@ -58,6 +64,8 @@ export async function challengeVerify(req: Request, res: Response, next: NextFun
   if (!message || !signature) {
     throw new Error('message, signature are required');
   }
+
+  functions.logger.log(`challengeVerify message: ${message}, signature: ${signature}`);
   try {
     // trigger ext-moralis-auth-issueToken post function to convert signature, message & networkType to custom token using axios
     const response: AxiosResponse<AuthChallengeResult> = await axios.post(
@@ -83,12 +91,12 @@ export async function challengeVerify(req: Request, res: Response, next: NextFun
     };
     const userSnapshot = await admin.firestore().collection('profiles').doc(response.data.profileId).get();
     if (!userSnapshot.exists) {
-      await admin.auth().createUser({uid: profileId}).then(() => {
-        return admin.firestore().collection('profiles').doc(profileId).set(profileField);
-      });
+      throw new Error(`User with profile id ${profileId} does not exist`);
     } else {
       await admin.firestore().collection('profiles').doc(profileId).set(profileField, {merge: true});
     }
+
+    functions.logger.log(`challengeVerify return: ${JSON.stringify(response.data)}`);
     res.send(response.data);
   } catch (err) {
     next(err);

@@ -1,6 +1,7 @@
 import {MoralisError, isMoralisError} from '@moralisweb3/common-core';
 import {NextFunction, Request, Response} from 'express';
 import {AxiosError} from 'axios';
+import * as functions from 'firebase-functions';
 
 const makeMoralisErrorMessage = (error: MoralisError) => {
   let message = error.message || 'Unknown error';
@@ -34,6 +35,7 @@ export function errorHandler(
 ) {
   // eslint-disable-next-line no-console
   console.error('ErrorHandler', error);
+  functions.logger.log('ErrorHandler', error);
 
   if (isMoralisError(error)) {
     const status =
