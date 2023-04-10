@@ -35,7 +35,7 @@ export function errorHandler(
 ) {
   // eslint-disable-next-line no-console
   console.error('ErrorHandler', error);
-  functions.logger.log('ErrorHandler', error);
+  functions.logger.error('ErrorHandler', error);
 
   if (isMoralisError(error)) {
     const status =
