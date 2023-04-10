@@ -64,11 +64,13 @@ export async function challengeVerify(req: Request, res: Response, next: NextFun
 
     const userSnapshot = await admin.firestore().collection('profiles').doc(response.data.address).get();
     if (!userSnapshot.exists) {
-      await admin.auth().createUser({uid: response.data.address});
+      const {profileId} = response.data;
+      await admin.auth().createUser({uid: profileId});
       const profileField: Profile = {
+        profileId,
         address: response.data.address,
       };
-      await admin.firestore().collection('profiles').doc(response.data.address).set(profileField);
+      await admin.firestore().collection('profiles').doc(profileId).set(profileField);
     }
     res.send(response.data);
   } catch (err) {

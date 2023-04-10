@@ -19,5 +19,6 @@ export type AuthChallengeResult = {
 }
 
 export type Profile = {
+  profileId: string
   address: string
 }
