@@ -1,7 +1,6 @@
 // express Router
 import {Router} from 'express';
 import {sendNotification} from './controller';
-import {isAuthenticated} from "../middlewares/authHandler";
 export const notificationRouter = Router();
 /**
  * @typedef {object} Notification

@@ -14,7 +14,7 @@ import {authRouter} from './auth/authRouter';
 import {searchRouter} from './search/router';
 import {initListeners} from './search/listenerFunctions';
 import {notificationRouter} from './notification/router';
-import {initListener} from './notification/listenerFunction';
+import {initNotifiers} from './notification/listenerFunction'
 
 // eslint-disable-next-line etc/no-commented-out-code
 // import {getSwagger} from './swagger';
@@ -71,10 +71,10 @@ export const {
 } = indexers;
 
 // notification functions
-// eslint-disable-next-line etc/no-commented-out-code
-/**
-const notification = initListener();
+
+const notifiers = initNotifiers();
 export const {
-  sendNotification,
-} = notification;
-**/
+  onNewListing,
+  onUpdatedListing,
+} = notifiers;
+
