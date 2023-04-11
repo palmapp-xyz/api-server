@@ -51,6 +51,11 @@ export async function challengeRequest(req: Request, res: Response, next: NextFu
       await admin.firestore().collection('profiles').doc(profileId).set(profileField);
     }
 
+    const userProfileSnapshot = await admin.firestore().collection('userProfiles').doc(address).get();
+    if (!userProfileSnapshot.exists) {
+      await admin.firestore().collection('userProfiles').doc(address).set({profileId});
+    }
+
     functions.logger.log(`challengeRequest return ${JSON.stringify(response.data)}`);
     res.send(response.data);
   } catch (err) {
