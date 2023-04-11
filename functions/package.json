@@ -9,10 +9,10 @@
     "shell": "npm run preserve; npm run build && firebase functions:shell; npm run postserve;",
     "start": "npm run shell",
     "preserve": "cp $INIT_CWD/../.env.development $INIT_CWD/.",
-    "postserve": "rm -rf $INIT_CWD/.env*",
+    "postserve": "rm -rf $INIT_CWD/.env.development",
     "predeploy": "cp $INIT_CWD/../.env.production $INIT_CWD/.",
     "deploy": "npm run predeploy; NODE_ENV=production firebase deploy --only functions; npm run postdeploy",
-    "postdeploy": "rm -rf $INIT_CWD/.env*",
+    "postdeploy": "rm -rf $INIT_CWD/.env.production",
     "logs": "firebase functions:log",
     "docs": "yarn build && node lib/index.js",
     "test": "mocha --exit --require ts-node/register 'test/*.ts' --timeout 240000"
