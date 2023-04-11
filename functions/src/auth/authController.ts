@@ -3,7 +3,6 @@ import axios, {AxiosResponse} from 'axios';
 import * as admin from 'firebase-admin';
 import config from '../config';
 import {AuthChallengeInfo, AuthChallengeResult, Profile} from './auth';
-import {UserRecord} from 'firebase-admin/auth';
 import * as functions from 'firebase-functions';
 
 export async function challengeRequest(req: Request, res: Response, next: NextFunction) {
@@ -37,11 +36,11 @@ export async function challengeRequest(req: Request, res: Response, next: NextFu
     // to support arbitrary wallet-to-wallet messaging
     // TODO remove once on-chain profiles are integrated
     const {profileId} = response.data;
-    const userRecord: UserRecord = await admin.auth().getUser(profileId);
-    if (!userRecord) {
+    await admin.auth().getUser(profileId).catch((_e) => {
       functions.logger.log(`challengeRequest: creating a new user ${profileId}`);
-      await admin.auth().createUser({uid: profileId});
-    }
+      admin.auth().createUser({uid: profileId});
+    });
+
     const userSnapshot = await admin.firestore().collection('profiles').doc(profileId).get();
     if (!userSnapshot.exists) {
       const profileField: Profile = {
