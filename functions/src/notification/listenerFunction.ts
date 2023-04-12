@@ -17,8 +17,10 @@ export function initNotifiers() {
           // Get a batch of usersIds from fetchChannelMembers function
           const {members, nextCursor} = await fetchChannelMembers(channelUrl, lastKey || undefined);
           // fetch the device tokens of the users from firestore based on the userIds fetched
-          const userIds = members.map((member) => member.user_id);
+          const userIds = members.map((member: {[p: string]: any}) => member.user_id);
           if (userIds.length === 0) {
+            // eslint-disable-next-line no-console
+            console.log('No users found');
             // doing nothing
           } else {
             const userTokens: any[] = [];
@@ -30,12 +32,14 @@ export function initNotifiers() {
               const userDoc = await userRef.get();
               const userToken = userDoc.data()?.deviceToken;
               // skip if the user does not have a device token or is maker of the listing
-              if (!userToken || userDoc.data()?.address === listingData.order.order.maker) {
+              if ( !userToken || userDoc.data()?.address === listingData.order.order.maker) {
                 continue;
               }
               userTokens.push(userToken);
             }
             if (userTokens.length === 0) {
+              // eslint-disable-next-line no-console
+              console.log('No users tokens found');
               // doing nothing
               return;
             }
@@ -73,8 +77,18 @@ export function initNotifiers() {
         const before = change.before.data();
         const after = change.after.data();
         const changedFields = Object.keys(before).filter((key) => before[key] !== after[key]);
+        if (changedFields.includes('order')) {
+          // check if child fields of order.order are changed
+          const orderOrderChangedFields = Object.keys(before.order.order).filter((key) => before.order.order[key] !== after.order.order[key]);
+          delete changedFields[changedFields.indexOf('order')];
+          changedFields.push(...orderOrderChangedFields);
+        }
         // if the changed fields are not the ones we are interested in, do nothing. interested fields are status and nested fields of order object in listing i.e: order.order.erc20TokenAmount
-        if (!changedFields.includes('status') && !changedFields.includes('order.order.erc20TokenAmount')) {
+        if (!changedFields.includes('status') && !changedFields.includes('erc20TokenAmount')) {
+          // eslint-disable-next-line no-console
+          console.log('No changes in status or erc20TokenAmount instead changed fields are', changedFields);
+          // eslint-disable-next-line no-console
+          console.log('Doing nothing');
           return;
         }
         const listingId = change.after.id;
@@ -86,8 +100,10 @@ export function initNotifiers() {
           // Get a batch of usersIds from fetchChannelMembers function
           const {members, nextCursor} = await fetchChannelMembers(channelUrl, lastKey || undefined);
           // fetch the device tokens of the users from firestore based on the userIds fetched
-          const userIds = members.map((member) => member.user_id);
+          const userIds = members.map((member:{[p: string]: any}) => member.user_id);
           if (userIds.length === 0) {
+            // eslint-disable-next-line no-console
+            console.log('No users found');
             // doing nothing
           } else {
             const userTokens: any[] = [];
@@ -99,12 +115,14 @@ export function initNotifiers() {
               const userDoc = await userRef.get();
               const userToken = userDoc.data()?.deviceToken;
               // skip if the user does not have a device token or is maker of the listing
-              if (!userToken || userDoc.data()?.address === listingData.order.order.maker) {
+              if ( !userToken || userDoc.data()?.address === listingData.order.order.maker) {
                 continue;
               }
               userTokens.push(userToken);
             }
             if (userTokens.length === 0) {
+              // eslint-disable-next-line no-console
+              console.log('No users tokens found');
               // doing nothing
               return;
             }
@@ -119,7 +137,7 @@ export function initNotifiers() {
                   message = `Listing with id ${listingId} sold to ${listingData.order.order.taker}`;
                 }
                 break;
-              case 'order.order.erc20TokenAmount':
+              case 'erc20TokenAmount':
                 message = `Listing with id ${listingId} price updated to ${listingData.order.order.erc20TokenAmount}`;
                 break;
               default:
@@ -148,9 +166,9 @@ export function initNotifiers() {
         // call the recursive function
         await getAndSendNotifications();
       });
-  return [
+  return {
     onNewListing,
     onUpdatedListing,
-  ];
+  };
 }
 

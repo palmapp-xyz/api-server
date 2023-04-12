@@ -14,7 +14,7 @@ import {authRouter} from './auth/authRouter';
 import {searchRouter} from './search/router';
 import {initListeners} from './search/listenerFunctions';
 import {notificationRouter} from './notification/router';
-import {initNotifiers} from './notification/listenerFunction'
+import {initNotifiers} from './notification/listenerFunction';
 
 // eslint-disable-next-line etc/no-commented-out-code
 // import {getSwagger} from './swagger';

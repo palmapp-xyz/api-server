@@ -4,7 +4,7 @@ import axios from 'axios';
 const SEND_API_KEY = config.SENDBIRD_API_TOKEN;
 const BASE_URL = config.SENDBIRD_API_URL;
 const LIMIT = 100; // fetch 100 members at a time
-export async function fetchChannelMembers(channelUrl, nextCursor?) {
+export async function fetchChannelMembers(channelUrl: string, nextCursor?: string) {
   const headers = {
     'Content-Type': 'application/json',
     'Api-Token': SEND_API_KEY,
