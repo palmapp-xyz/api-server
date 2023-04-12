@@ -2,14 +2,47 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /moralis/{collectionType}/{collectionName}/{id} {
-      allow read;
-      allow write: if false;
-    }
-    match /profile/{id} {
-    	allow read: if false;
-      allow create: if false;
-      allow update: if false;
-    }
+
+    function isAuthenticated() {
+          return request.auth != null && request.auth.uid != null;
+        }
+
+        function isUserOwnProfile(profileId) {
+          return isAuthenticated() && request.auth.uid == profileId;
+        }
+        function isProfileAddressEqualToMaker(address) {
+              return isAuthenticated() && get(/databases/$(database)/documents/profiles/$(request.auth.uid)).data.address == address;
+            }
+
+        match /profiles/{profileId} {
+          // Allow read access to all authenticated users
+          allow read: if isAuthenticated();
+
+          // Allow update access only to the owner of the profile
+          allow update: if isUserOwnProfile(profileId);
+
+          // Disallow create and delete operations (only through admin SDK)
+          allow create, delete: if false;
+        }
+        match /listings/{listingId} {
+              // Allow read access to all authenticated users
+              allow read: if isAuthenticated();
+
+              // Allow create and update access if the user's profile.address is equal to listing.order.order.maker
+              allow create, update: if isProfileAddressEqualToMaker(request.resource.data.order.order.maker);
+
+              // Disallow delete operations for all users
+              allow delete: if false;
+            }
+
+            match /channels/{channelId} {
+              // Allow read and create access to all authenticated users
+              allow read, create: if isAuthenticated();
+
+              // Disallow update and delete operations for all users
+              allow update, delete: if false;
+            }
+
   }
 }
+
