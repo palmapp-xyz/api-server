@@ -12,8 +12,10 @@ export function initNotifiers() {
         const listingId = snap.id;
         const listingData = snap.data();
         const {channelUrl} = listingData;
+        let isMakerMember = false;
+        const userTokens: any[] = [];
         // A recursive function to get batch of users and send notifications to them
-        const getAndSendNotifications = async (lastKey?: string) => {
+        const getMembersUserTokens = async (lastKey?: string) => {
           // Get a batch of usersIds from fetchChannelMembers function
           const {members, nextCursor} = await fetchChannelMembers(channelUrl, lastKey || undefined);
           // fetch the device tokens of the users from firestore based on the userIds fetched
@@ -23,7 +25,6 @@ export function initNotifiers() {
             console.log('No users found');
             // doing nothing
           } else {
-            const userTokens: any[] = [];
             // get the device tokens of the users from firestore based on the userIds fetched
             for (const userId of userIds) {
               // Get the user's device token
@@ -33,39 +34,54 @@ export function initNotifiers() {
               const userToken = userDoc.data()?.deviceToken;
               // skip if the user does not have a device token or is maker of the listing
               if ( !userToken || userDoc.data()?.address === listingData.order.order.maker) {
+                if (userToken) {
+                  isMakerMember = true;
+                }
                 continue;
               }
               userTokens.push(userToken);
             }
-            if (userTokens.length === 0) {
-              // eslint-disable-next-line no-console
-              console.log('No users tokens found');
-              // doing nothing
-              return;
-            }
-
-            // Create the message payload
-            const payload = {
-              notification: {
-                title: 'Notification',
-                body: `New listing created by ${listingData.order.order.maker} with id ${listingId} checkout now!`,
-                sound: 'default',
-              },
-            };
-            const options = {
-              priority: 'high',
-              timeToLive: 60 * 60 * 24,
-            };
-            await admin.messaging().sendToDevice(userTokens, payload, options);
 
             // if there are more users to fetch, call the function again
             if (nextCursor) {
-              await getAndSendNotifications(nextCursor);
+              await getMembersUserTokens(nextCursor);
             }
           }
         };
         // call the recursive function
-        await getAndSendNotifications();
+        await getMembersUserTokens();
+        // if the maker of the listing is not a member of the channel, delete the listing
+        if (!isMakerMember) {
+          // eslint-disable-next-line no-console
+          console.log('Maker is not a member of the channel, deleting listing');
+          await firestore.collection('listings').doc(listingId).delete();
+        } else {
+          // sending notification to all userTokens in batches of 500
+          const payload = {
+            notification: {
+              title: 'Notification',
+              body: `New listing created by ${listingData.order.order.maker} with id ${listingId} checkout now!`,
+              sound: 'default',
+            },
+          };
+          const options = {
+            priority: 'high',
+            timeToLive: 60 * 60 * 24,
+          };
+          // sending notification in batches of 500
+          const batch = 500;
+          let chunks;
+          if (userTokens.length > batch) {
+            chunks = Math.ceil(userTokens.length / batch);
+          } else {
+            chunks = 1;
+          }
+          for (let i = 0; i < chunks; i++) {
+            const chunk = userTokens.slice(i * batch, (i + 1) * batch);
+            // eslint-disable-next-line no-await-in-loop
+            await admin.messaging().sendToDevice(chunk, payload, options);
+          }
+        }
       });
 
   // firebase function to trigger upon listing updated in firestore
