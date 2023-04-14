@@ -11,7 +11,7 @@ export async function challengeRequest(req: Request, res: Response, next: NextFu
     throw new Error('address, chainId are required');
   }
   try {
-    const expirationTime = new Date(new Date().getTime() + (24 * 60 * 60 * 1000));
+    const expirationTime = new Date(new Date().getTime() + (60 * 60 * 1000));
 
     const response: AxiosResponse<AuthChallengeInfo> = await axios.post(
         `https://authapi.moralis.io/challenge/request/evm`,
@@ -100,8 +100,11 @@ export async function challengeVerify(req: Request, res: Response, next: NextFun
       await admin.firestore().collection('profiles').doc(profileId).set(profileField, {merge: true});
     }
 
-    functions.logger.log(`challengeVerify return: ${JSON.stringify(response.data)}`);
-    res.send(response.data);
+    const authToken: string = await admin.auth().createCustomToken(profileId, {address: response.data.address});
+    const ret = {authToken, ...response.data};
+
+    functions.logger.log(`challengeVerify return: ${JSON.stringify(ret)}`);
+    res.send(ret);
   } catch (err) {
     next(err);
   }
