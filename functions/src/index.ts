@@ -17,8 +17,12 @@ import {initListeners} from './search/listenerFunctions';
 // eslint-disable-next-line etc/no-commented-out-code
 // import {getSwagger} from './swagger';
 
+import serviceAccount from '../firebase-adminsdk.json';
+
 // initialize admin
-const firebaseApp = admin.initializeApp();
+const firebaseApp = admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+});
 export const firestore = firebaseApp.firestore();
 
 export const app = express();

@@ -8,7 +8,7 @@
     "emulator": "npm run preserve; npm run build && firebase emulators:start --only functions; npm run postserve;",
     "shell": "npm run preserve; npm run build && firebase functions:shell; npm run postserve;",
     "start": "npm run shell",
-    "preserve": "cp $INIT_CWD/../.env.development $INIT_CWD/.",
+    "preserve": "cp $INIT_CWD/../.env.development $INIT_CWD/.; npm run build;",
     "postserve": "rm -rf $INIT_CWD/.env.development",
     "predeploy": "cp $INIT_CWD/../.env.production $INIT_CWD/.",
     "deploy": "npm run predeploy; NODE_ENV=production firebase deploy --only functions; npm run postdeploy",
