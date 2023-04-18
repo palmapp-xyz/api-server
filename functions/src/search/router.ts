@@ -39,7 +39,7 @@ searchRouter.post('/profile', searchProfiles);
 searchRouter.post('/channel', searchChannels);
 /**
  * POST /search/all
- * @summary Get channels & profiles by given search query
+ * @summary Get channels & profiles by given search query (both)
  * @tags Search
  *
  * @param {SearchQuery} request.body.required - query to search for

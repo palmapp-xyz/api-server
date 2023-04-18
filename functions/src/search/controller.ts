@@ -67,6 +67,7 @@ export async function searchChannels(req: Request, res: Response, next: NextFunc
         next(error);
       });
 }
+// searching all the data from elastic search engine at once of profiles and channels
 export async function searchAll(req: Request, res: Response, next: NextFunction) {
   const {query, searchFields, page, pageSize} = req.body;
   const from: number = (page - 1) * pageSize;
