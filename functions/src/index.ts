@@ -78,7 +78,7 @@ export const {
 
 const notifiers = initNotifiers();
 export const {
-  onNewListing,
-  onUpdatedListing,
+  onListingCreated,
+  onListingUpdated,
 } = notifiers;
 

@@ -1,190 +1,128 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import {firestore} from '../index';
-import {fetchChannelMembers} from './sendbird';
+import {DeviceToken, getMembersUserTokens} from './sendbird';
+import {QueryDocumentSnapshot} from 'firebase-admin/firestore';
+import {Listing} from './listing';
 
 export function initNotifiers() {
-  // firebase function to trigger upon listing create in firestore
-  const onNewListing = functions.firestore
+  const onListingCreated = functions.firestore
       .document('listings/{listingId}')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      .onCreate(async (snap, context) => {
-        const listingId = snap.id;
-        const listingData = snap.data();
-        const {channelUrl, order} = listingData;
-        let isMakerMember = false;
-        const userTokens: any[] = [];
-        // A recursive function to get batch of users and send notifications to them
-        const getMembersUserTokens = async (lastKey?: string) => {
-          // Get a batch of usersIds from fetchChannelMembers function
-          const {members, nextCursor} = await fetchChannelMembers(order.chainId, channelUrl, lastKey || undefined);
-          // fetch the device tokens of the users from firestore based on the userIds fetched
-          const userIds = members.map((member: {[p: string]: any}) => member.user_id);
-          if (userIds.length === 0) {
-            // eslint-disable-next-line no-console
-            console.log('No users found');
-            // doing nothing
-          } else {
-            // get the device tokens of the users from firestore based on the userIds fetched
-            for (const userId of userIds) {
-              // Get the user's device token
-              const userRef = firestore.collection('profiles').doc(userId);
-              // eslint-disable-next-line no-await-in-loop
-              const userDoc = await userRef.get();
-              const userToken = userDoc.data()?.deviceToken;
-              // skip if the user does not have a device token or is maker of the listing
-              if ( !userToken || userDoc.data()?.address === listingData.order.order.maker) {
-                if (userToken) {
-                  isMakerMember = true;
-                }
-                continue;
-              }
-              userTokens.push(userToken);
-            }
+      .onCreate(async (snapshot: QueryDocumentSnapshot) => {
+        const listingId = snapshot.id;
+        const listing = snapshot.data() as Listing;
+        const {channelUrl, order} = listing;
+        if (!channelUrl) return;
 
-            // if there are more users to fetch, call the function again
-            if (nextCursor) {
-              await getMembersUserTokens(nextCursor);
-            }
-          }
+        const deviceTokens: DeviceToken[] = await getMembersUserTokens(
+            [], channelUrl, Number(order.chainId), [order.order.maker, order.order.taker]);
+
+        // sending notification to all userTokens in batches of 500
+        const payload: admin.messaging.MessagingPayload = {
+          notification: {
+            title: 'Listing created',
+            body: `New listing created by ${listing.order.order.maker} with id ${listingId}. Checkout now!`,
+            sound: 'default',
+          },
+          data: {
+            listing: JSON.stringify(listing),
+          },
         };
-        // call the recursive function
-        await getMembersUserTokens();
-        // if the maker of the listing is not a member of the channel, delete the listing
-        if (!isMakerMember) {
-          // eslint-disable-next-line no-console
-          console.log('Maker is not a member of the channel, deleting listing');
-          await firestore.collection('listings').doc(listingId).delete();
-        } else {
-          // sending notification to all userTokens in batches of 500
-          const payload = {
-            notification: {
-              title: 'Notification',
-              body: `New listing created by ${listingData.order.order.maker} with id ${listingId} checkout now!`,
-              sound: 'default',
-            },
-          };
-          const options = {
-            priority: 'high',
-            timeToLive: 60 * 60 * 24,
-          };
+
+        // store the notification in firestore, with empty read users list
+        const added = await firestore.collection('notifications').add({...payload, readUsers: []});
+        payload.data = {...payload.data, notificationId: added.id};
+
+        const options = {
+          priority: 'high',
+          timeToLive: 60 * 60 * 24,
+        };
           // sending notification in batches of 500
-          const batch = 500;
-          let chunks;
-          if (userTokens.length > batch) {
-            chunks = Math.ceil(userTokens.length / batch);
-          } else {
-            chunks = 1;
-          }
-          for (let i = 0; i < chunks; i++) {
-            const chunk = userTokens.slice(i * batch, (i + 1) * batch);
-            // eslint-disable-next-line no-await-in-loop
-            await admin.messaging().sendToDevice(chunk, payload, options);
-          }
+        const batch = 500;
+        let chunks;
+        if (deviceTokens.length > batch) {
+          chunks = Math.ceil(deviceTokens.length / batch);
+        } else {
+          chunks = 1;
+        }
+        for (let i = 0; i < chunks; i++) {
+          const chunk = deviceTokens.slice(i * batch, (i + 1) * batch);
+          // eslint-disable-next-line no-await-in-loop
+          const result: admin.messaging.MessagingDevicesResponse = await admin.messaging().sendToDevice(
+              chunk.flatMap((deviceToken: DeviceToken) => deviceToken.apns.concat(deviceToken.fcm)),
+              payload,
+              options
+          );
+          functions.logger.log(`onListingCreated notifications: ${result}`);
         }
       });
 
-  // firebase function to trigger upon listing updated in firestore
-  const onUpdatedListing = functions.firestore
+  const onListingUpdated = functions.firestore
       .document('listings/{listingId}')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      .onUpdate(async (change, context) => {
-        // Get which fields changed
-        const before = change.before.data();
-        const after = change.after.data();
-        const changedFields = Object.keys(before).filter((key) => before[key] !== after[key]);
-        if (changedFields.includes('order')) {
-          // check if child fields of order.order are changed
-          const orderOrderChangedFields = Object.keys(before.order.order).filter((key) => before.order.order[key] !== after.order.order[key]);
-          delete changedFields[changedFields.indexOf('order')];
-          changedFields.push(...orderOrderChangedFields);
-        }
-        // if the changed fields are not the ones we are interested in, do nothing. interested fields are status and nested fields of order object in listing i.e: order.order.erc20TokenAmount
-        if (!changedFields.includes('status') && !changedFields.includes('erc20TokenAmount')) {
-          // eslint-disable-next-line no-console
-          console.log('No changes in status or erc20TokenAmount instead changed fields are', changedFields);
-          // eslint-disable-next-line no-console
-          console.log('Doing nothing');
-          return;
-        }
+      .onUpdate(async (change: functions.Change<QueryDocumentSnapshot>) => {
+        const before = change.before.data() as Listing;
+        const after = change.after.data() as Listing;
+        const {status: beforeStatus, order: beforeOrder} = before;
+        const {channelUrl, status: afterStatus, order: afterOrder} = after;
+        if (!channelUrl) return;
+
+        const deviceTokens: DeviceToken[] = await getMembersUserTokens(
+            [], channelUrl, Number(afterOrder.chainId), [afterOrder.order.maker, afterOrder.order.taker]);
+
         const listingId = change.after.id;
-        const listingData = change.after.data();
-        const {channelUrl, order} = listingData;
-        // A recursive function to get batch of users and send notifications to them
-        // eslint-disable-next-line complexity
-        const getAndSendNotifications = async (lastKey?: string) => {
-          // Get a batch of usersIds from fetchChannelMembers function
-          const {members, nextCursor} = await fetchChannelMembers(order.chainId, channelUrl, lastKey || undefined);
-          // fetch the device tokens of the users from firestore based on the userIds fetched
-          const userIds = members.map((member:{[p: string]: any}) => member.user_id);
-          if (userIds.length === 0) {
-            // eslint-disable-next-line no-console
-            console.log('No users found');
-            // doing nothing
-          } else {
-            const userTokens: any[] = [];
-            // get the device tokens of the users from firestore based on the userIds fetched
-            for (const userId of userIds) {
-              // Get the user's device token
-              const userRef = firestore.collection('profiles').doc(userId);
-              // eslint-disable-next-line no-await-in-loop
-              const userDoc = await userRef.get();
-              const userToken = userDoc.data()?.deviceToken;
-              // skip if the user does not have a device token or is maker of the listing
-              if ( !userToken || userDoc.data()?.address === listingData.order.order.maker) {
-                continue;
-              }
-              userTokens.push(userToken);
-            }
-            if (userTokens.length === 0) {
-              // eslint-disable-next-line no-console
-              console.log('No users tokens found');
-              // doing nothing
-              return;
-            }
-            let message = `Listing with id ${listingId} updated, checkout now!`;
+        let message = `Listing with id ${listingId} updated, checkout now!`;
 
-            // using switch case to check listing field updated and add message accordingly
-            switch (changedFields[0]) { // assuming only one field will be updated at a time
-              case 'status':
-                message = `Listing with id ${listingId} status updated to ${listingData.status}`;
-                if (listingData.status === 'sold') {
-                  // Create the message payload
-                  message = `Listing with id ${listingId} sold to ${listingData.order.order.taker}`;
-                }
-                break;
-              case 'erc20TokenAmount':
-                message = `Listing with id ${listingId} price updated to ${listingData.order.order.erc20TokenAmount}`;
-                break;
-              default:
-                break;
-            }
-            // Create the message payload
-            const payload = {
-              notification: {
-                title: 'Notification',
-                body: message,
-                sound: 'default',
-              },
-            };
-            const options = {
-              priority: 'high',
-              timeToLive: 60 * 60 * 24,
-            };
-            await admin.messaging().sendToDevice(userTokens, payload, options);
+        // using switch case to check listing field updated and add message accordingly
+        if (beforeStatus !== afterStatus) {
+          message = `Listing with id ${listingId} status updated to ${afterStatus}`;
+        } else if (beforeOrder.erc20TokenAmount !== afterOrder.erc20TokenAmount) {
+          message = `Listing with id ${listingId} price updated to ${afterOrder.erc20TokenAmount} ETH`;
+        }
 
-            // if there are more users to fetch, call the function again
-            if (nextCursor) {
-              await getAndSendNotifications(nextCursor);
-            }
-          }
+        // sending notification to all userTokens in batches of 500
+        const payload: admin.messaging.MessagingPayload = {
+          notification: {
+            title: 'Listing updated',
+            body: message,
+            sound: 'default',
+          },
+          data: {
+            before: JSON.stringify(before),
+            after: JSON.stringify(after),
+          },
         };
-        // call the recursive function
-        await getAndSendNotifications();
+
+        // store the notification in firestore, with empty read users list
+        const added = await firestore.collection('notifications').add({...payload, readUsers: []});
+        payload.data = {...payload.data, notificationId: added.id};
+
+        const options = {
+          priority: 'high',
+          timeToLive: 60 * 60 * 24,
+        };
+          // sending notification in batches of 500
+        const batch = 500;
+        let chunks;
+        if (deviceTokens.length > batch) {
+          chunks = Math.ceil(deviceTokens.length / batch);
+        } else {
+          chunks = 1;
+        }
+        for (let i = 0; i < chunks; i++) {
+          const chunk = deviceTokens.slice(i * batch, (i + 1) * batch);
+          // eslint-disable-next-line no-await-in-loop
+          const result: admin.messaging.MessagingDevicesResponse = await admin.messaging().sendToDevice(
+              chunk.flatMap((deviceToken: DeviceToken) => deviceToken.apns.concat(deviceToken.fcm)),
+              payload,
+              options
+          );
+          functions.logger.log(`onListingUpdated notifications: ${result}`);
+        }
       });
+
   return {
-    onNewListing,
-    onUpdatedListing,
+    onListingCreated,
+    onListingUpdated,
   };
 }
 
