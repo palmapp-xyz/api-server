@@ -64,7 +64,8 @@ searchRouter.post('/all', searchAll);
  * @param {SuggestQuery} request.body.required - query to search for
  * @return {object} 200 - An object of suggested channels & profiles
  */
-searchRouter.post('/suggest/all', suggestAll);
+// eslint-disable-next-line etc/no-commented-out-code
+// searchRouter.post('/suggest/all', suggestAll); // disabling for now,as no common field is there for both profiles and channels [we can only provide one field to look for in]
 
 /**
  * POST /search/suggest/channel
