@@ -2,6 +2,7 @@ import {Router} from 'express';
 import {
   searchChannels,
   searchProfiles,
+  searchAll,
 } from './controller';
 export const searchRouter = Router();
 /**
@@ -36,3 +37,14 @@ searchRouter.post('/profile', searchProfiles);
  *
  */
 searchRouter.post('/channel', searchChannels);
+/**
+ * POST /search/all
+ * @summary Get channels & profiles by given search query (both)
+ * @tags Search
+ *
+ * @param {SearchQuery} request.body.required - query to search for
+ * @return {object} 200 - An object of channels
+ * @return {Error}  default - Unexpected error
+ *
+ */
+searchRouter.post('/all', searchAll);
