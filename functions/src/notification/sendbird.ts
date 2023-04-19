@@ -1,16 +1,15 @@
 import config from '../config';
 import axios from 'axios';
 
-const SEND_API_KEY = config.SENDBIRD_API_TOKEN;
-const BASE_URL = config.SENDBIRD_API_URL;
 const LIMIT = 100; // fetch 100 members at a time
-export async function fetchChannelMembers(channelUrl: string, nextCursor?: string) {
+export async function fetchChannelMembers(chainId: number, channelUrl: string, nextCursor?: string) {
   const headers = {
     'Content-Type': 'application/json',
-    'Api-Token': SEND_API_KEY,
+    'Api-Token': chainId === 5 ? config.SENDBIRD_API_TOKEN_TESTNET : config.SENDBIRD_API_TOKEN_MAINNET,
   };
 
-  let url = `${BASE_URL}/group_channels/${encodeURIComponent(channelUrl)}/members?limit=${LIMIT}`;
+  const baseUrl = chainId === 5 ? config.SENDBIRD_API_URL_TESTNET : config.SENDBIRD_API_URL_MAINNET;
+  let url = `${baseUrl}/group_channels/${encodeURIComponent(channelUrl)}/members?limit=${LIMIT}`;
   if (nextCursor) {
     url += `&next=${nextCursor}`;
   }

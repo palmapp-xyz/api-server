@@ -11,13 +11,13 @@ export function initNotifiers() {
       .onCreate(async (snap, context) => {
         const listingId = snap.id;
         const listingData = snap.data();
-        const {channelUrl} = listingData;
+        const {channelUrl, order} = listingData;
         let isMakerMember = false;
         const userTokens: any[] = [];
         // A recursive function to get batch of users and send notifications to them
         const getMembersUserTokens = async (lastKey?: string) => {
           // Get a batch of usersIds from fetchChannelMembers function
-          const {members, nextCursor} = await fetchChannelMembers(channelUrl, lastKey || undefined);
+          const {members, nextCursor} = await fetchChannelMembers(order.chainId, channelUrl, lastKey || undefined);
           // fetch the device tokens of the users from firestore based on the userIds fetched
           const userIds = members.map((member: {[p: string]: any}) => member.user_id);
           if (userIds.length === 0) {
@@ -109,12 +109,12 @@ export function initNotifiers() {
         }
         const listingId = change.after.id;
         const listingData = change.after.data();
-        const {channelUrl} = listingData;
+        const {channelUrl, order} = listingData;
         // A recursive function to get batch of users and send notifications to them
         // eslint-disable-next-line complexity
         const getAndSendNotifications = async (lastKey?: string) => {
           // Get a batch of usersIds from fetchChannelMembers function
-          const {members, nextCursor} = await fetchChannelMembers(channelUrl, lastKey || undefined);
+          const {members, nextCursor} = await fetchChannelMembers(order.chainId, channelUrl, lastKey || undefined);
           // fetch the device tokens of the users from firestore based on the userIds fetched
           const userIds = members.map((member:{[p: string]: any}) => member.user_id);
           if (userIds.length === 0) {
