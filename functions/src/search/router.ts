@@ -2,7 +2,9 @@ import {Router} from 'express';
 import {
   searchChannels,
   searchProfiles,
-  searchAll, suggestAll, suggestChannels, suggestProfiles,
+  searchAll,
+  suggestChannels,
+  suggestProfiles,
 } from './controller';
 export const searchRouter = Router();
 /**

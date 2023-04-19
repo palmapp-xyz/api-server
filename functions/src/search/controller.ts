@@ -1,6 +1,7 @@
 import {Client} from '@elastic/elasticsearch';
 import {Request, Response, NextFunction} from 'express';
 import config from '../config';
+import {removeNoiseFromSearchResponse, removeNoiseFromSuggestionResponse} from './utils';
 
 const cloudId = config.ELASTIC_SEARCH_CLOUD_ID;
 const elasticUsername = config.ELASTIC_SEARCH_USERNAME;
@@ -35,7 +36,8 @@ export async function searchProfiles(req: Request, res: Response, next: NextFunc
         size: pageSize,
       })
       .then((response) => {
-        res.status(200).json({response}); // TODO: need to remove noise from response
+        const result = removeNoiseFromSearchResponse(response);
+        res.status(200).json({result}); // response
       })
       .catch((error) => {
         next(error);
@@ -61,7 +63,8 @@ export async function searchChannels(req: Request, res: Response, next: NextFunc
         size: pageSize,
       })
       .then((response) => {
-        res.status(200).json({response});
+        const result = removeNoiseFromSearchResponse(response);
+        res.status(200).json({result}); // response
       })
       .catch((error) => {
         next(error);
@@ -87,7 +90,8 @@ export async function searchAll(req: Request, res: Response, next: NextFunction)
         size: pageSize,
       })
       .then((response) => {
-        res.status(200).json({response});
+        const result = removeNoiseFromSearchResponse(response);
+        res.status(200).json({result}); // response
       })
       .catch((error) => {
         next(error);
@@ -115,7 +119,8 @@ export async function suggestAll(req: Request, res: Response, next: NextFunction
         size: pageSize,
       })
       .then((response) => {
-        res.status(200).json({response});
+        const result = removeNoiseFromSuggestionResponse(response);
+        res.status(200).json({result});
       })
       .catch((error) => {
         next(error);
@@ -142,7 +147,8 @@ export async function suggestProfiles(req: Request, res: Response, next: NextFun
         size: pageSize,
       })
       .then((response) => {
-        res.status(200).json({response});
+        const result = removeNoiseFromSuggestionResponse(response);
+        res.status(200).json({result});
       })
       .catch((error) => {
         next(error);
@@ -168,7 +174,8 @@ export async function suggestChannels(req: Request, res: Response, next: NextFun
         size: pageSize,
       })
       .then((response) => {
-        res.status(200).json({response});
+        const result = removeNoiseFromSuggestionResponse(response);
+        res.status(200).json({result});
       })
       .catch((error) => {
         next(error);
