@@ -6,7 +6,6 @@ import * as admin from 'firebase-admin';
 
 export function initListeners() {
   // firebase function to trigger upon document create in firestore
-
   const onProfileCreate = functions.firestore
       .document('profiles/{profileId}')
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -16,7 +15,7 @@ export function initListeners() {
         const doc = {
           ...data,
         };
-        await addDocument(config.ELASTIC_SEARCH_PROFILE_INDEX_NAME, doc, docId);
+        await addDocument(config.ELASTIC_SEARCH_PROFILE_INDEX, doc, docId);
       });
   // firebase function to trigger upone document update in firestore
   const onProfileUpdate = functions.firestore
@@ -28,7 +27,7 @@ export function initListeners() {
         const doc = {
           ...data,
         };
-        await addDocument(config.ELASTIC_SEARCH_PROFILE_INDEX_NAME, doc, docId);
+        await addDocument(config.ELASTIC_SEARCH_PROFILE_INDEX, doc, docId);
       });
 
   // firebase function to trigger upone document delete in firestore
@@ -37,7 +36,7 @@ export function initListeners() {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .onDelete(async (snap, context) => {
         const docId = snap.id;
-        await deleteDocument(config.ELASTIC_SEARCH_PROFILE_INDEX_NAME, docId);
+        await deleteDocument(config.ELASTIC_SEARCH_PROFILE_INDEX, docId);
       });
 
   // firebase function to trigger upon channel document create in firestore
@@ -50,7 +49,7 @@ export function initListeners() {
         const doc = {
           ...data,
         };
-        await addDocument(config.ELASTIC_SEARCH_CHANNEL_INDEX_NAME, doc, docId);
+        await addDocument(config.ELASTIC_SEARCH_CHANNEL_INDEX, doc, docId);
       });
 
   // firebase function to trigger upon channel document update in firestore
@@ -63,7 +62,7 @@ export function initListeners() {
         const doc = {
           ...data,
         };
-        await addDocument(config.ELASTIC_SEARCH_CHANNEL_INDEX_NAME, doc, docId);
+        await addDocument(config.ELASTIC_SEARCH_CHANNEL_INDEX, doc, docId);
       });
 
   // firebase function to trigger upon channel document delete in firestore
@@ -72,7 +71,7 @@ export function initListeners() {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .onDelete(async (snap, context) => {
         const docId = snap.id;
-        await deleteDocument(config.ELASTIC_SEARCH_CHANNEL_INDEX_NAME, docId);
+        await deleteDocument(config.ELASTIC_SEARCH_CHANNEL_INDEX, docId);
       });
   return {
     onProfileCreate,

@@ -1,6 +1,10 @@
 import {Client} from '@elastic/elasticsearch';
 import {Request, Response, NextFunction} from 'express';
 import config from '../config';
+import {
+  removeNoiseFromSearchResponse,
+  removeNoiseFromSuggestionResponse,
+} from './utils';
 
 const cloudId = config.ELASTIC_SEARCH_CLOUD_ID;
 const elasticUsername = config.ELASTIC_SEARCH_USERNAME;
@@ -21,7 +25,7 @@ export async function searchProfiles(req: Request, res: Response, next: NextFunc
   const from: number = (page - 1) * pageSize;
   client
       .search({
-        index: config.ELASTIC_SEARCH_PROFILE_INDEX_NAME,
+        index: [config.ELASTIC_SEARCH_PROFILE_INDEX],
         query: {
           multi_match: {
             query,
@@ -35,7 +39,8 @@ export async function searchProfiles(req: Request, res: Response, next: NextFunc
         size: pageSize,
       })
       .then((response) => {
-        res.status(200).json({response}); // TODO: need to remove noise from response
+        const result = removeNoiseFromSearchResponse(response);
+        res.status(200).json({result}); // response
       })
       .catch((error) => {
         next(error);
@@ -47,7 +52,7 @@ export async function searchChannels(req: Request, res: Response, next: NextFunc
   const from: number = (page - 1) * pageSize;
   client
       .search({
-        index: config.ELASTIC_SEARCH_CHANNEL_INDEX_NAME,
+        index: [config.ELASTIC_SEARCH_CHANNEL_INDEX],
         query: {
           multi_match: {
             query,
@@ -61,7 +66,8 @@ export async function searchChannels(req: Request, res: Response, next: NextFunc
         size: pageSize,
       })
       .then((response) => {
-        res.status(200).json({response});
+        const result = removeNoiseFromSearchResponse(response);
+        res.status(200).json({result}); // response
       })
       .catch((error) => {
         next(error);
@@ -73,7 +79,7 @@ export async function searchAll(req: Request, res: Response, next: NextFunction)
   const from: number = (page - 1) * pageSize;
   client
       .search({
-        index: [config.ELASTIC_SEARCH_PROFILE_INDEX_NAME, config.ELASTIC_SEARCH_CHANNEL_INDEX_NAME],
+        index: [config.ELASTIC_SEARCH_PROFILE_INDEX, config.ELASTIC_SEARCH_CHANNEL_INDEX],
         query: {
           multi_match: {
             query,
@@ -87,7 +93,92 @@ export async function searchAll(req: Request, res: Response, next: NextFunction)
         size: pageSize,
       })
       .then((response) => {
-        res.status(200).json({response});
+        const result = removeNoiseFromSearchResponse(response);
+        res.status(200).json({result}); // response
+      })
+      .catch((error) => {
+        next(error);
+      });
+}
+
+// searching all the data from elastic search engine at once of profiles and channels
+export async function suggestAll(req: Request, res: Response, next: NextFunction) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const {query, field, page, pageSize} = req.body;
+  const from: number = (page - 1) * pageSize;
+  client
+      .search({
+        index: [config.ELASTIC_SEARCH_PROFILE_INDEX, config.ELASTIC_SEARCH_CHANNEL_INDEX],
+        suggest: {
+          suggest_all: {
+            prefix: query,
+            completion: {
+              field: `${field}.suggest`,
+            },
+
+          },
+        },
+        from,
+        size: pageSize,
+      })
+      .then((response) => {
+        const result = removeNoiseFromSuggestionResponse(response);
+        res.status(200).json({result});
+      })
+      .catch((error) => {
+        next(error);
+      });
+}
+
+export async function suggestProfiles(req: Request, res: Response, next: NextFunction) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const {query, field, page, pageSize} = req.body;
+  const from: number = (page - 1) * pageSize;
+  client
+      .search({
+        index: [config.ELASTIC_SEARCH_PROFILE_INDEX],
+        suggest: {
+          suggest_all: {
+            prefix: query,
+            completion: {
+              field: `${field}.suggest`,
+            },
+
+          },
+        },
+        from,
+        size: pageSize,
+      })
+      .then((response) => {
+        const result = removeNoiseFromSuggestionResponse(response);
+        res.status(200).json({result});
+      })
+      .catch((error) => {
+        next(error);
+      });
+}
+export async function suggestChannels(req: Request, res: Response, next: NextFunction) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const {query, field, page, pageSize} = req.body;
+  const from: number = (page - 1) * pageSize;
+  client
+      .search({
+        index: [config.ELASTIC_SEARCH_CHANNEL_INDEX],
+        suggest: {
+          suggest_all: {
+            prefix: query,
+            completion: {
+              field: `${field}.suggest`,
+            },
+
+          },
+        },
+        from,
+        size: pageSize,
+      })
+      .then((response) => {
+        const result = removeNoiseFromSuggestionResponse(response);
+        res.status(200).json({result});
       })
       .catch((error) => {
         next(error);
