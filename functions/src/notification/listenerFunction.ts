@@ -14,8 +14,9 @@ export function initNotifiers() {
         const {channelUrl, order} = listing;
         if (!channelUrl) return;
 
-        const deviceTokens: DeviceToken[] = await getMembersUserTokens(
-            [], channelUrl, Number(order.chainId), [order.order.maker, order.order.taker]);
+        const deviceTokens: Record<string, DeviceToken> = await getMembersUserTokens(
+            {}, channelUrl, Number(order.chainId), [order.order.maker, order.order.taker]);
+
 
         // sending notification to all userTokens in batches of 500
         const payload: admin.messaging.MessagingPayload = {
@@ -30,23 +31,25 @@ export function initNotifiers() {
         };
 
         // store the notification in firestore, with empty read users list
-        const added = await firestore.collection('notifications').add({...payload, readUsers: []});
+        const initialReadStatus = Object.fromEntries(Object.keys(deviceTokens).map((userId) => [userId, false]));
+        // store the notification in firestore, with empty read users list
+        const added = await firestore.collection('notifications').add({...payload, readStatus: initialReadStatus});
         payload.data = {...payload.data, notificationId: added.id};
 
         const options = {
           priority: 'high',
           timeToLive: 60 * 60 * 24,
         };
-          // sending notification in batches of 500
+        // sending notification in batches of 500
         const batch = 500;
         let chunks;
-        if (deviceTokens.length > batch) {
-          chunks = Math.ceil(deviceTokens.length / batch);
+        if (Object.keys(deviceTokens).length > batch) {
+          chunks = Math.ceil(Object.keys(deviceTokens).length / batch);
         } else {
           chunks = 1;
         }
         for (let i = 0; i < chunks; i++) {
-          const chunk = deviceTokens.slice(i * batch, (i + 1) * batch);
+          const chunk = Object.values(deviceTokens).slice(i * batch, (i + 1) * batch);
           // eslint-disable-next-line no-await-in-loop
           const result: admin.messaging.MessagingDevicesResponse = await admin.messaging().sendToDevice(
               chunk.flatMap((deviceToken: DeviceToken) => deviceToken.apns.concat(deviceToken.fcm)),
@@ -66,8 +69,8 @@ export function initNotifiers() {
         const {channelUrl, status: afterStatus, order: afterOrder} = after;
         if (!channelUrl) return;
 
-        const deviceTokens: DeviceToken[] = await getMembersUserTokens(
-            [], channelUrl, Number(afterOrder.chainId), [afterOrder.order.maker, afterOrder.order.taker]);
+        const deviceTokens: Record<string, DeviceToken> = await getMembersUserTokens(
+            {}, channelUrl, Number(afterOrder.chainId), [afterOrder.order.maker, afterOrder.order.taker]);
 
         const listingId = change.after.id;
         let message = `Listing with id ${listingId} updated, checkout now!`;
@@ -92,24 +95,25 @@ export function initNotifiers() {
           },
         };
 
+        const initialReadStatus = Object.fromEntries(Object.keys(deviceTokens).map((userId) => [userId, false]));
         // store the notification in firestore, with empty read users list
-        const added = await firestore.collection('notifications').add({...payload, readUsers: []});
+        const added = await firestore.collection('notifications').add({...payload, readStatus: initialReadStatus});
         payload.data = {...payload.data, notificationId: added.id};
 
         const options = {
           priority: 'high',
           timeToLive: 60 * 60 * 24,
         };
-          // sending notification in batches of 500
+        // sending notification in batches of 500
         const batch = 500;
         let chunks;
-        if (deviceTokens.length > batch) {
-          chunks = Math.ceil(deviceTokens.length / batch);
+        if (Object.keys(deviceTokens).length > batch) {
+          chunks = Math.ceil(Object.keys(deviceTokens).length / batch);
         } else {
           chunks = 1;
         }
         for (let i = 0; i < chunks; i++) {
-          const chunk = deviceTokens.slice(i * batch, (i + 1) * batch);
+          const chunk = Object.values(deviceTokens).slice(i * batch, (i + 1) * batch);
           // eslint-disable-next-line no-await-in-loop
           const result: admin.messaging.MessagingDevicesResponse = await admin.messaging().sendToDevice(
               chunk.flatMap((deviceToken: DeviceToken) => deviceToken.apns.concat(deviceToken.fcm)),

@@ -34,12 +34,12 @@ export type DeviceToken = {
 
 // A recursive function to get batch of users and send notifications to them
 export const getMembersUserTokens = async (
-    tokens: DeviceToken[],
+    tokens: Record<string, DeviceToken>,
     channelUrl: string,
     chainId: number,
     excludeAddresses: string[],
     lastKey?: string | null
-): Promise<DeviceToken[]> => {
+): Promise<Record<string, DeviceToken>> => {
   // Get a batch of usersIds from fetchChannelMembers function
   const {members, nextCursor} = await fetchChannelMembers(chainId, channelUrl, lastKey || undefined);
   // fetch the device tokens of the users from firestore based on the userIds fetched
@@ -49,21 +49,25 @@ export const getMembersUserTokens = async (
     return tokens;
   }
 
+  const fetched: Record<string, DeviceToken> = {};
   const promises = userIds.map((userId: string) => {
     // Get the user's device token
     const userRef = firestore.collection('profiles').doc(userId);
     // eslint-disable-next-line no-await-in-loop
     return userRef.get().then((userDoc) => {
       if (!userDoc.exists) {
-        return null;
+        return;
       }
       if (excludeAddresses?.includes(userDoc.data()?.address)) {
-        return null;
+        return;
       }
-      return userDoc.data()?.deviceTokens as DeviceToken ?? null;
+      if (userDoc.data()?.deviceTokens) {
+        fetched[userId] = userDoc.data()?.deviceTokens as DeviceToken;
+      }
     });
   });
+  await Promise.all(promises);
 
-  const fetched = (await Promise.all(promises)).filter((x) => !!x) as DeviceToken[];
-  return getMembersUserTokens(tokens.concat(fetched), channelUrl, chainId, excludeAddresses, nextCursor);
+  // const fetched = (await Promise.all(promises)).filter((x) => !!x) as DeviceToken[];
+  return getMembersUserTokens(Object.assign(tokens, fetched), channelUrl, chainId, excludeAddresses, nextCursor);
 };
