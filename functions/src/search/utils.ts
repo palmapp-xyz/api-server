@@ -26,8 +26,3 @@ export function removeNoiseFromSuggestionResponse(response: any) {
   });
   return result;
 }
-
-export enum NetworkType {
-  Mainnet = 'MAINNET',
-  Testnet = 'TESTNET',
-}
