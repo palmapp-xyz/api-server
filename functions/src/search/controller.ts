@@ -21,11 +21,11 @@ const client = new Client({
 });
 
 export async function searchProfiles(req: Request, res: Response, next: NextFunction) {
-  const {query, searchFields, page, pageSize, networkType} = req.body;
+  const {query, searchFields, page, pageSize, chainId} = req.body;
   const from: number = (page - 1) * pageSize;
-  // networkType should enum of NetworkType
-  if (!NetworkType[networkType]) throw new Error('Invalid network type');
-  const indexName = NetworkType[networkType] === NetworkType.Mainnet ? config.ELASTIC_SEARCH_PROFILE_INDEX_NAME_MAINNET : config.ELASTIC_SEARCH_PROFILE_INDEX_NAME_TESTNET;
+  // chainId should enum of NetworkType
+  if (!NetworkType[chainId]) throw new Error('Invalid network type');
+  const indexName = NetworkType[chainId] === NetworkType.Mainnet ? config.ELASTIC_SEARCH_PROFILE_INDEX_NAME_MAINNET : config.ELASTIC_SEARCH_PROFILE_INDEX_NAME_TESTNET;
   client
       .search({
         index: [indexName],
@@ -51,11 +51,11 @@ export async function searchProfiles(req: Request, res: Response, next: NextFunc
 }
 
 export async function searchChannels(req: Request, res: Response, next: NextFunction) {
-  const {query, searchFields, page, pageSize, networkType} = req.body;
+  const {query, searchFields, page, pageSize, chainId} = req.body;
   const from: number = (page - 1) * pageSize;
-  // networkType should enum of NetworkType
-  if (!NetworkType[networkType]) throw new Error('Invalid network type');
-  const indexName = NetworkType[networkType] === NetworkType.Mainnet ? config.ELASTIC_SEARCH_CHANNEL_INDEX_NAME_MAINNET : config.ELASTIC_SEARCH_CHANNEL_INDEX_NAME_TESTNET;
+  // chainId should enum of NetworkType
+  if (!NetworkType[chainId]) throw new Error('Invalid network type');
+  const indexName = NetworkType[chainId] === NetworkType.Mainnet ? config.ELASTIC_SEARCH_CHANNEL_INDEX_NAME_MAINNET : config.ELASTIC_SEARCH_CHANNEL_INDEX_NAME_TESTNET;
   client
       .search({
         index: [indexName],
@@ -81,11 +81,11 @@ export async function searchChannels(req: Request, res: Response, next: NextFunc
 }
 // searching all the data from elastic search engine at once of profiles and channels
 export async function searchAll(req: Request, res: Response, next: NextFunction) {
-  const {query, searchFields, page, pageSize, networkType} = req.body;
+  const {query, searchFields, page, pageSize, chainId} = req.body;
   const from: number = (page - 1) * pageSize;
-  // networkType should enum of NetworkType
-  if (!NetworkType[networkType]) throw new Error('Invalid network type');
-  const indexNames = NetworkType[networkType] === NetworkType.Mainnet ? [config.ELASTIC_SEARCH_PROFILE_INDEX_NAME_MAINNET, config.ELASTIC_SEARCH_CHANNEL_INDEX_NAME_MAINNET] : [config.ELASTIC_SEARCH_PROFILE_INDEX_NAME_TESTNET, config.ELASTIC_SEARCH_CHANNEL_INDEX_NAME_TESTNET];
+  // chainId should enum of NetworkType
+  if (!NetworkType[chainId]) throw new Error('Invalid network type');
+  const indexNames = NetworkType[chainId] === NetworkType.Mainnet ? [config.ELASTIC_SEARCH_PROFILE_INDEX_NAME_MAINNET, config.ELASTIC_SEARCH_CHANNEL_INDEX_NAME_MAINNET] : [config.ELASTIC_SEARCH_PROFILE_INDEX_NAME_TESTNET, config.ELASTIC_SEARCH_CHANNEL_INDEX_NAME_TESTNET];
   client
       .search({
         index: indexNames,
@@ -113,11 +113,11 @@ export async function searchAll(req: Request, res: Response, next: NextFunction)
 // searching all the data from elastic search engine at once of profiles and channels
 export async function suggestAll(req: Request, res: Response, next: NextFunction) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const {query, field, page, pageSize, networkType} = req.body;
+  const {query, field, page, pageSize, chainId} = req.body;
   const from: number = (page - 1) * pageSize;
-  // networkType should enum of NetworkType
-  if (!NetworkType[networkType]) throw new Error('Invalid network type');
-  const indexNames = NetworkType[networkType] === NetworkType.Mainnet ? [config.ELASTIC_SEARCH_PROFILE_INDEX_NAME_MAINNET, config.ELASTIC_SEARCH_CHANNEL_INDEX_NAME_MAINNET] : [config.ELASTIC_SEARCH_PROFILE_INDEX_NAME_TESTNET, config.ELASTIC_SEARCH_CHANNEL_INDEX_NAME_TESTNET];
+  // chainId should enum of NetworkType
+  if (!NetworkType[chainId]) throw new Error('Invalid network type');
+  const indexNames = NetworkType[chainId] === NetworkType.Mainnet ? [config.ELASTIC_SEARCH_PROFILE_INDEX_NAME_MAINNET, config.ELASTIC_SEARCH_CHANNEL_INDEX_NAME_MAINNET] : [config.ELASTIC_SEARCH_PROFILE_INDEX_NAME_TESTNET, config.ELASTIC_SEARCH_CHANNEL_INDEX_NAME_TESTNET];
   client
       .search({
         index: indexNames,
@@ -144,11 +144,11 @@ export async function suggestAll(req: Request, res: Response, next: NextFunction
 
 export async function suggestProfiles(req: Request, res: Response, next: NextFunction) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const {query, field, page, pageSize, networkType} = req.body;
+  const {query, field, page, pageSize, chainId} = req.body;
   const from: number = (page - 1) * pageSize;
-  // networkType should enum of NetworkType
-  if (!NetworkType[networkType]) throw new Error('Invalid network type');
-  const indexName = NetworkType[networkType] === NetworkType.Mainnet ? config.ELASTIC_SEARCH_PROFILE_INDEX_NAME_MAINNET : config.ELASTIC_SEARCH_PROFILE_INDEX_NAME_TESTNET;
+  // chainId should enum of NetworkType
+  if (!NetworkType[chainId]) throw new Error('Invalid network type');
+  const indexName = NetworkType[chainId] === NetworkType.Mainnet ? config.ELASTIC_SEARCH_PROFILE_INDEX_NAME_MAINNET : config.ELASTIC_SEARCH_PROFILE_INDEX_NAME_TESTNET;
   client
       .search({
         index: [indexName],
@@ -174,11 +174,11 @@ export async function suggestProfiles(req: Request, res: Response, next: NextFun
 }
 export async function suggestChannels(req: Request, res: Response, next: NextFunction) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const {query, field, page, pageSize, networkType} = req.body;
+  const {query, field, page, pageSize, chainId} = req.body;
   const from: number = (page - 1) * pageSize;
-  // networkType should enum of NetworkType
-  if (!NetworkType[networkType]) throw new Error('Invalid network type');
-  const indexName = NetworkType[networkType] === NetworkType.Mainnet ? config.ELASTIC_SEARCH_CHANNEL_INDEX_NAME_MAINNET : config.ELASTIC_SEARCH_CHANNEL_INDEX_NAME_TESTNET;
+  // chainId should enum of NetworkType
+  if (!NetworkType[chainId]) throw new Error('Invalid network type');
+  const indexName = NetworkType[chainId] === NetworkType.Mainnet ? config.ELASTIC_SEARCH_CHANNEL_INDEX_NAME_MAINNET : config.ELASTIC_SEARCH_CHANNEL_INDEX_NAME_TESTNET;
   client
       .search({
         index: [indexName],

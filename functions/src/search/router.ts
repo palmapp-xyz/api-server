@@ -13,7 +13,7 @@ export const searchRouter = Router();
  * @property {[string]} searchFields.required - fields to search in - eg: '[handle, name]'
  * @property {number} page.required - offset in terms of pages - eg: 1 (first page, which means offset = pageSize * (page - 1))
  * @property {number} pageSize.required - number of results to return - eg: 10
- * @property {string} networkType.required - network type - eg: 'Mainnet' or 'Testnet'
+ * @property {string} chainId.required - chainId - eg: 'Mainnet' or 'Testnet'
  *
  */
 
@@ -58,7 +58,7 @@ searchRouter.post('/all', searchAll);
  * @property {number} page.required - offset in terms of pages - eg: 1 (first page, which means offset = pageSize * (page - 1))
  * @property {number} pageSize.required - number of results to return - eg: 10
  * @property {string} field.required - field to search in for suggestions - eg: 'handle'
- * @property {string} networkType.required - network type - eg: 'Mainnet' or 'Testnet'
+ * @property {string} chainId.required - chainId - eg: 'Mainnet' or 'Testnet'
  */
 
 /**
