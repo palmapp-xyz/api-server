@@ -5,18 +5,17 @@ import {firestore} from '../index';
 import config from '../config';
 
 const LIMIT = 100; // fetch 100 members at a time
+
 export async function fetchChannelMembers(
-    chainId: number,
     channelUrl: string,
     nextCursor?: string | null
 ): Promise<{members: {user_id: string}[], nextCursor?: string | null }> {
   const headers = {
     'Content-Type': 'application/json',
-    'Api-Token': chainId === 5 ? config.SENDBIRD_API_TOKEN_TESTNET : config.SENDBIRD_API_TOKEN_MAINNET,
+    'Api-Token': config.SENDBIRD_API_TOKEN,
   };
 
-  const baseUrl = chainId === 5 ? config.SENDBIRD_API_URL_TESTNET : config.SENDBIRD_API_URL_MAINNET;
-  let url = `${baseUrl}/group_channels/${encodeURIComponent(channelUrl)}/members?limit=${LIMIT}`;
+  let url = `${config.SENDBIRD_API_URL}/group_channels/${encodeURIComponent(channelUrl)}/members?limit=${LIMIT}`;
   if (nextCursor) {
     url += `&next=${nextCursor}`;
   }
@@ -36,16 +35,15 @@ export type DeviceToken = {
 export const getMembersUserTokens = async (
     tokens: Record<string, DeviceToken>,
     channelUrl: string,
-    chainId: number,
     excludeAddresses: string[],
     lastKey?: string | null
 ): Promise<Record<string, DeviceToken>> => {
   // Get a batch of usersIds from fetchChannelMembers function
-  const {members, nextCursor} = await fetchChannelMembers(chainId, channelUrl, lastKey || undefined);
+  const {members, nextCursor} = await fetchChannelMembers(channelUrl, lastKey || undefined);
   // fetch the device tokens of the users from firestore based on the userIds fetched
   const userIds = members.map((member) => member.user_id);
   if (userIds.length === 0) {
-    functions.logger.log(`getMembersUserTokens: channelUrl ${channelUrl} chainId ${chainId}: total: ${tokens.length}`);
+    functions.logger.log(`getMembersUserTokens: channelUrl ${channelUrl}: total: ${tokens.length}`);
     return tokens;
   }
 
@@ -69,5 +67,5 @@ export const getMembersUserTokens = async (
   await Promise.all(promises);
 
   // const fetched = (await Promise.all(promises)).filter((x) => !!x) as DeviceToken[];
-  return getMembersUserTokens(Object.assign(tokens, fetched), channelUrl, chainId, excludeAddresses, nextCursor);
+  return getMembersUserTokens(Object.assign(tokens, fetched), channelUrl, excludeAddresses, nextCursor);
 };

@@ -5,11 +5,11 @@ firebase-debug.log
 
 lib/
 
-.env.development
-.env.production
+.env.mainnet
+.env.testnet
 
 kas-credential.json
 
 **/*.env
-**/*.env.development
-**/*.env.production
+**/*.env.mainnet
+**/*.env.testnet

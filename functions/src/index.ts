@@ -3,9 +3,7 @@ import Moralis from 'moralis';
 import express from 'express';
 import cors from 'cors';
 
-import {SSXServer, SSXExpressMiddleware} from '@spruceid/ssx-server';
-
-import config from './config';
+import config, {isTestnet} from './config';
 import {apiRouter} from './apiRouter';
 import {errorHandler} from './middlewares/errorHandler';
 import * as functions from 'firebase-functions';
@@ -19,11 +17,14 @@ import {initNotifiers} from './notification/listenerFunction';
 // eslint-disable-next-line etc/no-commented-out-code
 // import {getSwagger} from './swagger';
 
-import serviceAccount from '../firebase-adminsdk.json';
+import serviceAccountMainnet from '../firebase-admin-mainnet.json';
+import serviceAccountTestnet from '../firebase-admin-testnet.json';
 
 // initialize admin
 const firebaseApp = admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+  credential: admin.credential.cert(
+    (isTestnet() ? serviceAccountTestnet : serviceAccountMainnet) as admin.ServiceAccount
+  ),
 });
 export const firestore = firebaseApp.firestore();
 
@@ -42,16 +43,6 @@ app.use('/api', apiRouter);
 app.use('/docs', swaggerui.serve);
 app.use('/search', searchRouter);
 app.use('notification', notificationRouter);
-
-const ssx = new SSXServer({
-  signingKey: config.SSX_SECRET,
-  providers: {
-    metrics: {service: 'ssx', apiKey: config.SSX_API_KEY},
-  },
-});
-
-app.use(SSXExpressMiddleware(ssx));
-
 
 app.get('/', (req, res) => {
   res.send('Palm server side');
