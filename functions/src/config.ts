@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv';
+import * as functions from 'firebase-functions';
 
-dotenv.config({path: `.env.${process.env.NODE_ENV}`});
+dotenv.config({path: `.env.${functions.config().config.env}`});
 
 const config = {
   ENV_NAME: readEnv('ENV_NAME'),

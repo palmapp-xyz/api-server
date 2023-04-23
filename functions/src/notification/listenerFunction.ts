@@ -15,7 +15,7 @@ export function initNotifiers() {
         if (!channelUrl) return;
 
         const deviceTokens: Record<string, DeviceToken> = await getMembersUserTokens(
-            {}, channelUrl, Number(order.chainId), [order.order.maker, order.order.taker]);
+            {}, channelUrl, [order.order.maker, order.order.taker]);
 
 
         // sending notification to all userTokens in batches of 500
@@ -70,7 +70,7 @@ export function initNotifiers() {
         if (!channelUrl) return;
 
         const deviceTokens: Record<string, DeviceToken> = await getMembersUserTokens(
-            {}, channelUrl, Number(afterOrder.chainId), [afterOrder.order.maker, afterOrder.order.taker]);
+            {}, channelUrl, [afterOrder.order.maker, afterOrder.order.taker]);
 
         const listingId = change.after.id;
         let message = `Listing with id ${listingId} updated, checkout now!`;

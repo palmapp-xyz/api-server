@@ -13,3 +13,5 @@ kas-credential.json
 **/*.env
 **/*.env.mainnet
 **/*.env.testnet
+
+firepit-log.txt

@@ -1,12 +1,13 @@
 {
   "projects": {
-    "default": "oedi-a1953"
+    "default": "oedi-a1953",
+    "testnet": "palm-mobile-goerli",
+    "mainnet": "oedi-a1953"
   },
   "targets": {},
   "etags": {
     "oedi-a1953": {
-      "extensionInstances": {
-      }
+      "extensionInstances": {}
     }
   }
 }

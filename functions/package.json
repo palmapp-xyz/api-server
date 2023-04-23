@@ -1,20 +1,36 @@
 {
   "name": "functions",
   "scripts": {
+    "build": "",
+
+    "functions:config:testnet": "firebase functions:config:set config.env='testnet'; firebase functions:config:get > .runtimeconfig.json;",
+    "functions:config:mainnet": "firebase functions:config:set config.env='mainnet'; firebase functions:config:get > .runtimeconfig.json;",
+
+    "build:testnet": "firebase use testnet; npm run functions:config:testnet; rm -rf lib && tsc",
+    "build:watch:testnet": "firebase use testnet; npm run functions:config:testnet; tsc --watch",
+    "build:mainnet": "firebase use mainnet; npm run functions:config:mainnet; rm -rf lib && tsc",
+    "build:watch:mainnet": "firebase use mainnet; npm run functions:config:mainnet; tsc --watch",
+
+    "serve:testnet": "npm run preserve:testnet; firebase serve; npm run cleanenv;",
+    "emulator:testnet": "npm run preserve:testnet; firebase emulators:start --only functions; npm run cleanenv;",
+    "shell:testnet": "npm run preserve:testnet; firebase functions:shell; npm run cleanenv;",
+    "start:testnet": "npm run shell:testnet",
+    "preserve:testnet": "cp $INIT_CWD/../.env.testnet $INIT_CWD/.; npm run build:testnet;",
+    "predeploy:testnet": "cp $INIT_CWD/../.env.testnet $INIT_CWD/.; npm run build:testnet;",
+    "deploy:testnet": "npm run predeploy:testnet; NODE_ENV=production firebase deploy --only functions; npm run cleanenv",
+
+    "serve:mainnet": "npm run preserve:mainnet; firebase serve; npm run cleanenv;",
+    "emulator:mainnet": "npm run preserve:mainnet; firebase emulators:start --only functions; npm run cleanenv;",
+    "shell:mainnet": "npm run preserve:mainnet; firebase functions:shell; npm run cleanenv;",
+    "start:mainnet": "npm run shell:mainnet",
+    "preserve:mainnet": "cp $INIT_CWD/../.env.mainnet $INIT_CWD/.; npm run build:mainnet;",
+    "predeploy:mainnet": "cp $INIT_CWD/../.env.mainnet $INIT_CWD/.; npm run build:mainnet;",
+    "deploy:mainnet": "npm run predeploy:mainnet; NODE_ENV=production firebase deploy --only functions; npm run cleanenv",
+
+    "cleanenv": "rm -rf $INIT_CWD/.env.*",
     "lint": "eslint --ext .js,.ts .",
-    "build": "rm -rf lib && tsc",
-    "build:watch": "tsc --watch",
-    "serve": "npm run preserve; firebase serve; npm run postserve;",
-    "emulator": "npm run preserve; npm run build && firebase emulators:start --only functions; npm run postserve;",
-    "shell": "npm run preserve; npm run build && firebase functions:shell; npm run postserve;",
-    "start": "npm run shell",
-    "preserve": "cp $INIT_CWD/../.env.development $INIT_CWD/.; npm run build;",
-    "postserve": "rm -rf $INIT_CWD/.env.development",
-    "predeploy": "cp $INIT_CWD/../.env.production $INIT_CWD/.",
-    "deploy": "npm run predeploy; NODE_ENV=production firebase deploy --only functions; npm run postdeploy",
-    "postdeploy": "rm -rf $INIT_CWD/.env.production",
     "logs": "firebase functions:log",
-    "docs": "yarn build && node lib/index.js",
+    "docs": "npm run build:mainnet && node lib/index.js",
     "test": "mocha --exit --require ts-node/register 'test/*.ts' --timeout 240000"
   },
   "engines": {

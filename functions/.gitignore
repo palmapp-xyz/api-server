@@ -13,3 +13,5 @@ firebase-debug.log
 
 firebase-admin-mainnet.json
 firebase-admin-testnet.json
+
+.runtimeconfig.json
