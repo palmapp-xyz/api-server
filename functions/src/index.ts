@@ -19,6 +19,7 @@ import {initNotifiers} from './notification/listenerFunction';
 
 import serviceAccountMainnet from '../firebase-admin-mainnet.json';
 import serviceAccountTestnet from '../firebase-admin-testnet.json';
+import {deleteCollection, getAllUsers} from './scripts/deleteAllUsers';
 
 // initialize admin
 const firebaseApp = admin.initializeApp({
@@ -46,6 +47,34 @@ app.use('notification', notificationRouter);
 
 app.get('/', (req, res) => {
   res.send('Palm server side');
+});
+
+app.delete('/deleteAllUsers', (req, res) => {
+  if (process.env.NODE_ENV !== 'development') {
+    res.status(401);
+    res.json({'message': `Unauthorized`});
+  }
+
+  getAllUsers(0);
+  res.send('Deleted All Users');
+});
+app.delete('/deleteChannels', (req, res) => {
+  if (process.env.NODE_ENV !== 'development') {
+    res.status(401);
+    res.json({'message': `Unauthorized`});
+  }
+
+  deleteCollection('channels');
+  res.send('Deleted All Channels');
+});
+app.delete('/deleteListings', (req, res) => {
+  if (process.env.NODE_ENV !== 'development') {
+    res.status(401);
+    res.json({'message': `Unauthorized`});
+  }
+
+  deleteCollection('listings');
+  res.send('Deleted All Listings');
 });
 
 app.get('/docs', swaggerui.setup(import('../swagger.json')));
