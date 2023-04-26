@@ -13,6 +13,7 @@ import {searchRouter} from './search/router';
 import {initListeners} from './search/listenerFunctions';
 import {notificationRouter} from './notification/router';
 import {initNotifiers} from './notification/listenerFunction';
+import loggers from './analytics/amplitudeLogger';
 
 // eslint-disable-next-line etc/no-commented-out-code
 // import {getSwagger} from './swagger';
@@ -102,3 +103,9 @@ export const {
   onListingUpdated,
 } = notifiers;
 
+// analytics functions
+export const {
+  profileLogs,
+  channelLogs,
+  listingLogs,
+} = loggers;

@@ -15,3 +15,4 @@ kas-credential.json
 **/*.env.testnet
 
 firepit-log.txt
+.idea/*
