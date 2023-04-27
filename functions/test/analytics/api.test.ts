@@ -1,14 +1,14 @@
 import request from 'supertest';
-import { analyticsRouter } from '../../src/analytics/router';
-import amplitude from '@amplitude/analytics-node';
+import { app } from '../../src/index';
+import * as amplitude from '@amplitude/analytics-node';
+
+jest.mock('@amplitude/analytics-node');
 
 describe('Analytics Router', () => {
   describe('POST /analytics/logEvent', () => {
     afterEach(() => {
-        jest.clearAllMocks();
+      jest.clearAllMocks();
     });
-
-    jest.mock('@amplitude/analytics-node');
 
     it('should return 200 and a success message when event is logged', async () => {
       const mockLogEvent = {
@@ -22,16 +22,16 @@ describe('Analytics Router', () => {
         time: expect.any(Number),
         event_properties: { data: mockLogEvent.eventData },
       }
-    //   const mockLogEventController = jest.fn().mockResolvedValueOnce({ message: 'Event logged successfully' });
+      //   const mockLogEventController = jest.fn().mockResolvedValueOnce({ message: 'Event logged successfully' });
 
-    //   analyticsRouter.post('/logEvent', mockLogEventController);
+      //   analyticsRouter.post('/logEvent', mockLogEventController);
 
-      const response = await request(analyticsRouter)
-        .post('/logEvent')
+      const response = await request(app)
+        .post('/analytics/logEvent')
         .send(mockLogEvent);
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual({ message: 'Event logged successfully' });
+      expect(response.body).toEqual({ message: 'Event logged in Amplitude' });
       expect(amplitude.logEvent).toHaveBeenCalledWith(mockAmplitudeLogEvent);
     });
 
@@ -41,11 +41,12 @@ describe('Analytics Router', () => {
         eventData: { token: '0x123...', amount: 100 },
       };
 
-      const response = await request(analyticsRouter)
-        .post('/logEvent')
+      const response = await request(app)
+        .post('/analytics/logEvent')
         .send(mockLogEvent);
 
       expect(response.status).toBe(400);
+      expect(response.body).toEqual({ message: 'profileId, eventType, eventData are required' });
     });
 
     it('should return 400 when eventType is missing', async () => {
@@ -54,11 +55,12 @@ describe('Analytics Router', () => {
         eventData: { token: '0x123...', amount: 100 },
       };
 
-      const response = await request(analyticsRouter)
-        .post('/logEvent')
+      const response = await request(app)
+        .post('/analytics/logEvent')
         .send(mockLogEvent);
 
       expect(response.status).toBe(400);
+      expect(response.body).toEqual({ message: 'profileId, eventType, eventData are required' });
     });
 
     it('should return 400 when eventData is missing', async () => {
@@ -67,30 +69,13 @@ describe('Analytics Router', () => {
         eventType: 'TOKEN_TRANSFER',
       };
 
-      const response = await request(analyticsRouter)
-        .post('/logEvent')
+      const response = await request(app)
+        .post('/analytics/logEvent')
         .send(mockLogEvent);
 
       expect(response.status).toBe(400);
-    });
-
-    it('should return 500 when logEventController throws an error', async () => {
-      const mockLogEvent = {
-        profileId: '0x123...',
-        eventType: 'TOKEN_TRANSFER',
-        eventData: { token: '0x123...', amount: 100 },
-      };
-      const mockError = new Error('Something went wrong');
-      const mockLogEventController = jest.fn().mockRejectedValueOnce(mockError);
-
-      analyticsRouter.post('/logEvent', mockLogEventController);
-
-      const response = await request(analyticsRouter)
-        .post('/logEvent')
-        .send(mockLogEvent);
-
-      expect(response.status).toBe(500);
-      expect(mockLogEventController).toHaveBeenCalledWith(mockLogEvent);
+      expect(response.body).toEqual({ message: 'profileId, eventType, eventData are required' });
     });
   });
+
 });

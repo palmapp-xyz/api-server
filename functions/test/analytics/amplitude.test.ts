@@ -10,7 +10,6 @@ const testEnv = functionsTest({
 });
 
 jest.mock('@amplitude/analytics-node');
-jest.mock('express');
 
 describe('Firestore triggers', () => {
   afterEach(() => {
