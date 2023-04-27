@@ -13,6 +13,8 @@ import {searchRouter} from './search/router';
 import {initListeners} from './search/listenerFunctions';
 import {notificationRouter} from './notification/router';
 import {initNotifiers} from './notification/listenerFunction';
+import {analyticsRouter} from './analytics/router';
+import loggers from './analytics/amplitudeLogger';
 
 // eslint-disable-next-line etc/no-commented-out-code
 // import {getSwagger} from './swagger';
@@ -44,6 +46,7 @@ app.use('/api', apiRouter);
 app.use('/docs', swaggerui.serve);
 app.use('/search', searchRouter);
 app.use('notification', notificationRouter);
+app.use('/analytics', analyticsRouter);
 
 app.get('/', (req, res) => {
   res.send('Palm server side');
@@ -102,3 +105,9 @@ export const {
   onListingUpdated,
 } = notifiers;
 
+// analytics functions
+export const {
+  profileLogs,
+  channelLogs,
+  listingLogs,
+} = loggers;
