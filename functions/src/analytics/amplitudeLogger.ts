@@ -25,8 +25,8 @@ const profileLogs = functions.firestore
         // ignore if event is onDelete
         if (!dataAfter) return;
 
-        // ignore if bio or coverPicture is not changed
-        if (dataBefore?.bio === dataAfter?.bio && dataBefore?.coverPicture === dataAfter?.coverPicture) return;
+        // ignore if bio or profileImage is not changed
+        if (dataBefore?.bio === dataAfter?.bio && dataBefore?.profileImage === dataAfter?.profileImage) return;
       }
 
       // Log the event in Amplitude
@@ -43,6 +43,7 @@ const channelLogs = functions.firestore
     .document('channels/{channelId}')
     .onWrite((change, context) => {
       // Get the document ID
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const {channelId} = context.params;
       // Get the timestamp
       const timestamp = Date.now();
@@ -64,7 +65,7 @@ const channelLogs = functions.firestore
 
       // Log the event in Amplitude
       logEvent({
-        user_id: channelId,
+        user_id: dataAfter?.profileId, // assuming we have profileId of channel creator in channel document
         event_type: eventType,
         time: timestamp,
         event_properties: {data: dataAfter},
@@ -76,6 +77,7 @@ const listingLogs = functions.firestore
     .document('listings/{listingId}')
     .onWrite((change, context) => {
       // Get the document ID
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const {listingId} = context.params;
       // Get the timestamp
       const timestamp = Date.now();
@@ -87,13 +89,17 @@ const listingLogs = functions.firestore
       // check write event type onCreate OR onUpdate
       const eventType = dataBefore ? 'LISTING_UPDATED' : 'LISTING_CREATED';
 
-      // TODO: need fields to check incase of update, skipping LISTING_UPDATED for now
-      // ignore if event is not onCreate
-      if (eventType === 'LISTING_UPDATED') return;
+      if (eventType === 'LISTING_UPDATED') {
+        // ignore if event is onDelete
+        if (!dataAfter) return;
+
+        // ignore if status is not changed
+        if (dataBefore?.status === dataAfter?.status) return;
+      }
 
       // Log the event in Amplitude
       logEvent({
-        user_id: listingId,
+        user_id: dataAfter?.profileId, // assuming profileId is present in listing
         event_type: eventType,
         time: timestamp,
         event_properties: {data: dataAfter},
