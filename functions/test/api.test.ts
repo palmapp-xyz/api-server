@@ -1,9 +1,9 @@
-import Axios from 'axios';
-import {personalSign} from 'eth-sig-util';
-import {expect} from 'chai';
-import {initializeApp} from 'firebase/app';
-import {signInWithCustomToken, getAuth, Auth} from 'firebase/auth';
-import {describe} from 'mocha'
+import Axios from 'axios'
+import { expect } from 'chai'
+import { personalSign } from 'eth-sig-util'
+import { initializeApp } from 'firebase/app'
+import { Auth, getAuth, signInWithCustomToken } from 'firebase/auth'
+import { describe } from 'mocha'
 
 // eslint-disable-next-line no-undef
 describe('API Testing', () => {

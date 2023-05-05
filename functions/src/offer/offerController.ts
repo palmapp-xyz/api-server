@@ -1,7 +1,9 @@
-import {NextFunction, Request, Response} from 'express';
-import {firestore} from '../index';
-import {generateId, Offer, OfferAccepted} from './utils';
-import FirebaseFirestore from '@google-cloud/firestore';
+import { NextFunction, Request, Response } from "express";
+
+import FirebaseFirestore from "@google-cloud/firestore";
+
+import { firestore } from "../index";
+import { generateId, Offer, OfferAccepted } from "./utils";
 
 /**
  * Create a new offer
@@ -16,52 +18,60 @@ export async function create(req: Request, res: Response, next: NextFunction) {
   try {
     const offer = req.body as Offer;
     // check if offer type is buy
-    if (offer.type === 'sell') {
+    if (offer.type === "sell") {
       // fetching doc from firestore based on nftContractAddr & nftId & type is sell & status is pending
       const result = await firestore
-          .collection('offer')
-          .where('nftContractAddr', '==', offer.nftContractAddr)
-          .where('nftId', '==', offer.nftId)
-          .where('type', '==', 'sell')
-          .where('status', '==', 'pending')
-          .where('seller', '==', offer.seller)
-          .get();
+        .collection("offer")
+        .where("nftContractAddr", "==", offer.nftContractAddr)
+        .where("nftId", "==", offer.nftId)
+        .where("type", "==", "sell")
+        .where("status", "==", "pending")
+        .where("seller", "==", offer.seller)
+        .get();
       // check if doc exists throw error offer already exists
       if (!result.empty) {
-        throw new Error('offer already exists');
+        throw new Error("offer already exists");
       }
       // create a new offer in firestore
-      await firestore.collection('offer').doc(generateId()).set({
-        ...offer,
-
-      });
+      await firestore
+        .collection("offer")
+        .doc(generateId())
+        .set({
+          ...offer,
+        });
     } else {
       // fetching doc from firestore based on buyer, seller & nftContractAddr & nftId & type is buy & status is pendiing
       const result = await firestore
-          .collection('offer')
-          .where('buyer', '==', offer.buyer)
-          .where('seller', '==', offer.seller)
-          .where('nftContractAddr', '==', offer.nftContractAddr)
-          .where('nftId', '==', offer.nftId)
-          .where('type', '==', 'buy')
-          .where('status', '==', 'pending')
-          .get();
+        .collection("offer")
+        .where("buyer", "==", offer.buyer)
+        .where("seller", "==", offer.seller)
+        .where("nftContractAddr", "==", offer.nftContractAddr)
+        .where("nftId", "==", offer.nftId)
+        .where("type", "==", "buy")
+        .where("status", "==", "pending")
+        .get();
       // check if doc exists throw error offer already exists
       if (!result.empty) {
-        throw new Error('offer already exists');
+        throw new Error("offer already exists");
       }
       // create a new offer in firestore
-      await firestore.collection('offer').doc(generateId()).set({
-        ...offer,
-      });
+      await firestore
+        .collection("offer")
+        .doc(generateId())
+        .set({
+          ...offer,
+        });
     }
     // create a new offer in firestore
-    await firestore.collection('offer').doc(generateId()).set({
-      ...offer,
-    });
+    await firestore
+      .collection("offer")
+      .doc(generateId())
+      .set({
+        ...offer,
+      });
 
     // send response
-    res.status(200).json({message: 'offer created'});
+    res.status(200).json({ message: "offer created" });
   } catch (err) {
     next(err);
   }
@@ -77,41 +87,45 @@ export async function create(req: Request, res: Response, next: NextFunction) {
  * @throws - profile not found
  *
  * */
-export async function getBuyOffersPerNFT(req: Request, res: Response, next: NextFunction) {
+export async function getBuyOffersPerNFT(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   try {
     // get id from req.params
     // eslint-disable-next-line no-inline-comments
     // TODO: seller be login user: res.locals.displayName [DONE]
-    const {nftContractAddr, nftId, expired} = req.params;
+    const { nftContractAddr, nftId, expired } = req.params;
     let result: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>;
     if (!expired) {
       // non expired offers only
       // fetch docs from firestore based on nftContractAddr & nftId & seller & expiryTime > now
       result = await firestore
-          .collection('offer')
-          .where('nftContractAddr', '==', nftContractAddr)
-          .where('nftId', '==', nftId)
-          .where('type', '==', 'buy')
-          .where('expiryTime', '>', new Date())
-          .get();
+        .collection("offer")
+        .where("nftContractAddr", "==", nftContractAddr)
+        .where("nftId", "==", nftId)
+        .where("type", "==", "buy")
+        .where("expiryTime", ">", new Date())
+        .get();
     } else {
       // expired offers only
       // fetch docs from firestore based on nftContractAddr & nftId & seller & expiryTime < now
       result = await firestore
-          .collection('offer')
-          .where('nftContractAddr', '==', nftContractAddr)
-          .where('nftId', '==', nftId)
-          .where('type', '==', 'buy')
-          .where('expiryTime', '<', new Date())
-          .get();
+        .collection("offer")
+        .where("nftContractAddr", "==", nftContractAddr)
+        .where("nftId", "==", nftId)
+        .where("type", "==", "buy")
+        .where("expiryTime", "<", new Date())
+        .get();
     }
     // remove id from each doc and parse them into Offer[]
     const offers = result.docs.map((doc) => {
-      const {id, ...data} = doc.data();
+      const { id, ...data } = doc.data();
       return data;
     });
     // send response
-    res.status(200).json({result: offers});
+    res.status(200).json({ result: offers });
   } catch (err) {
     next(err);
   }
@@ -128,26 +142,30 @@ export async function getBuyOffersPerNFT(req: Request, res: Response, next: Next
  * @throws - offers not found
  *
  */
-export async function getSellOffersPerNFT(req: Request, res: Response, next: NextFunction) {
+export async function getSellOffersPerNFT(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   try {
     // get id from req.params
-    const {nftContractAddr, nftId, seller, status} = req.params;
+    const { nftContractAddr, nftId, seller, status } = req.params;
     // fetch docs from firestore based on nftContractAddr & nftId & seller & status
     const result = await firestore
-        .collection('offer')
-        .where('nftContractAddr', '==', nftContractAddr)
-        .where('nftId', '==', nftId)
-        .where('seller', '==', seller)
-        .where('type', '==', 'sell')
-        .where('status', '==', status)
-        .get();
+      .collection("offer")
+      .where("nftContractAddr", "==", nftContractAddr)
+      .where("nftId", "==", nftId)
+      .where("seller", "==", seller)
+      .where("type", "==", "sell")
+      .where("status", "==", status)
+      .get();
     // remove id from each doc and parse them into Offer[]
     const offers = result.docs.map((doc) => {
-      const {id, ...data} = doc.data();
+      const { id, ...data } = doc.data();
       return data;
     });
     // send response
-    res.status(200).json({result: offers});
+    res.status(200).json({ result: offers });
   } catch (err) {
     next(err);
   }
@@ -164,33 +182,38 @@ export async function getSellOffersPerNFT(req: Request, res: Response, next: Nex
  * @throws - offers not found
  *
  */
-export async function getAllBuyOffers(req: Request, res: Response, next: NextFunction) {
+export async function getAllBuyOffers(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   try {
     // get id from req.params
-    const {buyer, status} = req.params;
+    const { buyer, status } = req.params;
     let result: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>;
     // fetch docs from firestore if status is accepted based on buyer & status and parse them into Offer[]
-    if (status === 'accepted') {
+    if (status === "accepted") {
       result = await firestore
-          .collection('offer')
-          .where('buyer', '==', buyer)
-          .where('status', '==', status)
-          .where('type', '==', 'buy')
-          .get();
+        .collection("offer")
+        .where("buyer", "==", buyer)
+        .where("status", "==", status)
+        .where("type", "==", "buy")
+        .get();
     } else {
       // fetch docs from firestore based on buyer and parse them into Offer[]
-      result = await firestore.collection('offer')
-          .where('buyer', '==', buyer)
-          .where('type', '==', 'buy')
-          .get();
+      result = await firestore
+        .collection("offer")
+        .where("buyer", "==", buyer)
+        .where("type", "==", "buy")
+        .get();
     }
     // remove id from each doc and parse them into Offer[]
     const offers = result.docs.map((doc) => {
-      const {id, ...data} = doc.data();
+      const { id, ...data } = doc.data();
       return data;
     });
     // send response
-    res.status(200).json({result: offers});
+    res.status(200).json({ result: offers });
   } catch (err) {
     next(err);
   }
@@ -207,24 +230,28 @@ export async function getAllBuyOffers(req: Request, res: Response, next: NextFun
  * @throws - offers not found
  *
  */
-export async function getSellOffers(req: Request, res: Response, next: NextFunction) {
+export async function getSellOffers(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   try {
     // get id from req.params
-    const {seller, status} = req.params;
+    const { seller, status } = req.params;
     // fetch docs from firestore based on seller & status and parse them into Offer[]
     const result = await firestore
-        .collection('offer')
-        .where('seller', '==', seller)
-        .where('status', '==', status)
-        .where('type', '==', 'sell')
-        .get();
+      .collection("offer")
+      .where("seller", "==", seller)
+      .where("status", "==", status)
+      .where("type", "==", "sell")
+      .get();
     // remove id from each doc and parse them into Offer[]
     const offers = result.docs.map((doc) => {
-      const {id, ...data} = doc.data();
+      const { id, ...data } = doc.data();
       return data;
     });
     // send response
-    res.status(200).json({result: offers});
+    res.status(200).json({ result: offers });
   } catch (err) {
     next(err);
   }
@@ -250,48 +277,56 @@ export async function getSellOffers(req: Request, res: Response, next: NextFunct
 export async function accept(req: Request, res: Response, next: NextFunction) {
   try {
     // get nftId, nftContractAddr, seller from req.body
-    const {nftId, nftContractAddr, offerAccepted} = req.body;
+    const { nftId, nftContractAddr, offerAccepted } = req.body;
     // get offerAccepted from req.body
     const accepted = offerAccepted as OfferAccepted;
     // given offerId should exists in firestore & not expired
-    const buyOffer = await firestore.collection('offer').doc(accepted.offerId).get();
+    const buyOffer = await firestore
+      .collection("offer")
+      .doc(accepted.offerId)
+      .get();
     if (!buyOffer.exists && buyOffer.data()?.expiryTime >= Date.now()) {
-      throw new Error('given buy offer does not exists or expired');
+      throw new Error("given buy offer does not exists or expired");
     }
     // update doc from firestore based on nfId & nftContractAddr & logged in user displayName as seller & type & status
-    const offerDoc = await firestore.collection('offer')
-        .where('nftId', '==', nftId)
-        .where('nftContractAddr', '==', nftContractAddr)
-        .where('seller', '==', res.locals.displayName)
-        .where('type', '==', 'sell')
-        .where('status', '==', 'pending').get();
+    const offerDoc = await firestore
+      .collection("offer")
+      .where("nftId", "==", nftId)
+      .where("nftContractAddr", "==", nftContractAddr)
+      .where("seller", "==", res.locals.displayName)
+      .where("type", "==", "sell")
+      .where("status", "==", "pending")
+      .get();
 
     // if doc not found throw error
     // eslint-disable-next-line no-inline-comments
-    if (offerDoc.docs.length !== 1) { // TODO: can there be more than one?
-      throw new Error('sell offer not found');
+    if (offerDoc.docs.length !== 1) {
+      // TODO: can there be more than one?
+      throw new Error("sell offer not found");
     }
     // update doc status to accepted and add offerAccepted object
     await offerDoc.docs[0].ref.update({
-      status: 'accepted',
+      status: "accepted",
       // eslint-disable-next-line no-inline-comments
       offerAccepted: accepted, // TODO: test-case should be added to check if this works
     });
     // update all buy offers of given nftId & nftContractAddr & seller to expired except given offerId
-    await firestore.collection('offer')
-        .where('nftId', '==', nftId)
-        .where('nftContractAddr', '==', nftContractAddr)
-        .where('seller', '==', res.locals.displayName)
-        .where('type', '==', 'buy')
-        .where('status', '==', 'pending')
-        .where('id', '!=', accepted.offerId).get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            doc.ref.update({status: 'expired'});
-          });
+    await firestore
+      .collection("offer")
+      .where("nftId", "==", nftId)
+      .where("nftContractAddr", "==", nftContractAddr)
+      .where("seller", "==", res.locals.displayName)
+      .where("type", "==", "buy")
+      .where("status", "==", "pending")
+      .where("id", "!=", accepted.offerId)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          doc.ref.update({ status: "expired" });
         });
+      });
     // send response
-    res.status(200).json({result: 'offer accepted'});
+    res.status(200).json({ result: "offer accepted" });
   } catch (err) {
     next(err);
   }
@@ -311,26 +346,31 @@ export async function accept(req: Request, res: Response, next: NextFunction) {
 export async function reject(req: Request, res: Response, next: NextFunction) {
   try {
     // get nftId, nftContractAddr, seller from req.body
-    const {nftId, nftContractAddr, offerId} = req.body;
+    const { nftId, nftContractAddr, offerId } = req.body;
     // given offerId should exists in firestore
-    const buyOffer = await firestore.collection('offer').doc(offerId).get();
+    const buyOffer = await firestore.collection("offer").doc(offerId).get();
     // buyOffer should exists & nftId, nftContractAddr, seller should match
-    if (!buyOffer.exists &&
-        buyOffer.data()?.nftId === nftId &&
-        buyOffer.data()?.nftContractAddr === nftContractAddr &&
-        buyOffer.data()?.seller === res.locals.displayName) {
-      throw new Error('given buy offer does not exists or valid');
+    if (
+      !buyOffer.exists &&
+      buyOffer.data()?.nftId === nftId &&
+      buyOffer.data()?.nftContractAddr === nftContractAddr &&
+      buyOffer.data()?.seller === res.locals.displayName
+    ) {
+      throw new Error("given buy offer does not exists or valid");
     }
     // checking if offer is already accepted or rejected
-    if (buyOffer.data()?.status === 'accepted' || buyOffer.data()?.status === 'rejected') {
-      throw new Error('given buy offer is already accepted or rejected');
+    if (
+      buyOffer.data()?.status === "accepted" ||
+      buyOffer.data()?.status === "rejected"
+    ) {
+      throw new Error("given buy offer is already accepted or rejected");
     }
     // update doc status to rejected of given offerId
-    await firestore.collection('offer').doc(offerId).update({
-      status: 'rejected',
+    await firestore.collection("offer").doc(offerId).update({
+      status: "rejected",
     });
     // send response
-    res.status(200).json({result: 'buy offer rejected'});
+    res.status(200).json({ result: "buy offer rejected" });
   } catch (err) {
     next(err);
   }
@@ -350,37 +390,37 @@ export async function reject(req: Request, res: Response, next: NextFunction) {
 export async function cancel(req: Request, res: Response, next: NextFunction) {
   try {
     // get nftId, nftContractAddr, seller from req.body
-    const {offerId} = req.body;
+    const { offerId } = req.body;
     // given offerId should exists in firestore
     const offer = await firestore
-        .collection('offer')
-        .where('offerId', '==', offerId)
-        .get();
+      .collection("offer")
+      .where("offerId", "==", offerId)
+      .get();
     // offer should exists
     if (!offer.empty) {
-      throw new Error('given offerId does not exists');
+      throw new Error("given offerId does not exists");
     }
     // check if offer is buy offer
-    if (offer.docs[0].data()?.type === 'buy') {
+    if (offer.docs[0].data()?.type === "buy") {
       // check if offer is not by buyer
       if (offer.docs[0].data()?.buyer !== res.locals.displayName) {
-        throw new Error('given offerId does not belongs to you');
+        throw new Error("given offerId does not belongs to you");
       }
       await offer.docs[0].ref.update({
-        status: 'cancelled',
+        status: "cancelled",
       });
       // send response
-      res.status(200).json({result: 'buy offer cancelled'});
+      res.status(200).json({ result: "buy offer cancelled" });
     } else {
       // check if offer is not by seller
       if (offer.docs[0].data()?.seller !== res.locals.displayName) {
-        throw new Error('given offerId does not belongs to you');
+        throw new Error("given offerId does not belongs to you");
       }
       await offer.docs[0].ref.update({
-        status: 'cancelled',
+        status: "cancelled",
       });
       // send response
-      res.status(200).json({result: 'sell offer cancelled'});
+      res.status(200).json({ result: "sell offer cancelled" });
     }
   } catch (err) {
     next(err);

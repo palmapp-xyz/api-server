@@ -1,7 +1,8 @@
-import express from 'express';
-import {ProxyGenerator} from './api/proxyGenerator';
-import config from './config';
-import rateLimit, {MemoryStore} from 'express-rate-limit';
+import express from "express";
+import rateLimit, { MemoryStore } from "express-rate-limit";
+
+import { ProxyGenerator } from "./api/proxyGenerator";
+import config from "./config";
 
 const apiLimiter = rateLimit({
   // 1 minute
@@ -15,14 +16,13 @@ const apiLimiter = rateLimit({
 
 export const apiRouter = express.Router();
 
-const evmProxyRouter = new ProxyGenerator('evm', {
+const evmProxyRouter = new ProxyGenerator("evm", {
   apiKey: config.MORALIS_API_KEY,
   api_key_id: config.KAS_API_ACCESS_KEY_ID,
   api_secret: config.KAS_API_SECRET_ACCESS_KEY,
 });
 
-
 /**
  *
  */
-apiRouter.use('/evm-api-proxy', apiLimiter, evmProxyRouter.getRouter());
+apiRouter.use("/evm-api-proxy", apiLimiter, evmProxyRouter.getRouter());

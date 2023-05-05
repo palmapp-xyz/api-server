@@ -1,10 +1,14 @@
-import express from 'express';
-import {
-  create, update, get, del, getSendbirdToken,
-} from './profileController';
-import {isAuthenticated} from '../middlewares/authHandler';
-import {isValidProfile} from './utils';
+import express from "express";
 
+import { isAuthenticated } from "../middlewares/authHandler";
+import {
+  create,
+  del,
+  get,
+  getSendbirdToken,
+  update,
+} from "./profileController";
+import { isValidProfile } from "./utils";
 
 export const profileRouter = express.Router();
 
@@ -33,7 +37,7 @@ export const profileRouter = express.Router();
  *  @security JWT
  */
 // eslint-disable-next-line max-len
-profileRouter.route('/create').post(isAuthenticated, isValidProfile, create);
+profileRouter.route("/create").post(isAuthenticated, isValidProfile, create);
 /**
  * PUT /profile/update
  * @summary Updates a user's profile on Firestore
@@ -46,7 +50,7 @@ profileRouter.route('/create').post(isAuthenticated, isValidProfile, create);
  * }
  * @security JWT
  */
-profileRouter.route('/update').put(isAuthenticated, update);
+profileRouter.route("/update").put(isAuthenticated, update);
 /**
  * GET /profile/get/:id
  * @summary Gets a user's profile on Firestore
@@ -64,7 +68,7 @@ profileRouter.route('/update').put(isAuthenticated, update);
  *
  *  }
  */
-profileRouter.route('/get/:id').get(get);
+profileRouter.route("/get/:id").get(get);
 
 /**
  * GET /profile/sendbird_token
@@ -78,7 +82,7 @@ profileRouter.route('/get/:id').get(get);
  *  }
  *  @security JWT
  */
-profileRouter.route('/sendbird_token').get(isAuthenticated, getSendbirdToken);
+profileRouter.route("/sendbird_token").get(isAuthenticated, getSendbirdToken);
 /**
  * DELETE /profile/delete
  * @summary Deletes a user's profile on Firestore
@@ -90,4 +94,4 @@ profileRouter.route('/sendbird_token').get(isAuthenticated, getSendbirdToken);
  * }
  * @security JWT
  */
-profileRouter.route('/delete').delete(isAuthenticated, del);
+profileRouter.route("/delete").delete(isAuthenticated, del);

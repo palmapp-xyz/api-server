@@ -1,12 +1,12 @@
-export type ListingState = 'active' | 'completed' | 'cancelled'
+export type ListingState = "active" | "completed" | "cancelled";
 
 export type Listing = {
-  nftContract: string
-  tokenId: string
-  order: PostOrderResponsePayload
-  status: ListingState
-  channelUrl?: string
-}
+  nftContract: string;
+  tokenId: string;
+  order: PostOrderResponsePayload;
+  status: ListingState;
+  channelUrl?: string;
+};
 
 export interface PostOrderResponsePayload {
   erc20Token: string;
@@ -15,18 +15,22 @@ export interface PostOrderResponsePayload {
   nftTokenId: string;
   nftTokenAmount: string;
   nftType: string;
-  sellOrBuyNft: 'buy' | 'sell';
+  sellOrBuyNft: "buy" | "sell";
   chainId: string;
   order: SignedNftOrderV4Serialized;
   metadata: Record<string, string> | null;
 }
 
-export declare type SignedNftOrderV4Serialized = SignedERC721OrderStructSerialized | SignedERC1155OrderStructSerialized;
+export declare type SignedNftOrderV4Serialized =
+  | SignedERC721OrderStructSerialized
+  | SignedERC1155OrderStructSerialized;
 
-export interface SignedERC721OrderStructSerialized extends ERC721OrderStructSerialized {
+export interface SignedERC721OrderStructSerialized
+  extends ERC721OrderStructSerialized {
   signature: SignatureStructSerialized;
 }
-export interface SignedERC1155OrderStructSerialized extends ERC1155OrderStructSerialized {
+export interface SignedERC1155OrderStructSerialized
+  extends ERC1155OrderStructSerialized {
   signature: SignatureStructSerialized;
 }
 

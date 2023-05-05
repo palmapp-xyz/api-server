@@ -1,11 +1,13 @@
-import {Router} from 'express';
+import { Router } from "express";
+
 import {
+  searchAll,
   searchChannels,
   searchProfiles,
-  searchAll,
   suggestChannels,
   suggestProfiles,
-} from './controller';
+} from "./controller";
+
 export const searchRouter = Router();
 /**
  * @typedef {object} SearchQuery
@@ -27,7 +29,7 @@ export const searchRouter = Router();
  * @return {Error}  default - Unexpected error
  *
  */
-searchRouter.post('/profile', searchProfiles);
+searchRouter.post("/profile", searchProfiles);
 
 /**
  * POST /search/channel
@@ -39,7 +41,7 @@ searchRouter.post('/profile', searchProfiles);
  * @return {Error}  default - Unexpected error
  *
  */
-searchRouter.post('/channel', searchChannels);
+searchRouter.post("/channel", searchChannels);
 /**
  * POST /search/all
  * @summary Get channels & profiles by given search query (both)
@@ -50,7 +52,7 @@ searchRouter.post('/channel', searchChannels);
  * @return {Error}  default - Unexpected error
  *
  */
-searchRouter.post('/all', searchAll);
+searchRouter.post("/all", searchAll);
 
 /**
  * @typedef {object} SuggestQuery
@@ -68,7 +70,6 @@ searchRouter.post('/all', searchAll);
  * @param {SuggestQuery} request.body.required - query to search for
  * @return {object} 200 - An object of suggested channels & profiles
  */
-// eslint-disable-next-line etc/no-commented-out-code
 // searchRouter.post('/suggest/all', suggestAll); // disabling for now,as no common field is there for both profiles and channels [we can only provide one field to look for in]
 
 /**
@@ -78,7 +79,7 @@ searchRouter.post('/all', searchAll);
  * @param {SuggestQuery} request.body.required - query to search for
  * @return {object} 200 - An object of suggested channels
  */
-searchRouter.post('/suggest/channel', suggestChannels);
+searchRouter.post("/suggest/channel", suggestChannels);
 
 /**
  * POST /search/suggest/profile
@@ -87,4 +88,4 @@ searchRouter.post('/suggest/channel', suggestChannels);
  * @param {SuggestQuery} request.body.required - query to search for
  * @return {object} 200 - An object of suggested profiles
  */
-searchRouter.post('/suggest/profile', suggestProfiles);
+searchRouter.post("/suggest/profile", suggestProfiles);

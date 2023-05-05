@@ -1,6 +1,8 @@
 // express Router
-import {Router} from 'express';
-import {sendNotification} from './controller';
+import { Router } from "express";
+
+import { sendNotification } from "./controller";
+
 export const notificationRouter = Router();
 /**
  * @typedef {object} Notification
@@ -19,4 +21,4 @@ export const notificationRouter = Router();
  * @security JWT
  *
  */
-notificationRouter.post('/send', /** isAuthenticated, */ sendNotification);
+notificationRouter.post("/send", /** isAuthenticated, */ sendNotification);

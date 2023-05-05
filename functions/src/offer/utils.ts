@@ -1,5 +1,5 @@
-import {NextFunction, Request, Response} from 'express';
-import web3 from 'web3';
+import { NextFunction, Request, Response } from "express";
+import web3 from "web3";
 
 // generating type with name Offer using properties
 export type Offer = {
@@ -15,34 +15,33 @@ export type Offer = {
   sendbirdMessageId: string;
   sendbirdChannelUrl: string;
   acceptedBuyOffer: OfferAccepted;
-
-}
+};
 
 // generating enum with name OfferStatus using properties 'pending', 'accepted', 'rejected'
 export enum OfferStatus {
-  pending = 'pending',
-  accepted = 'accepted',
-  rejected = 'rejected',
-  expired = 'expired',
+  pending = "pending",
+  accepted = "accepted",
+  rejected = "rejected",
+  expired = "expired",
 }
 
 // generating enum with name OfferType using properties 'buy', 'sell'
 export enum OfferType {
-  buy = 'buy',
-  sell = 'sell',
+  buy = "buy",
+  sell = "sell",
 }
 
 // generating type with name Price using properties amount & symbol
 export type Price = {
   amount: number;
   symbol: string;
-}
+};
 
 // generating type OfferAccepted using properties offerId & txHash
 export type OfferAccepted = {
   offerId: string;
   txHash: string;
-}
+};
 
 /**
  * @param {Request} req - Express request object
@@ -61,37 +60,57 @@ export type OfferAccepted = {
  * @throws - invalid token
  * */
 // eslint-disable-next-line complexity
-export async function isValidOffer(req: Request, res: Response, next: NextFunction) {
+export async function isValidOffer(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   try {
     // get body from req object and parse it to Offer type
-    const {txHash, nftId, nftContractAddr, price, expiryTime, seller, buyer, type} = req.body as Offer;
+    const {
+      txHash,
+      nftId,
+      nftContractAddr,
+      price,
+      expiryTime,
+      seller,
+      buyer,
+      type,
+    } = req.body as Offer;
     // validating txHash is valid web3 txHash using regex
     if (!txHash || !txHash.match(/^0x[a-fA-F0-9]{64}$/)) {
-      throw new Error('invalid txHash');
+      throw new Error("invalid txHash");
     }
     // validating nftId is valid number
     if (!nftId || isNaN(nftId)) {
-      throw new Error('invalid nftId');
+      throw new Error("invalid nftId");
     }
     // validating nftContractAddr is valid web3 address using web3 util isAddress
     if (!nftContractAddr || !web3.utils.isAddress(nftContractAddr)) {
-      throw new Error('invalid nftContractAddr');
+      throw new Error("invalid nftContractAddr");
     }
     // validating price is valid object with amount & symbol properties and amount is valid number and symbol is valid string of atleast 2 characters
-    if (!price || !price.amount || isNaN(price.amount) || !price.symbol || typeof price.symbol !== 'string' || price.symbol.length < 2) {
-      throw new Error('invalid price');
+    if (
+      !price ||
+      !price.amount ||
+      isNaN(price.amount) ||
+      !price.symbol ||
+      typeof price.symbol !== "string" ||
+      price.symbol.length < 2
+    ) {
+      throw new Error("invalid price");
     }
     // validating expiryTime is valid timestamp in seconds and is not in past
     if (!expiryTime || isNaN(expiryTime) || expiryTime < Date.now() / 1000) {
-      throw new Error('invalid expiryTime');
+      throw new Error("invalid expiryTime");
     }
     // validating seller is valid web3 address using web3 util isAddress
     if (!seller || !web3.utils.isAddress(seller)) {
-      throw new Error('invalid seller');
+      throw new Error("invalid seller");
     }
     // validating buyer is valid web3 address using web3 util isAddress
     if (!buyer || !web3.utils.isAddress(buyer)) {
-      throw new Error('invalid buyer');
+      throw new Error("invalid buyer");
     }
     // add status to req object with default value pending only if offer is sell
     if (type === OfferType.sell) {
@@ -99,17 +118,16 @@ export async function isValidOffer(req: Request, res: Response, next: NextFuncti
     }
     // validating type is valid OfferType enum
     if (!type || !Object.values(OfferType).includes(type)) {
-      throw new Error('invalid type');
+      throw new Error("invalid type");
     }
     // check if type is sell then login user must be seller buyer must be null
     if (type === OfferType.sell && seller !== res.locals.displayName) {
-      throw new Error('invalid seller, you must sign in as seller');
+      throw new Error("invalid seller, you must sign in as seller");
     }
     // check if type is buy then login user must be buyer seller must not be null
     if (type === OfferType.buy && buyer !== res.locals.displayName) {
-      throw new Error('invalid buyer, you must sign in as buyer');
+      throw new Error("invalid buyer, you must sign in as buyer");
     }
-
 
     // call next middleware
     next();
