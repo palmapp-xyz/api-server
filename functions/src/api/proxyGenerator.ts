@@ -209,13 +209,22 @@ export class ProxyGenerator {
     chain: number,
     data: unknown
   ): Promise<ItemsFetchResult<Item> | unknown> {
-    if (urlPattern !== "/:address/erc20" && urlPattern !== "/:address/nft") {
+    if (
+      urlPattern !== "/:address/erc20" &&
+      urlPattern !== "/:address/nft" &&
+      urlPattern !== "/:address/nft/collections"
+    ) {
       return data;
     }
 
     const queryType = urlPattern === "/:address/erc20" ? "ft" : "nft";
-    return queryType === "ft"
-      ? this.formatFtResults(chain, data as FtItem[])
+    return urlPattern === "/:address/nft/collections"
+      ? await this.formatNftCollectionResults(
+          Number(chain),
+          data as NftCollectionItemsFetchResult
+        )
+      : queryType === "ft"
+      ? this.formatFtResults(chain, data as FtItemsFetchResult)
       : this.formatNftResults(chain, data as NftItemsFetchResult);
   }
 
@@ -321,14 +330,12 @@ export class ProxyGenerator {
 
   async formatFtResults(
     chain: number,
-    data: KasItemsFetchResult<KasFtItem> | FtItem[]
+    data: KasItemsFetchResult<KasFtItem> | FtItemsFetchResult
   ): Promise<FtItemsFetchResult> {
     if (chain !== 1001 && chain !== 8217) {
-      const result: FtItemsFetchResult = {
-        chainId: chain,
-        result: [],
-      };
-      result.result = (data as FtItem[]).map((item: FtItem) => {
+      const result = data as FtItemsFetchResult;
+      result.chainId = chain;
+      result.result = result.result.map((item: FtItem) => {
         item.chainId = chain;
         return item;
       });

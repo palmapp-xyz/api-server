@@ -1,3 +1,20 @@
+// https://docs.moralis.io/web3-data-api/evm/nft-image-previews#what-formats-are-supported
+export type MediaPreview = {
+  height: number;
+  width: number;
+  url: string;
+};
+
+// https://docs.moralis.io/web3-data-api/evm/nft-image-previews#im-using-the-query-parameter-but-im-not-receiving-any-previews-why
+export enum MediaPreviewStatus {
+  success = "success",
+  processing = "processing",
+  unsupported_media = "unsupported_media",
+  invalid_url = "invalid_url",
+  host_unavailable = "host_unavailable",
+  temporarily_unavailable = "temporarily_unavailable",
+}
+
 export type NftItem = {
   token_address: string;
   token_id: string;
@@ -16,6 +33,18 @@ export type NftItem = {
   minter_address: string;
   chainId?: number;
   possible_spam?: boolean | null;
+  media?: {
+    mimetype: string;
+    parent_hash: string;
+    status: MediaPreviewStatus;
+    updatedAt: string;
+    media_collection?: {
+      low: MediaPreview;
+      medium: MediaPreview;
+      high: MediaPreview;
+    };
+    original_media_url: string;
+  } | null;
 };
 
 export enum Status {
