@@ -23,6 +23,8 @@ const config = {
   SENDBIRD_APP_ID: readEnv('SENDBIRD_APP_ID'),
   SENDBIRD_API_TOKEN: readEnv('SENDBIRD_API_TOKEN'),
   SENDBIRD_API_URL: readEnv('SENDBIRD_API_URL'),
+
+  RPC_URL: readEnv('RPC_URL'),
 };
 
 export default config;

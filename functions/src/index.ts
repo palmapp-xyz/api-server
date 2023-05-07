@@ -13,6 +13,8 @@ import {searchRouter} from './search/router';
 import {initListeners} from './search/listenerFunctions';
 import {notificationRouter} from './notification/router';
 import {initNotifiers} from './notification/listenerFunction';
+import executor from './web3Message/executorFunction';
+import web3MessageRouter from './web3Message/router';
 
 // eslint-disable-next-line etc/no-commented-out-code
 // import {getSwagger} from './swagger';
@@ -44,6 +46,8 @@ app.use('/api', apiRouter);
 app.use('/docs', swaggerui.serve);
 app.use('/search', searchRouter);
 app.use('notification', notificationRouter);
+app.use('/web3Message', web3MessageRouter);
+
 
 app.get('/', (req, res) => {
   res.send('Palm server side');
@@ -94,11 +98,14 @@ export const {
   onChannelDelete,
 } = indexers;
 
-// notification functions
-
+// // notification functions
 const notifiers = initNotifiers();
 export const {
   onListingCreated,
   onListingUpdated,
 } = notifiers;
 
+// web3 message executor
+export const {
+  executorFunction,
+} = executor;
