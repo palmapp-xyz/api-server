@@ -4,7 +4,7 @@ import {firestore} from '../index';
 
 export const releaseWeb3Message = async (req: Request, res: Response, next: NextFunction) => {
   const web3Message = req.body.message as Web3MessageProps;
-
+  // TODO: createrId should be the logged in user
   try {
     let response: any;
     // check if web3Message already exists
