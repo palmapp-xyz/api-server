@@ -7,6 +7,14 @@ import {
   removeNoiseFromSearchResponse,
   removeNoiseFromSuggestionResponse,
 } from "./utils";
+import { lensClient } from "..";
+import {
+  ExploreProfilesRequest,
+  PaginatedResult,
+  ProfileFragment,
+  ProfileSortCriteria,
+} from "@lens-protocol/client";
+import { SearchProfilesQueryVariables } from "@lens-protocol/client/dist/declarations/src/search/graphql/search.generated";
 
 const cloudId = config.ELASTIC_SEARCH_CLOUD_ID;
 const elasticUsername = config.ELASTIC_SEARCH_USERNAME;
@@ -153,13 +161,64 @@ export async function suggestAll(
     });
 }
 
+export async function exploreLensProfiles(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { query, limit, cursor, profileId } = req.body;
+
+  try {
+    const request: ExploreProfilesRequest = {
+      cursor,
+      limit,
+      sortCriteria: ProfileSortCriteria.MostFollowers,
+    };
+    const results: PaginatedResult<ProfileFragment> =
+      await lensClient.explore.profiles(request, profileId);
+
+    res
+      .status(200)
+      .json({ items: results.items, cursor: results.pageInfo.next });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function suggestLensProfiles(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { query, limit, cursor, profileId } = req.body;
+
+  try {
+    const request: SearchProfilesQueryVariables = {
+      limit,
+      cursor,
+      query,
+      observerId: profileId,
+    };
+    const results: PaginatedResult<ProfileFragment> =
+      await lensClient.search.profiles(request);
+
+    res
+      .status(200)
+      .json({ items: results.items, cursor: results.pageInfo.next });
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function suggestProfiles(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { query, field, page, pageSize } = req.body;
+  const { query, field, page, pageSize, cursor, profileId } = req.body;
   const from: number = (page - 1) * pageSize;
   client
     .search({

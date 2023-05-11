@@ -4,6 +4,7 @@ import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import Moralis from "moralis";
 import swaggerui from "swagger-ui-express";
+import { LensClient, development, production } from "@lens-protocol/client";
 
 // import {getSwagger} from './swagger';
 import serviceAccountMainnet from "../firebase-admin-mainnet.json";
@@ -27,6 +28,11 @@ const firebaseApp = admin.initializeApp({
   ),
 });
 export const firestore = firebaseApp.firestore();
+
+export const lensClient = new LensClient({
+  environment:
+    process.env.NODE_ENV !== "development" ? development : production,
+});
 
 export const app = express();
 
