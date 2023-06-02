@@ -98,7 +98,7 @@ export type FtItem = {
   symbol: string;
   logo: string | null;
   thumbnail: string | null;
-  decimals: 18;
+  decimals: number;
   balance: string;
   possible_spam?: boolean;
   chainId?: number;
