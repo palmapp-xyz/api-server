@@ -224,7 +224,7 @@ export class ProxyGenerator {
           data as NftCollectionItemsFetchResult
         )
       : queryType === "ft"
-      ? this.formatFtResults(chain, data as FtItemsFetchResult)
+      ? this.formatFtResults(chain, data as FtItem[])
       : this.formatNftResults(chain, data as NftItemsFetchResult);
   }
 
@@ -330,15 +330,16 @@ export class ProxyGenerator {
 
   async formatFtResults(
     chain: number,
-    data: KasItemsFetchResult<KasFtItem> | FtItemsFetchResult
+    data: KasItemsFetchResult<KasFtItem> | FtItem[]
   ): Promise<FtItemsFetchResult> {
     if (chain !== 1001 && chain !== 8217) {
-      const result = data as FtItemsFetchResult;
-      result.chainId = chain;
-      result.result = result.result.map((item: FtItem) => {
-        item.chainId = chain;
-        return item;
-      });
+      const result: FtItemsFetchResult = {
+        result: (data as FtItem[]).map((item: FtItem) => {
+          item.chainId = chain;
+          return item;
+        }),
+        chainId: chain,
+      };
       return result;
     }
 
