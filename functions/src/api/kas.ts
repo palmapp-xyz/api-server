@@ -49,3 +49,14 @@ export type KasNftCollectionItem = {
     totalSupply: string;
   };
 };
+
+export type KasNftCollectionNftItem = {
+  tokenId: string;
+  owner: string;
+  previousOwner: string;
+  tokenUri: string;
+  transactionHash: string;
+  createdAt: number;
+  updatedAt: number;
+  metadata?: string | null;
+};

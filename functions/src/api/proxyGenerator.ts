@@ -3,6 +3,7 @@ import express from "express";
 import { NextFunction, Request, Response } from "express-serve-static-core";
 import Moralis from "moralis";
 import { operations as evmOperations } from "moralis/common-evm-utils";
+import * as functions from "firebase-functions";
 
 import {
   convertOperationToDescriptor,
@@ -29,6 +30,7 @@ import {
   NftItemsFetchResult,
   NftType,
 } from "./moralis";
+import { getUserNftCollectionNftItems, getTokenPrice } from "../moralis";
 
 const proxyRouter = express.Router();
 
@@ -125,8 +127,10 @@ export class ProxyGenerator {
               });
               return res.send(
                 await this.formatResults(
+                  req.params["address"],
                   urlPattern,
                   Number(chain || "0x1"),
+                  Boolean(req.query["preload"]),
                   response.data
                 )
               );
@@ -148,7 +152,7 @@ export class ProxyGenerator {
     const params = req.params as { [key: string]: string };
     const query = req.query as { [key: string]: string };
     const { address } = params;
-    const { limit, cursor, chain, token_addresses } = query;
+    const { limit, cursor, chain, token_addresses, preload } = query;
 
     const queryType = urlPattern === "/:address/erc20" ? "ft" : "nft";
 
@@ -194,10 +198,15 @@ export class ProxyGenerator {
       }
       return res.send(
         urlPattern === "/:address/nft/collections"
-          ? await this.formatNftCollectionResults(Number(chain), response.data)
+          ? await this.formatNftCollectionResults(
+              address,
+              response.data,
+              Number(chain),
+              Boolean(preload)
+            )
           : queryType === "ft"
           ? await this.formatFtResults(Number(chain), response.data)
-          : await this.formatNftResults(Number(chain), response.data)
+          : await this.formatNftResults(address, Number(chain), response.data)
       );
     } catch (error) {
       return errorHandler(error as Error, req, res, next);
@@ -205,8 +214,10 @@ export class ProxyGenerator {
   }
 
   async formatResults(
+    address: string,
     urlPattern: string,
     chain: number,
+    preload: boolean,
     data: unknown
   ): Promise<ItemsFetchResult<Item> | unknown> {
     if (
@@ -220,27 +231,45 @@ export class ProxyGenerator {
     const queryType = urlPattern === "/:address/erc20" ? "ft" : "nft";
     return urlPattern === "/:address/nft/collections"
       ? await this.formatNftCollectionResults(
+          address,
+          data as NftCollectionItemsFetchResult,
           Number(chain),
-          data as NftCollectionItemsFetchResult
+          preload
         )
       : queryType === "ft"
       ? this.formatFtResults(chain, data as FtItem[])
-      : this.formatNftResults(chain, data as NftItemsFetchResult);
+      : this.formatNftResults(address, chain, data as NftItemsFetchResult);
   }
 
   async formatNftCollectionResults(
-    chain: number,
+    userAddress: string,
     data:
       | KasItemsFetchResult<KasNftCollectionItem>
-      | NftCollectionItemsFetchResult
+      | NftCollectionItemsFetchResult,
+    chain: number,
+    preload?: boolean
   ): Promise<NftCollectionItemsFetchResult> {
     if (chain !== 1001 && chain !== 8217) {
       const result = data as NftCollectionItemsFetchResult;
+      let preloads;
+      functions.logger.log("!!!!!!!!!!!", preload);
+      if (preload) {
+        const promises = result.result.map((item: NftCollectionItem) =>
+          getUserNftCollectionNftItems(userAddress, item.token_address, chain)
+        );
+        preloads = await Promise.all(promises);
+      }
+
       result.chainId = chain;
-      result.result = result.result.map((item: NftCollectionItem) => {
-        item.chainId = chain;
-        return item;
-      });
+      result.result = result.result.map(
+        (item: NftCollectionItem, i: number) => {
+          item.chainId = chain;
+          if (preload) {
+            item.preload = preloads[i];
+          }
+          return item;
+        }
+      );
       return result;
     }
 
@@ -259,12 +288,26 @@ export class ProxyGenerator {
     } else {
       ret.cursor = data.cursor;
     }
-    ret.result = data.items.map((item: KasNftCollectionItem, i) => {
+
+    let preloads;
+    if (preload) {
+      const promises = data.items.map((item: KasNftCollectionItem) => {
+        return getUserNftCollectionNftItems(
+          userAddress,
+          item.contractAddress,
+          chain
+        );
+      });
+      preloads = await Promise.all(promises);
+    }
+
+    ret.result = data.items.map((item: KasNftCollectionItem, i: number) => {
       return {
         token_address: item.contractAddress,
         contract_type: NftType.ERC721,
         name: item.extras?.name ?? "",
         symbol: item.extras?.symbol ?? "",
+        item: preload ? preloads[i] : undefined,
         chainId: chain,
       } as unknown as NftCollectionItem;
     });
@@ -272,6 +315,7 @@ export class ProxyGenerator {
   }
 
   async formatNftResults(
+    userAddress: string,
     chain: number,
     data: KasItemsFetchResult<KasNftItem> | NftItemsFetchResult
   ): Promise<NftItemsFetchResult> {
@@ -301,6 +345,9 @@ export class ProxyGenerator {
       ret.cursor = data.cursor;
     }
     let metadatas = data.items.map((item: KasNftItem) => {
+      if (!item.extras.tokenUri) {
+        return null;
+      }
       return getTokenMetadata(item.extras.tokenUri.replace(/\s+/g, ""));
     });
     metadatas = await Promise.all(metadatas);
@@ -310,7 +357,7 @@ export class ProxyGenerator {
         token_address: item.contractAddress,
         token_id: item.extras.tokenId,
         amount: Number(item.balance),
-        owner_of: item.lastTransfer.transferTo,
+        owner_of: userAddress,
         token_hash: "",
         block_number_minted: "",
         block_number: "",
@@ -333,9 +380,15 @@ export class ProxyGenerator {
     data: KasItemsFetchResult<KasFtItem> | FtItem[]
   ): Promise<FtItemsFetchResult> {
     if (chain !== 1001 && chain !== 8217) {
+      const promises = (data as FtItem[]).map((item: FtItem) => {
+        return getTokenPrice(item.token_address, chain);
+      });
+      const prices = await Promise.all(promises);
+
       const result: FtItemsFetchResult = {
-        result: (data as FtItem[]).map((item: FtItem) => {
+        result: (data as FtItem[]).map((item: FtItem, i: number) => {
           item.chainId = chain;
+          item.price = prices[i];
           return item;
         }),
         chainId: chain,

@@ -1,3 +1,5 @@
+import { KasNftCollectionNftItem } from "./kas";
+
 // https://docs.moralis.io/web3-data-api/evm/nft-image-previews#what-formats-are-supported
 export type MediaPreview = {
   height: number;
@@ -64,6 +66,7 @@ export type NftCollectionItem = {
   symbol: string | null;
   chainId?: number;
   possible_spam?: boolean | null;
+  preload?: NftItemsFetchResult | null;
 };
 
 export type Item = {
@@ -102,6 +105,26 @@ export type FtItem = {
   balance: string;
   possible_spam?: boolean;
   chainId?: number;
+  price?: TokenPrice | null;
+};
+
+export type TokenPrice = {
+  tokenName: string;
+  tokenSymbol: string;
+  tokenLogo: string;
+  tokenDecimals: string;
+  nativePrice: {
+    value: string;
+    decimals: number;
+    name: string;
+    symbol: string;
+  };
+  usdPrice: number;
+  usdPriceFormatted?: string;
+  "24hrPercentChange"?: string;
+  exchangeAddress: string;
+  exchangeName: string;
+  tokenAddress: string;
 };
 
 export type FtItemsFetchResult = ItemsFetchResult<FtItem>;
