@@ -5,7 +5,7 @@ import { DocumentData, DocumentReference } from "firebase-admin/firestore";
 /* eslint-disable no-console */
 import { firestore } from "../";
 
-export const deleteUser = async (uid): Promise<void> => {
+export const deleteUser = async (uid: string): Promise<void> => {
   admin
     .auth()
     .deleteUser(uid)

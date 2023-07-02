@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { firestore } from "../index";
+import { firestore } from "../../index";
 
 /**
  * Create a new profile

@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { isAuthenticated } from "../middlewares/authHandler";
+import { isAuthenticated } from "../../middlewares/authHandler";
 import {
   accept,
   cancel,

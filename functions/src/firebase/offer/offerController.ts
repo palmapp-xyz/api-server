@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 import FirebaseFirestore from "@google-cloud/firestore";
 
-import { firestore } from "../index";
+import { firestore } from "../../index";
 import { generateId, Offer, OfferAccepted } from "./utils";
 
 /**

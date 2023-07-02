@@ -174,6 +174,8 @@ export class ProxyGenerator {
       cursor,
     };
     if (token_addresses) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       reqParams["ca-filters"] = token_addresses;
     }
     const request: AxiosRequestConfig = {
@@ -198,14 +200,14 @@ export class ProxyGenerator {
       return res.send(
         urlPattern === "/:address/nft/collections"
           ? await this.formatNftCollectionResults(
-              address,
-              response.data,
-              Number(chain),
-              Boolean(preload)
-            )
+            address,
+            response.data,
+            Number(chain),
+            Boolean(preload)
+          )
           : queryType === "ft"
-          ? await this.formatFtResults(Number(chain), response.data)
-          : await this.formatNftResults(address, Number(chain), response.data)
+            ? await this.formatFtResults(Number(chain), response.data)
+            : await this.formatNftResults(address, Number(chain), response.data)
       );
     } catch (error) {
       return errorHandler(error as Error, req, res, next);
@@ -230,27 +232,27 @@ export class ProxyGenerator {
     const queryType = urlPattern === "/:address/erc20" ? "ft" : "nft";
     return urlPattern === "/:address/nft/collections"
       ? await this.formatNftCollectionResults(
-          address,
-          data as NftCollectionItemsFetchResult,
-          Number(chain),
-          preload
-        )
+        address,
+        data as NftCollectionItemsFetchResult,
+        Number(chain),
+        preload
+      )
       : queryType === "ft"
-      ? this.formatFtResults(chain, data as FtItem[])
-      : this.formatNftResults(address, chain, data as NftItemsFetchResult);
+        ? this.formatFtResults(chain, data as FtItem[])
+        : this.formatNftResults(address, chain, data as NftItemsFetchResult);
   }
 
   async formatNftCollectionResults(
     userAddress: string,
     data:
-      | KasItemsFetchResult<KasNftCollectionItem>
-      | NftCollectionItemsFetchResult,
+    | KasItemsFetchResult<KasNftCollectionItem>
+    | NftCollectionItemsFetchResult,
     chain: number,
     preload?: boolean
   ): Promise<NftCollectionItemsFetchResult> {
     if (chain !== 1001 && chain !== 8217) {
       const result = data as NftCollectionItemsFetchResult;
-      let preloads;
+      let preloads: (NftItemsFetchResult | null)[];
       if (preload) {
         const promises = result.result.map((item: NftCollectionItem) =>
           getUserNftCollectionNftItems(userAddress, item.token_address, chain)
@@ -287,7 +289,7 @@ export class ProxyGenerator {
       ret.cursor = data.cursor;
     }
 
-    let preloads;
+    let preloads: (NftItemsFetchResult | null)[];
     if (preload) {
       const promises = data.items.map((item: KasNftCollectionItem) => {
         return getUserNftCollectionNftItems(
