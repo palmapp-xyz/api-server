@@ -3,7 +3,6 @@ import express from "express";
 import { NextFunction, Request, Response } from "express-serve-static-core";
 import Moralis from "moralis";
 import { operations as evmOperations } from "moralis/common-evm-utils";
-import * as functions from "firebase-functions";
 
 import {
   convertOperationToDescriptor,
@@ -252,7 +251,6 @@ export class ProxyGenerator {
     if (chain !== 1001 && chain !== 8217) {
       const result = data as NftCollectionItemsFetchResult;
       let preloads;
-      functions.logger.log("!!!!!!!!!!!", preload);
       if (preload) {
         const promises = result.result.map((item: NftCollectionItem) =>
           getUserNftCollectionNftItems(userAddress, item.token_address, chain)

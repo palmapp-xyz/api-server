@@ -1,5 +1,3 @@
-import { KasNftCollectionNftItem } from "./kas";
-
 // https://docs.moralis.io/web3-data-api/evm/nft-image-previews#what-formats-are-supported
 export type MediaPreview = {
   height: number;
